@@ -1,0 +1,499 @@
+import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { ArrowLeft, X, Plus, Minus, ShoppingBag, Truck, Shield, Package } from 'lucide-react'
+import useStore from '../stores/useStore'
+import { useToast } from '../components/Toast'
+
+const Cart = () => {
+  const navigate = useNavigate()
+  const { cartItems, pieces, updateQuantity, removeFromCart, getCartTotal } = useStore()
+  const { addToast } = useToast()
+
+  const cartPieces = cartItems.map(item => ({
+    ...item,
+    piece: pieces.find(p => p.id === item.pieceId)
+  })).filter(item => item.piece)
+  
+  // Free shipping calculation
+  const freeShippingThreshold = 200
+  const currentTotal = getCartTotal()
+  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - currentTotal)
+  const shippingProgress = Math.min(100, (currentTotal / freeShippingThreshold) * 100)
+
+  // Styles
+  const containerStyle = {
+    minHeight: '100vh',
+    background: '#000000',
+    color: '#ffffff'
+  }
+
+  const headerStyle = {
+    borderBottom: `1px solid rgba(255, 255, 255, 0.1)`,
+    background: 'rgba(0, 0, 0, 0.95)',
+    backdropFilter: 'blur(8px)'
+  }
+
+  const itemCardStyle = {
+    border: `1px solid rgba(255, 255, 255, 0.1)`,
+    background: 'rgba(255, 255, 255, 0.02)',
+    padding: '20px',
+    borderRadius: '0',
+    transition: 'all 0.3s',
+    marginBottom: '16px'
+  }
+
+  const summaryCardStyle = {
+    border: `1px solid rgba(255, 255, 255, 0.1)`,
+    background: 'rgba(255, 255, 255, 0.02)',
+    padding: '24px',
+    borderRadius: '0',
+    position: 'sticky' as const,
+    top: '88px'
+  }
+
+  const quantityButtonStyle = {
+    width: '32px',
+    height: '32px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    border: `1px solid rgba(255, 255, 255, 0.2)`,
+    background: 'transparent',
+    color: 'rgba(255, 255, 255, 0.6)',
+    cursor: 'pointer',
+    borderRadius: '4px',
+    transition: 'all 0.3s'
+  }
+
+  const checkoutButtonStyle = {
+    width: '100%',
+    padding: '16px',
+    background: '#ffffff',
+    color: '#000000',
+    border: 'none',
+    fontSize: '14px',
+    fontWeight: '300',
+    letterSpacing: '0.2em',
+    textTransform: 'uppercase' as const,
+    cursor: 'pointer',
+    borderRadius: '0',
+    transition: 'all 0.3s'
+  }
+
+  return (
+    <div style={containerStyle}>
+      {/* Header */}
+      <header style={headerStyle}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px' }}>
+            <button 
+              onClick={() => navigate('/collection')}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                color: 'rgba(255, 255, 255, 0.6)',
+                background: 'none',
+                border: 'none',
+                fontSize: '13px',
+                fontWeight: '300',
+                letterSpacing: '0.1em',
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#ffffff'
+                e.currentTarget.style.transform = 'translateX(-4px)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'
+                e.currentTarget.style.transform = 'translateX(0)'
+              }}
+            >
+              <ArrowLeft style={{ width: '16px', height: '16px' }} />
+              CONTINUE SHOPPING
+            </button>
+            
+            <h1 style={{
+              fontSize: '24px',
+              fontWeight: '200',
+              letterSpacing: '0.3em',
+              color: '#ffffff'
+            }}>
+              YOUR BAG
+            </h1>
+            
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '13px',
+              color: '#ffffff',
+              fontWeight: '300'
+            }}>
+              <ShoppingBag style={{ width: '16px', height: '16px' }} />
+              {cartItems.length} {cartItems.length === 1 ? 'ITEM' : 'ITEMS'}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Free Shipping Progress Bar */}
+      {cartItems.length > 0 && (
+        <div style={{
+          background: 'rgba(0, 0, 0, 0.02)',
+          borderBottom: `1px solid ${'rgba(255, 255, 255, 0.1)'}`,
+          padding: '16px 0'
+        }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '12px'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '13px',
+                color: 'rgba(255, 255, 255, 0.6)'
+              }}>
+                <Package style={{ width: '16px', height: '16px' }} />
+                {remainingForFreeShipping > 0 ? (
+                  <span>
+                    Add <strong style={{ color: '#ffffff' }}>${remainingForFreeShipping}</strong> more for FREE shipping
+                  </span>
+                ) : (
+                  <span style={{ color: '#ffffff', fontWeight: '500' }}>
+                    ✨ You've unlocked FREE shipping!
+                  </span>
+                )}
+              </div>
+              <span style={{
+                fontSize: '12px',
+                color: 'rgba(255, 255, 255, 0.6)'
+              }}>
+                ${currentTotal} / ${freeShippingThreshold}
+              </span>
+            </div>
+            
+            {/* Progress Bar */}
+            <div style={{
+              width: '100%',
+              height: '4px',
+              background: 'rgba(0, 0, 0, 0.02)',
+              borderRadius: '2px',
+              overflow: 'hidden',
+              position: 'relative' as const
+            }}>
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${shippingProgress}%` }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                style={{
+                  height: '100%',
+                  background: remainingForFreeShipping === 0 
+                    ? 'linear-gradient(to right, #10b981, #059669)'
+                    : 'linear-gradient(to right, #f97316, #ea580c)',
+                  borderRadius: '2px'
+                }}
+              />
+              {remainingForFreeShipping === 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: [0.3, 1, 0.3] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+                    transform: 'translateX(-100%)',
+                    animation: 'shimmer 2s infinite'
+                  }}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
+        {cartItems.length === 0 ? (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{ textAlign: 'center', padding: '80px 20px' }}
+          >
+            <ShoppingBag style={{ width: '64px', height: '64px', margin: '0 auto 24px', color: 'rgba(255, 255, 255, 0.6)' }} />
+            <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: '18px', fontWeight: '300' }}>
+              Your bag is currently empty
+            </p>
+            <button
+              onClick={() => navigate('/collection')}
+              style={{
+                padding: '14px 32px',
+                background: '#ffffff',
+                color: '#000000',
+                border: 'none',
+                fontSize: '13px',
+                fontWeight: '300',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                cursor: 'pointer',
+                borderRadius: '6px',
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)'
+                e.currentTarget.style.boxShadow = '0 10px 30px rgba(249, 115, 22, 0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)'
+                e.currentTarget.style.boxShadow = 'none'
+              }}
+            >
+              BROWSE COLLECTION
+            </button>
+          </motion.div>
+        ) : (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: window.innerWidth >= 1024 ? '1fr 380px' : '1fr',
+            gap: '32px'
+          }}>
+            {/* Cart Items */}
+            <div>
+              <h2 style={{
+                fontSize: '14px',
+                fontWeight: '300',
+                letterSpacing: '0.2em',
+                color: 'rgba(255, 255, 255, 0.6)',
+                marginBottom: '24px',
+                textTransform: 'uppercase'
+              }}>
+                Shopping Cart ({cartItems.length})
+              </h2>
+              
+              {cartPieces.map(({ piece, size, quantity, pieceId }, index) => (
+                piece && (
+                  <motion.div 
+                    key={`${pieceId}-${size}`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    style={itemCardStyle}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#ffffff'
+                      e.currentTarget.style.transform = 'translateY(-2px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                      e.currentTarget.style.transform = 'translateY(0)'
+                    }}
+                  >
+                    <div style={{ display: 'flex', gap: '20px' }}>
+                      <img 
+                        src={piece.imageUrl} 
+                        alt={piece.name}
+                        style={{
+                          width: '100px',
+                          height: '133px',
+                          objectFit: 'cover',
+                          borderRadius: '4px'
+                        }}
+                      />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                          <h3 style={{
+                            fontSize: '16px',
+                            fontWeight: '300',
+                            letterSpacing: '0.1em',
+                            textTransform: 'uppercase',
+                            color: '#ffffff'
+                          }}>
+                            {piece.name}
+                          </h3>
+                          <button
+                            onClick={() => {
+                              removeFromCart(pieceId, size)
+                              addToast('success', 'Item removed from cart')
+                            }}
+                            style={{
+                              padding: '4px',
+                              color: 'rgba(255, 255, 255, 0.6)',
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              transition: 'color 0.3s'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'}
+                          >
+                            <X style={{ width: '18px', height: '18px' }} />
+                          </button>
+                        </div>
+                        
+                        <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '4px' }}>
+                          {piece.vibe}
+                        </p>
+                        <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '16px' }}>
+                          Size: {size}
+                        </p>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <button
+                              onClick={() => updateQuantity(pieceId, size, quantity - 1)}
+                              style={quantityButtonStyle}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = '#ffffff'
+                                e.currentTarget.style.color = '#ffffff'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'
+                              }}
+                            >
+                              <Minus style={{ width: '14px', height: '14px' }} />
+                            </button>
+                            <span style={{ minWidth: '32px', textAlign: 'center', fontSize: '14px' }}>
+                              {quantity}
+                            </span>
+                            <button
+                              onClick={() => updateQuantity(pieceId, size, quantity + 1)}
+                              style={quantityButtonStyle}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = '#ffffff'
+                                e.currentTarget.style.color = '#ffffff'
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                                e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'
+                              }}
+                            >
+                              <Plus style={{ width: '14px', height: '14px' }} />
+                            </button>
+                          </div>
+                          
+                          <p style={{ fontSize: '18px', color: '#ffffff', fontWeight: '300' }}>
+                            ${piece.price * quantity}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )
+              ))}
+            </div>
+
+            {/* Order Summary */}
+            <div>
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                style={summaryCardStyle}
+              >
+                <h2 style={{
+                  fontSize: '16px',
+                  fontWeight: '300',
+                  letterSpacing: '0.2em',
+                  color: '#ffffff',
+                  marginBottom: '24px',
+                  textTransform: 'uppercase'
+                }}>
+                  Order Summary
+                </h2>
+                
+                <div style={{ paddingBottom: '20px', borderBottom: `1px solid ${'rgba(255, 255, 255, 0.1)'}` }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: '12px',
+                    fontSize: '14px'
+                  }}>
+                    <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Subtotal</span>
+                    <span style={{ color: '#ffffff' }}>${getCartTotal()}</span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    marginBottom: '12px',
+                    fontSize: '14px'
+                  }}>
+                    <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Shipping</span>
+                    <span style={{ color: '#ffffff' }}>FREE</span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    fontSize: '14px'
+                  }}>
+                    <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Tax</span>
+                    <span style={{ color: '#ffffff' }}>Calculated at checkout</span>
+                  </div>
+                </div>
+                
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '20px 0',
+                  fontSize: '18px',
+                  fontWeight: '300'
+                }}>
+                  <span style={{ color: '#ffffff' }}>Total</span>
+                  <span style={{ color: '#ffffff' }}>${getCartTotal()}</span>
+                </div>
+                
+                <button
+                  onClick={() => navigate('/delivery')}
+                  style={checkoutButtonStyle}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)'
+                    e.currentTarget.style.boxShadow = '0 10px 30px rgba(249, 115, 22, 0.3)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = 'none'
+                  }}
+                >
+                  PROCEED TO CHECKOUT
+                </button>
+                
+                {/* Trust Badges */}
+                <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: `1px solid ${'rgba(255, 255, 255, 0.1)'}` }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    marginBottom: '12px',
+                    fontSize: '12px',
+                    color: 'rgba(255, 255, 255, 0.6)'
+                  }}>
+                    <Shield style={{ width: '14px', height: '14px' }} />
+                    Secure Checkout
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '12px',
+                    color: 'rgba(255, 255, 255, 0.6)'
+                  }}>
+                    <Truck style={{ width: '14px', height: '14px' }} />
+                    Free Shipping Worldwide
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default Cart

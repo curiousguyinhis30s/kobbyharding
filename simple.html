@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kobby's Threads</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #000;
+            color: #fff;
+            font-family: system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+        .logo { font-size: 18px; letter-spacing: 0.3em; font-weight: 100; }
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+        }
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: url('/kobby-hero.png') center/cover;
+            position: relative;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+        }
+        .hero-content {
+            position: relative;
+            text-align: center;
+        }
+        h1 {
+            font-size: clamp(60px, 10vw, 140px);
+            font-weight: 100;
+            letter-spacing: 0.4em;
+            line-height: 0.9;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: clamp(40px, 8vw, 100px);
+            font-weight: 100;
+            letter-spacing: 0.3em;
+        }
+        p {
+            font-size: 14px;
+            letter-spacing: 0.2em;
+            margin: 40px 0;
+            opacity: 0.8;
+        }
+        .btn {
+            display: inline-block;
+            padding: 15px 40px;
+            border: 1px solid #fff;
+            background: transparent;
+            color: #fff;
+            text-decoration: none;
+            font-size: 11px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">KOBBY</div>
+        <div class="nav-links">
+            <a href="#collection">COLLECTION</a>
+            <a href="#festivals">FESTIVALS</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>KOBBY'S</h1>
+            <h2>THREADS</h2>
+            <p>African heritage. Modern expression.</p>
+            <a href="#collection" class="btn">Enter Collection →</a>
+        </div>
+    </section>
+
+    <script>
+        // Simple React-free implementation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                alert('Collection page would load here');
+            });
+        });
+    </script>
+</body>
+</html>

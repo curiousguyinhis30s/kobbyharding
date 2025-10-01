@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOBBY'S THREADS - African Heritage. Modern Expression.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-black text-white font-light">
+    <div x-data="kobbyStore()">
+        <!-- Navigation -->
+        <nav class="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md px-8 py-6">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <a href="/" class="text-lg tracking-[0.3em]">KOBBY</a>
+                <div class="flex gap-8">
+                    <button @click="currentPage = 'home'" class="text-xs tracking-[0.25em] uppercase hover:text-gray-300">Home</button>
+                    <button @click="currentPage = 'collection'" class="text-xs tracking-[0.25em] uppercase hover:text-gray-300">Collection</button>
+                    <button @click="currentPage = 'cart'" class="text-xs tracking-[0.25em] uppercase hover:text-gray-300">
+                        Cart (<span x-text="cart.length"></span>)
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Home Page -->
+        <div x-show="currentPage === 'home'" class="min-h-screen flex items-center justify-center" style="background: url('/kobby-hero.png') center/cover">
+            <div class="bg-black/50 p-12 text-center">
+                <h1 class="text-7xl md:text-9xl font-thin tracking-[0.4em] mb-4">KOBBY'S</h1>
+                <h2 class="text-5xl md:text-7xl font-thin tracking-[0.3em] mb-8">THREADS</h2>
+                <p class="text-sm tracking-[0.2em] mb-8 opacity-80">African heritage. Modern expression.</p>
+                <button @click="currentPage = 'collection'" class="border border-white px-8 py-3 text-xs tracking-[0.3em] uppercase hover:bg-white hover:text-black transition">
+                    Enter Collection →
+                </button>
+            </div>
+        </div>
+
+        <!-- Collection Page -->
+        <div x-show="currentPage === 'collection'" class="pt-24 px-8">
+            <div class="max-w-7xl mx-auto">
+                <h2 class="text-4xl font-thin tracking-[0.3em] mb-12">COLLECTION</h2>
+
+                <!-- Filter -->
+                <div class="flex gap-4 mb-8">
+                    <button @click="filter = 'all'" class="text-xs tracking-[0.2em] uppercase" :class="filter === 'all' && 'text-orange-500'">All</button>
+                    <button @click="filter = 'shirts'" class="text-xs tracking-[0.2em] uppercase" :class="filter === 'shirts' && 'text-orange-500'">Shirts</button>
+                    <button @click="filter = 'pants'" class="text-xs tracking-[0.2em] uppercase" :class="filter === 'pants' && 'text-orange-500'">Pants</button>
+                    <button @click="filter = 'dresses'" class="text-xs tracking-[0.2em] uppercase" :class="filter === 'dresses' && 'text-orange-500'">Dresses</button>
+                </div>
+
+                <!-- Products Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <template x-for="product in filteredProducts" :key="product.id">
+                        <div class="group cursor-pointer">
+                            <div class="aspect-[3/4] bg-gray-900 mb-4 overflow-hidden">
+                                <img :src="product.image" :alt="product.name" class="w-full h-full object-cover group-hover:scale-105 transition">
+                            </div>
+                            <h3 class="text-lg tracking-[0.2em] mb-2" x-text="product.name"></h3>
+                            <p class="text-sm opacity-60 mb-2" x-text="product.vibe"></p>
+                            <p class="text-xl mb-4">$<span x-text="product.price"></span></p>
+                            <button @click="addToCart(product)" class="text-xs tracking-[0.2em] uppercase hover:text-orange-500 transition">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cart Page -->
+        <div x-show="currentPage === 'cart'" class="pt-24 px-8">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-thin tracking-[0.3em] mb-12">YOUR CART</h2>
+
+                <div x-show="cart.length === 0" class="text-center py-12">
+                    <p class="text-xl mb-4">Your cart is empty</p>
+                    <button @click="currentPage = 'collection'" class="text-sm tracking-[0.2em] uppercase hover:text-orange-500">
+                        Continue Shopping
+                    </button>
+                </div>
+
+                <div x-show="cart.length > 0" class="space-y-6">
+                    <template x-for="item in cart" :key="item.id">
+                        <div class="flex justify-between items-center border-b border-gray-800 pb-6">
+                            <div class="flex gap-6">
+                                <div class="w-24 h-32 bg-gray-900">
+                                    <img :src="item.image" :alt="item.name" class="w-full h-full object-cover">
+                                </div>
+                                <div>
+                                    <h3 class="text-lg tracking-[0.2em] mb-2" x-text="item.name"></h3>
+                                    <p class="text-sm opacity-60" x-text="item.vibe"></p>
+                                    <p class="text-xl mt-2">$<span x-text="item.price"></span></p>
+                                </div>
+                            </div>
+                            <button @click="removeFromCart(item.id)" class="text-xs tracking-[0.2em] uppercase hover:text-red-500">
+                                Remove
+                            </button>
+                        </div>
+                    </template>
+
+                    <div class="text-right pt-6">
+                        <p class="text-2xl mb-6">Total: $<span x-text="cartTotal"></span></p>
+                        <button class="bg-white text-black px-8 py-3 text-xs tracking-[0.3em] uppercase hover:bg-gray-200 transition">
+                            Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function kobbyStore() {
+            return {
+                currentPage: 'home',
+                filter: 'all',
+                cart: [],
+                products: [
+                    { id: 1, name: 'Sunset Warrior', vibe: 'Bold confidence', price: 450, category: 'shirts', image: '/kobby-assets/models/IMG_3479.JPG' },
+                    { id: 2, name: 'Midnight Bloom', vibe: 'Mysterious elegance', price: 380, category: 'dresses', image: '/kobby-assets/models/IMG_3495.JPG' },
+                    { id: 3, name: 'Festival Spirit', vibe: 'Free spirit energy', price: 420, category: 'shirts', image: '/kobby-assets/models/IMG_3515.JPG' },
+                    { id: 4, name: 'Urban Roots', vibe: 'Grounded power', price: 480, category: 'pants', image: '/kobby-assets/models/IMG_3543.JPG' },
+                    { id: 5, name: 'Gentle Rebel', vibe: 'Quiet strength', price: 350, category: 'shirts', image: '/kobby-assets/shirts/IMG_1584.JPG' },
+                    { id: 6, name: 'Ocean Dreams', vibe: 'Flowing freedom', price: 400, category: 'shirts', image: '/kobby-assets/shirts/IMG_1585.JPG' },
+                    { id: 7, name: 'Golden Hour', vibe: 'Optimistic magic', price: 520, category: 'accessories', image: '/kobby-assets/models/IMG_3622.JPG' },
+                    { id: 8, name: 'Night Market', vibe: 'Street wisdom', price: 360, category: 'dresses', image: '/kobby-assets/models/IMG_3644.JPG' }
+                ],
+                get filteredProducts() {
+                    if (this.filter === 'all') return this.products;
+                    return this.products.filter(p => p.category === this.filter);
+                },
+                get cartTotal() {
+                    return this.cart.reduce((sum, item) => sum + item.price, 0);
+                },
+                addToCart(product) {
+                    this.cart.push({...product});
+                    alert(product.name + ' added to cart!');
+                },
+                removeFromCart(id) {
+                    this.cart = this.cart.filter(item => item.id !== id);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

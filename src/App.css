@@ -1,0 +1,32 @@
+/* Ensure consistent black background from initial load */
+html, body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Prevent white flash on load */
+#root:empty {
+  background-color: #000000;
+}
+
+/* Override any default styles that might cause white flash */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000000;
+  z-index: -1;
+}

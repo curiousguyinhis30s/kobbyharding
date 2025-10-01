@@ -1,0 +1,55 @@
+/* Fix for collection page overlay issues */
+
+.collection-page-new {
+  position: relative !important;
+  z-index: 1 !important;
+  background: #fff !important;
+  min-height: 100vh !important;
+  isolation: isolate !important;
+}
+
+/* Dark mode */
+[data-theme="dark"] .collection-page-new {
+  background: #000 !important;
+}
+
+/* Prevent any overlays from blocking */
+.collection-page-new * {
+  position: relative !important;
+}
+
+/* Sticky headers should not cause issues */
+.collection-page-new [style*="sticky"] {
+  z-index: 10 !important;
+}
+
+/* Ensure product cards are visible */
+.collection-page-new > div {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* Fix for motion divs */
+.collection-page-new .motion-div {
+  opacity: 1 !important;
+}
+
+/* Prevent background gradients from causing issues */
+.collection-page-new [style*="linear-gradient"] {
+  background: inherit !important;
+}
+
+/* Emergency override for black screen */
+body:has(.collection-page-new) {
+  background: #fff !important;
+}
+
+body:has(.collection-page-new)[data-theme="dark"] {
+  background: #000 !important;
+}
+
+/* Ensure no element can cover the entire screen */
+.collection-page-new::before,
+.collection-page-new::after {
+  display: none !important;
+}
