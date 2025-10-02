@@ -165,7 +165,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     // Check credentials
-    const userAccount = users[email as keyof typeof users]
+    const userAccount = users[email as unknown as keyof typeof users]
     if (userAccount && userAccount.password === password) {
       const userData = { ...userAccount.data, lastLogin: new Date().toISOString() }
       setUser(userData)

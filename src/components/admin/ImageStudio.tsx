@@ -12,7 +12,7 @@ interface ImageTemplate {
   description: string
   prompt: string
   style: string
-  icon: React.ComponentType
+  icon: React.ComponentType<{ size?: number }>
 }
 
 interface GeneratedImage {
@@ -77,7 +77,7 @@ const ImageStudio = () => {
   ]
 
   // Mock products from localStorage
-  const getProducts = () => {
+  const getProducts = (): any[] => {
     const stored = localStorage.getItem('admin_products')
     return stored ? JSON.parse(stored) : []
   }
@@ -118,7 +118,7 @@ const ImageStudio = () => {
     
     // Update product with new image
     const products = getProducts()
-    const updatedProducts = products.map((p) => {
+    const updatedProducts = products.map((p: any) => {
       if (p.id === selectedProduct.id) {
         return {
           ...p,
@@ -251,7 +251,7 @@ const ImageStudio = () => {
               value={selectedProduct?.id || ''}
               onChange={(e) => {
                 const products = getProducts()
-                setSelectedProduct(products.find((p) => p.id === e.target.value))
+                setSelectedProduct(products.find((p: any) => p.id === e.target.value))
               }}
               style={{
                 ...settingControlStyle,
@@ -259,7 +259,7 @@ const ImageStudio = () => {
               }}
             >
               <option value="">Choose a product...</option>
-              {getProducts().map((product) => (
+              {getProducts().map((product: any) => (
                 <option key={product.id} value={product.id}>
                   {product.name} - ${product.price}
                 </option>
@@ -378,7 +378,9 @@ const ImageStudio = () => {
                           }
                         }}
                       >
-                        <Icon size={20} style={{ marginBottom: '8px', color: '#000000' }} />
+                        <div style={{ marginBottom: '8px', color: '#000000' }}>
+                          <Icon size={20} />
+                        </div>
                         <div style={{ fontSize: '13px', fontWeight: '500', color: '#000000' }}>
                           {template.name}
                         </div>

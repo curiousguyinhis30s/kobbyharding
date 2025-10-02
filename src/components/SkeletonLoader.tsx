@@ -5,13 +5,15 @@ interface SkeletonLoaderProps {
   height?: string
   borderRadius?: string
   className?: string
+  style?: React.CSSProperties
 }
 
 export const SkeletonBox = ({
   width = '100%',
   height = '20px',
   borderRadius = '4px',
-  className
+  className,
+  style
 }: SkeletonLoaderProps) => {
   return (
     <motion.div
@@ -22,7 +24,8 @@ export const SkeletonBox = ({
         borderRadius,
         background: 'linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 100%)',
         backgroundSize: '200% 100%',
-        animation: 'shimmer 1.5s infinite'
+        animation: 'shimmer 1.5s infinite',
+        ...style
       }}
       animate={{
         backgroundPosition: ['0% 0%', '100% 0%', '0% 0%']

@@ -44,7 +44,7 @@ const AnalyticsDashboard = () => {
       likes: Math.floor(Math.random() * 200) + 20,
       addedToCart: Math.floor(Math.random() * 100) + 10,
       purchased: Math.floor(Math.random() * 50) + 5,
-      rating: (Math.random() * 2 + 3).toFixed(1),
+      rating: parseFloat((Math.random() * 2 + 3).toFixed(1)),
       reviews: Math.floor(Math.random() * 30) + 5,
       engagement: 0
     }))
@@ -64,8 +64,8 @@ const AnalyticsDashboard = () => {
   const totalViews = productAnalytics.reduce((sum, p) => sum + p.views, 0)
   const totalLikes = productAnalytics.reduce((sum, p) => sum + p.likes, 0)
   const totalPurchases = productAnalytics.reduce((sum, p) => sum + p.purchased, 0)
-  const averageRating = productAnalytics.length > 0 
-    ? (productAnalytics.reduce((sum, p) => sum + parseFloat(p.rating.toString()), 0) / productAnalytics.length).toFixed(1)
+  const averageRating = productAnalytics.length > 0
+    ? (productAnalytics.reduce((sum, p) => sum + p.rating, 0) / productAnalytics.length).toFixed(1)
     : '0.0'
 
   return (

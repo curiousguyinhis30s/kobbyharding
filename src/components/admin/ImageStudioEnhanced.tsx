@@ -551,7 +551,9 @@ const ImageStudioEnhanced = () => {
                       gap: '12px',
                       marginBottom: '12px'
                     }}>
-                      <template.icon size={24} style={{ color: '#000000' }} />
+                      <div style={{ color: '#000000' }}>
+                        <template.icon size={24} />
+                      </div>
                       <span style={{
                         fontSize: '10px',
                         color: '#666666',
