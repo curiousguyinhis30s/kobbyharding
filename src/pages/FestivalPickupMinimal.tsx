@@ -12,8 +12,16 @@ const FestivalPickupMinimal = () => {
   const [selectedFestival, setSelectedFestival] = useState<string | null>(null)
   const [showTryOnModal, setShowTryOnModal] = useState(false)
   const [selectedPieces, setSelectedPieces] = useState<string[]>([])
-  // Login modal removed - using /admin/login page instead
   const [confirmationMessage, setConfirmationMessage] = useState('')
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const festivals = [
     { 
@@ -253,9 +261,9 @@ const FestivalPickupMinimal = () => {
           {/* Seamless Festival Grid */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
             gap: '0',
-            marginBottom: '80px',
+            marginBottom: isMobile ? '40px' : '80px',
             border: '1px solid rgba(255,255,255,0.2)'
           }}
           className="festival-grid">
@@ -413,8 +421,8 @@ const FestivalPickupMinimal = () => {
 
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '30px',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: isMobile ? '20px' : '30px',
               maxWidth: '700px',
               margin: '0 auto'
             }}>
@@ -472,8 +480,8 @@ const FestivalPickupMinimal = () => {
 
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '40px',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)',
+              gap: isMobile ? '24px' : '40px',
               marginBottom: '40px'
             }}>
               {[
@@ -559,8 +567,8 @@ const FestivalPickupMinimal = () => {
 
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '40px'
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: isMobile ? '24px' : '40px'
             }}>
               {[
                 {
@@ -791,8 +799,8 @@ const FestivalPickupMinimal = () => {
               }}>
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                  gap: '20px'
+                  gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(200px, 1fr))',
+                  gap: isMobile ? '16px' : '20px'
                 }}>
                   {pieces.map((piece) => {
                     const isSelected = selectedPieces.includes(piece.id)

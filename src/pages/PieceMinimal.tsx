@@ -16,6 +16,7 @@ const PieceMinimal = () => {
   const [quantity, setQuantity] = useState(1)
   const [addedToCart, setAddedToCart] = useState(false)
   const [showSizeGuide, setShowSizeGuide] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   // Initialize pieces if empty
   useEffect(() => {
@@ -29,6 +30,11 @@ const PieceMinimal = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   if (!piece) {
@@ -147,38 +153,37 @@ const PieceMinimal = () => {
       </div>
 
       {/* Product Layout */}
-      <div style={{ 
+      <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
         gap: '0',
         maxWidth: '100%',
         margin: '0',
-        minHeight: 'calc(100vh - 128px)'
+        minHeight: isMobile ? 'auto' : 'calc(100vh - 128px)'
       }}>
         {/* Left: Images */}
-        <div style={{ 
+        <div style={{
           position: 'relative',
           background: '#000',
-          borderRight: '1px solid rgba(255,255,255,0.1)'
+          borderRight: isMobile ? 'none' : '1px solid rgba(255,255,255,0.1)'
         }}>
           {/* Main Image */}
-          <div style={{ 
-            position: 'sticky',
-            top: '128px',
-            height: 'calc(100vh - 128px)',
+          <div style={{
+            position: isMobile ? 'relative' : 'sticky',
+            top: isMobile ? '0' : '128px',
+            height: isMobile ? 'auto' : 'calc(100vh - 128px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '40px'
+            padding: isMobile ? '20px' : '40px'
           }}>
             <div style={{ position: 'relative', width: '100%', maxWidth: '600px' }}>
-              <img 
+              <img
                 src={images[currentImageIndex]}
                 alt={piece.name}
                 style={{
                   width: '100%',
                   height: 'auto',
-                  filter: 'grayscale(100%) contrast(1.1)',
                   cursor: 'zoom-in'
                 }}
               />
@@ -254,11 +259,11 @@ const PieceMinimal = () => {
         </div>
 
         {/* Right: Product Details */}
-        <div style={{ 
-          padding: '60px',
+        <div style={{
+          padding: isMobile ? '24px 20px' : '60px',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center'
+          justifyContent: isMobile ? 'flex-start' : 'center'
         }}>
           {/* Product Info */}
           <div style={{ marginBottom: '40px' }}>
@@ -341,9 +346,9 @@ const PieceMinimal = () => {
               </button>
             </div>
             
-            <div style={{ 
+            <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(6, 1fr)',
+              gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
               gap: '1px',
               background: 'rgba(255,255,255,0.1)'
             }}>

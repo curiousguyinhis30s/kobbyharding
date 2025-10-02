@@ -71,14 +71,14 @@ const AnalyticsDashboard = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#000',
-      color: '#fff',
+      background: '#ffffff',
+      color: '#000',
       paddingTop: '64px'
     }}>
       {/* Header */}
       <section style={{
         padding: '40px',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        borderBottom: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '1400px',
@@ -98,7 +98,7 @@ const AnalyticsDashboard = () => {
             </h1>
             <p style={{
               fontSize: '12px',
-              color: 'rgba(255, 255, 255, 0.5)',
+              color: '#6b7280',
               letterSpacing: '0.1em'
             }}>
               Track product engagement and user preferences
@@ -113,9 +113,9 @@ const AnalyticsDashboard = () => {
                 onClick={() => setTimeRange(range)}
                 style={{
                   padding: '8px 20px',
-                  background: timeRange === range ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
-                  color: timeRange === range ? '#fff' : 'rgba(255, 255, 255, 0.7)',
+                  background: timeRange === range ? '#f3f4f6' : 'transparent',
+                  border: '1px solid #d1d5db',
+                  color: timeRange === range ? '#000' : '#6b7280',
                   fontSize: '11px',
                   letterSpacing: '0.1em',
                   cursor: 'pointer',
@@ -195,17 +195,17 @@ const AnalyticsDashboard = () => {
                   transition={{ delay: index * 0.1 }}
                   style={{
                     padding: '24px',
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    background: '#ffffff',
+                    border: '1px solid #e5e7eb',
                     transition: 'all 0.3s'
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)'
+                    e.currentTarget.style.borderColor = '#d1d5db'
+                    e.currentTarget.style.background = '#f9fafb'
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)'
+                    e.currentTarget.style.borderColor = '#e5e7eb'
+                    e.currentTarget.style.background = '#ffffff'
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
@@ -269,8 +269,8 @@ const AnalyticsDashboard = () => {
             </h2>
 
             <div style={{
-              background: 'rgba(255, 255, 255, 0.02)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: '#f9fafb',
+              border: '1px solid #e5e7eb',
               overflow: 'hidden'
             }}>
               {/* Table Header */}
@@ -278,7 +278,7 @@ const AnalyticsDashboard = () => {
                 display: 'grid',
                 gridTemplateColumns: '40px 2fr 1fr 1fr 1fr 1fr 1fr 1fr',
                 padding: '16px 24px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                borderBottom: '1px solid #e5e7eb',
                 fontSize: '10px',
                 letterSpacing: '0.2em',
                 opacity: 0.5
@@ -301,12 +301,12 @@ const AnalyticsDashboard = () => {
                     display: 'grid',
                     gridTemplateColumns: '40px 2fr 1fr 1fr 1fr 1fr 1fr 1fr',
                     padding: '20px 24px',
-                    borderBottom: index < topProducts.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
+                    borderBottom: index < topProducts.length - 1 ? '1px solid #f3f4f6' : 'none',
                     fontSize: '12px',
                     transition: 'background 0.3s',
                     cursor: 'pointer'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)'}
+                  onMouseEnter={(e) => e.currentTarget.style.background = '#f3f4f6'}
                   onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                   onClick={() => navigate(`/piece/${product.id}`)}
                 >
@@ -323,7 +323,7 @@ const AnalyticsDashboard = () => {
                     <div style={{
                       width: '60px',
                       height: '4px',
-                      background: 'rgba(255, 255, 255, 0.1)',
+                      background: '#f3f4f6',
                       margin: '0 auto',
                       position: 'relative',
                       overflow: 'hidden'
@@ -353,8 +353,8 @@ const AnalyticsDashboard = () => {
             {/* User Demographics */}
             <div style={{
               padding: '24px',
-              background: 'rgba(255, 255, 255, 0.02)',
-              border: '1px solid rgba(255, 255, 255, 0.1)'
+              background: '#f9fafb',
+              border: '1px solid #e5e7eb'
             }}>
               <h3 style={{
                 fontSize: '14px',
@@ -372,7 +372,7 @@ const AnalyticsDashboard = () => {
                 </div>
                 <div style={{
                   height: '4px',
-                  background: 'rgba(255, 255, 255, 0.1)',
+                  background: '#f3f4f6',
                   position: 'relative',
                   overflow: 'hidden'
                 }}>
@@ -382,7 +382,7 @@ const AnalyticsDashboard = () => {
                     top: 0,
                     bottom: 0,
                     width: '68%',
-                    background: 'rgba(255, 255, 255, 0.5)'
+                    background: '#d1d5db'
                   }} />
                 </div>
               </div>
@@ -394,7 +394,7 @@ const AnalyticsDashboard = () => {
                 </div>
                 <div style={{
                   height: '4px',
-                  background: 'rgba(255, 255, 255, 0.1)',
+                  background: '#f3f4f6',
                   position: 'relative',
                   overflow: 'hidden'
                 }}>
@@ -404,7 +404,7 @@ const AnalyticsDashboard = () => {
                     top: 0,
                     bottom: 0,
                     width: '22%',
-                    background: 'rgba(255, 255, 255, 0.5)'
+                    background: '#d1d5db'
                   }} />
                 </div>
               </div>
@@ -416,7 +416,7 @@ const AnalyticsDashboard = () => {
                 </div>
                 <div style={{
                   height: '4px',
-                  background: 'rgba(255, 255, 255, 0.1)',
+                  background: '#f3f4f6',
                   position: 'relative',
                   overflow: 'hidden'
                 }}>
@@ -426,7 +426,7 @@ const AnalyticsDashboard = () => {
                     top: 0,
                     bottom: 0,
                     width: '10%',
-                    background: 'rgba(255, 255, 255, 0.5)'
+                    background: '#d1d5db'
                   }} />
                 </div>
               </div>
@@ -435,8 +435,8 @@ const AnalyticsDashboard = () => {
             {/* Festival Interest */}
             <div style={{
               padding: '24px',
-              background: 'rgba(255, 255, 255, 0.02)',
-              border: '1px solid rgba(255, 255, 255, 0.1)'
+              background: '#f9fafb',
+              border: '1px solid #e5e7eb'
             }}>
               <h3 style={{
                 fontSize: '14px',
@@ -460,7 +460,7 @@ const AnalyticsDashboard = () => {
                   </div>
                   <div style={{
                     height: '4px',
-                    background: 'rgba(255, 255, 255, 0.1)',
+                    background: '#f3f4f6',
                     position: 'relative',
                     overflow: 'hidden'
                   }}>
@@ -484,7 +484,7 @@ const AnalyticsDashboard = () => {
       {/* Back Button */}
       <section style={{
         padding: '40px',
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+        borderTop: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '1400px',
@@ -496,19 +496,19 @@ const AnalyticsDashboard = () => {
             style={{
               padding: '14px 32px',
               background: 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: '#fff',
+              border: '1px solid #d1d5db',
+              color: '#000',
               fontSize: '11px',
               letterSpacing: '0.2em',
               cursor: 'pointer',
               transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#fff'
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+              e.currentTarget.style.borderColor = '#000'
+              e.currentTarget.style.background = '#f9fafb'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+              e.currentTarget.style.borderColor = '#d1d5db'
               e.currentTarget.style.background = 'transparent'
             }}
           >

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { Truck, Package, MapPin, Clock, ChevronRight } from 'lucide-react'
@@ -8,6 +8,15 @@ const DeliveryOptionsMinimal = () => {
   const navigate = useNavigate()
   const { getCartTotal } = useStore()
   const [selectedOption, setSelectedOption] = useState<'standard' | 'express' | 'festival'>('standard')
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
   
   const subtotal = getCartTotal()
   const deliveryOptions = [

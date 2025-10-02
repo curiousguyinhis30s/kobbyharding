@@ -12,7 +12,8 @@ const WelcomeMinimal = () => {
   const { setPieces, addToCart } = useStore()
   const { scrollY } = useScroll()
   const [currentSection, setCurrentSection] = useState(0)
-  
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
   // Parallax effects
   const section1Y = useTransform(scrollY, [0, 1000], [0, -200])
   const section2Y = useTransform(scrollY, [500, 1500], [100, -100])
@@ -31,8 +32,16 @@ const WelcomeMinimal = () => {
       setCurrentSection(newSection)
     }
 
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+
     window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
 
   // Section backgrounds with different outfit images
@@ -214,7 +223,7 @@ const WelcomeMinimal = () => {
           style={{
             maxWidth: '1200px',
             margin: '0 auto',
-            padding: '0 40px'
+            padding: isMobile ? '0 20px' : '0 40px'
           }}
         >
           {/* Section Title */}
@@ -240,9 +249,9 @@ const WelcomeMinimal = () => {
           {/* Story Grid */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '60px',
-            marginBottom: '80px'
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: isMobile ? '40px' : '60px',
+            marginBottom: isMobile ? '40px' : '80px'
           }}>
             {/* Chapter 1: Origins */}
             <motion.div
@@ -253,12 +262,11 @@ const WelcomeMinimal = () => {
             >
               <div style={{
                 width: '100%',
-                height: '400px',
+                height: isMobile ? '300px' : '400px',
                 backgroundImage: 'url(/kobby-assets/models/IMG_3481.JPG)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                marginBottom: '30px',
-                filter: 'grayscale(100%) contrast(1.2)'
+                marginBottom: isMobile ? '20px' : '30px'
               }} />
               <h4 style={{
                 fontSize: '11px',
@@ -296,12 +304,11 @@ const WelcomeMinimal = () => {
             >
               <div style={{
                 width: '100%',
-                height: '400px',
+                height: isMobile ? '300px' : '400px',
                 backgroundImage: 'url(/kobby-assets/models/IMG_3591.JPG)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                marginBottom: '30px',
-                filter: 'grayscale(100%) contrast(1.2)'
+                marginBottom: isMobile ? '20px' : '30px'
               }} />
               <h4 style={{
                 fontSize: '11px',
@@ -339,12 +346,11 @@ const WelcomeMinimal = () => {
             >
               <div style={{
                 width: '100%',
-                height: '400px',
+                height: isMobile ? '300px' : '400px',
                 backgroundImage: 'url(/kobby-assets/models/IMG_3622.JPG)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                marginBottom: '30px',
-                filter: 'grayscale(100%) contrast(1.2)'
+                marginBottom: isMobile ? '20px' : '30px'
               }} />
               <h4 style={{
                 fontSize: '11px',
@@ -381,14 +387,14 @@ const WelcomeMinimal = () => {
             viewport={{ once: true }}
             style={{
               textAlign: 'center',
-              padding: '60px 0',
+              padding: isMobile ? '40px 0' : '60px 0',
               borderTop: '1px solid rgba(255,255,255,0.1)',
               borderBottom: '1px solid rgba(255,255,255,0.1)',
-              margin: '80px 0'
+              margin: isMobile ? '40px 0' : '80px 0'
             }}
           >
             <blockquote style={{
-              fontSize: '24px',
+              fontSize: isMobile ? '18px' : '24px',
               fontWeight: '100',
               fontStyle: 'italic',
               letterSpacing: '0.05em',
@@ -418,7 +424,7 @@ const WelcomeMinimal = () => {
             viewport={{ once: true }}
             style={{
               textAlign: 'center',
-              padding: '40px',
+              padding: isMobile ? '24px' : '40px',
               background: 'rgba(255,255,255,0.02)',
               borderRadius: '0',
               border: '1px solid rgba(255,255,255,0.1)'
@@ -487,7 +493,7 @@ const WelcomeMinimal = () => {
             zIndex: 1,
             textAlign: 'center',
             maxWidth: '800px',
-            padding: '0 40px'
+            padding: isMobile ? '0 20px' : '0 40px'
           }}
         >
           <h2 style={{
@@ -519,13 +525,13 @@ const WelcomeMinimal = () => {
           </p>
 
           {/* Kizomba & Urban Kizomba Festival dates in Asia - Seamless Grid */}
-          <div style={{
+          <div className="festival-grid" style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
             gap: '0',
-            marginBottom: '60px',
+            marginBottom: isMobile ? '40px' : '60px',
             maxWidth: '900px',
-            margin: '0 auto 60px',
+            margin: isMobile ? '0 auto 40px' : '0 auto 60px',
             border: '1px solid rgba(255,255,255,0.2)'
           }}>
             {[
@@ -537,9 +543,9 @@ const WelcomeMinimal = () => {
               { name: 'HONG KONG KIZ', date: 'AUG 9-11', location: 'Hong Kong' }
             ].map((fest, index) => (
               <div key={fest.name} style={{
-                padding: '30px 20px',
-                borderRight: index % 3 !== 2 ? '1px solid rgba(255,255,255,0.2)' : 'none',
-                borderBottom: index < 3 ? '1px solid rgba(255,255,255,0.2)' : 'none',
+                padding: isMobile ? '20px 16px' : '30px 20px',
+                borderRight: isMobile ? 'none' : (index % 3 !== 2 ? '1px solid rgba(255,255,255,0.2)' : 'none'),
+                borderBottom: isMobile ? (index < 5 ? '1px solid rgba(255,255,255,0.2)' : 'none') : (index < 3 ? '1px solid rgba(255,255,255,0.2)' : 'none'),
                 backdropFilter: 'blur(10px)',
                 transition: 'all 0.3s',
                 cursor: 'pointer',
@@ -554,25 +560,25 @@ const WelcomeMinimal = () => {
                 e.currentTarget.style.transform = 'scale(1)'
               }}>
                 <div style={{
-                  fontSize: '11px',
+                  fontSize: isMobile ? '10px' : '11px',
                   letterSpacing: '0.2em',
-                  marginBottom: '12px',
+                  marginBottom: isMobile ? '8px' : '12px',
                   opacity: 0.7,
                   textAlign: 'center'
                 }}>
                   {fest.name}
                 </div>
                 <div style={{
-                  fontSize: '14px',
+                  fontSize: isMobile ? '12px' : '14px',
                   letterSpacing: '0.1em',
-                  marginBottom: '8px',
+                  marginBottom: isMobile ? '6px' : '8px',
                   textAlign: 'center',
                   fontWeight: '300'
                 }}>
                   {fest.date}
                 </div>
                 <div style={{
-                  fontSize: '10px',
+                  fontSize: isMobile ? '9px' : '10px',
                   letterSpacing: '0.15em',
                   opacity: 0.5,
                   textAlign: 'center'
@@ -618,11 +624,11 @@ const WelcomeMinimal = () => {
             whileTap={{ scale: 0.95 }}
             onClick={sections[2].action}
             style={{
-              padding: '16px 48px',
+              padding: isMobile ? '12px 32px' : '16px 48px',
               background: 'transparent',
               border: '1px solid rgba(255,255,255,0.5)',
               color: '#fff',
-              fontSize: '13px',
+              fontSize: isMobile ? '11px' : '13px',
               letterSpacing: '0.2em',
               cursor: 'pointer',
               transition: 'all 0.3s'
@@ -643,11 +649,13 @@ const WelcomeMinimal = () => {
 
       {/* Minimal Footer */}
       <footer style={{
-        padding: '60px 40px',
+        padding: isMobile ? '40px 20px' : '60px 40px',
         borderTop: '1px solid rgba(255,255,255,0.1)',
         display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        gap: isMobile ? '20px' : '0',
         background: '#000'
       }}>
         <div>
@@ -701,13 +709,14 @@ const WelcomeMinimal = () => {
       </footer>
 
       {/* Section indicators */}
-      <div style={{
-        position: 'fixed',
-        right: '40px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        zIndex: 100
-      }}>
+      {!isMobile && (
+        <div style={{
+          position: 'fixed',
+          right: '40px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          zIndex: 100
+        }}>
         {sections.map((_, idx) => (
           <div
             key={idx}
@@ -727,7 +736,8 @@ const WelcomeMinimal = () => {
             }}
           />
         ))}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

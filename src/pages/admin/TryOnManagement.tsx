@@ -105,14 +105,14 @@ const TryOnManagement = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#000',
-      color: '#fff',
+      background: '#ffffff',
+      color: '#000',
       paddingTop: '80px'
     }}>
       {/* Header */}
       <div style={{
-        background: 'rgba(0, 0, 0, 0.9)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        background: 'rgba(255, 255, 255, 0.95)',
+        borderBottom: '1px solid #e5e7eb',
         backdropFilter: 'blur(8px)',
         position: 'sticky',
         top: '64px',
@@ -135,8 +135,8 @@ const TryOnManagement = () => {
             }}>
               <div style={{
                 padding: '8px 16px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                background: '#f3f4f6',
+                border: '1px solid #d1d5db',
                 borderRadius: '4px',
                 fontSize: '13px',
                 letterSpacing: '0.1em'
@@ -155,9 +155,9 @@ const TryOnManagement = () => {
                 onChange={(e) => setSelectedFestival(e.target.value)}
                 style={{
                   padding: '10px 40px 10px 16px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  color: '#fff',
+                  background: '#ffffff',
+                  border: '1px solid #d1d5db',
+                  color: '#000',
                   fontSize: '13px',
                   letterSpacing: '0.1em',
                   cursor: 'pointer',
@@ -166,9 +166,9 @@ const TryOnManagement = () => {
                   minWidth: '200px'
                 }}
               >
-                <option value="all" style={{ background: '#000' }}>All Festivals</option>
+                <option value="all" style={{ background: '#fff' }}>All Festivals</option>
                 {festivals.map(festival => (
-                  <option key={festival.id} value={festival.id} style={{ background: '#000' }}>
+                  <option key={festival.id} value={festival.id} style={{ background: '#fff' }}>
                     {festival.name}
                   </option>
                 ))}
@@ -191,9 +191,9 @@ const TryOnManagement = () => {
                 onChange={(e) => setSelectedStatus(e.target.value)}
                 style={{
                   padding: '10px 40px 10px 16px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  color: '#fff',
+                  background: '#ffffff',
+                  border: '1px solid #d1d5db',
+                  color: '#000',
                   fontSize: '13px',
                   letterSpacing: '0.1em',
                   cursor: 'pointer',
@@ -202,10 +202,10 @@ const TryOnManagement = () => {
                   minWidth: '150px'
                 }}
               >
-                <option value="all" style={{ background: '#000' }}>All Status</option>
-                <option value="pending" style={{ background: '#000' }}>Pending</option>
-                <option value="confirmed" style={{ background: '#000' }}>Confirmed</option>
-                <option value="completed" style={{ background: '#000' }}>Completed</option>
+                <option value="all" style={{ background: '#fff' }}>All Status</option>
+                <option value="pending" style={{ background: '#fff' }}>Pending</option>
+                <option value="confirmed" style={{ background: '#fff' }}>Confirmed</option>
+                <option value="completed" style={{ background: '#fff' }}>Completed</option>
               </select>
               <ChevronDown style={{
                 position: 'absolute',
@@ -245,16 +245,16 @@ const TryOnManagement = () => {
                 animate={{ opacity: 1, y: 0 }}
                 style={{
                   marginBottom: '40px',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  border: '1px solid #e5e7eb',
                   borderRadius: '8px',
                   overflow: 'hidden'
                 }}
               >
                 {/* Festival Header */}
                 <div style={{
-                  background: 'rgba(255, 255, 255, 0.02)',
+                  background: '#f9fafb',
                   padding: '20px 24px',
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+                  borderBottom: '1px solid #e5e7eb'
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <div>
@@ -294,8 +294,8 @@ const TryOnManagement = () => {
                             display: 'flex',
                             gap: '16px',
                             padding: '16px',
-                            background: 'rgba(255, 255, 255, 0.02)',
-                            border: '1px solid rgba(255, 255, 255, 0.05)',
+                            background: '#ffffff',
+                            border: '1px solid #e5e7eb',
                             borderRadius: '6px',
                             alignItems: 'center'
                           }}

@@ -57,7 +57,7 @@ const AdminNavigation = () => {
             color: '#000'
           }}
         >
-          KOBBY'S ADMIN
+          KOBBY HARDING ADMIN
         </div>
         
         {/* Navigation Items */}

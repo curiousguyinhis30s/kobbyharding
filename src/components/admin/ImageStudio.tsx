@@ -162,7 +162,7 @@ const ImageStudio = () => {
     borderRadius: '12px',
     padding: '60px 20px',
     textAlign: 'center' as const,
-    background: 'rgba(255, 255, 255, 0.5)',
+    background: '#d1d5db',
     cursor: 'pointer',
     transition: 'all 0.3s'
   }

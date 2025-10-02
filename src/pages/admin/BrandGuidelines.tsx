@@ -115,13 +115,13 @@ const BrandGuidelines = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#000',
-      color: '#fff'
+      background: '#ffffff',
+      color: '#000'
     }}>
       {/* Header */}
       <section style={{
         padding: '40px',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        borderBottom: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '1400px',
@@ -141,7 +141,7 @@ const BrandGuidelines = () => {
             </h1>
             <p style={{
               fontSize: '12px',
-              color: 'rgba(255, 255, 255, 0.5)',
+              color: '#6b7280',
               letterSpacing: '0.1em'
             }}>
               Visual identity and content standards for Koby's Threads
@@ -153,19 +153,19 @@ const BrandGuidelines = () => {
             style={{
               padding: '12px 24px',
               background: 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: '#fff',
+              border: '1px solid #d1d5db',
+              color: '#000',
               fontSize: '11px',
               letterSpacing: '0.2em',
               cursor: 'pointer',
               transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#fff'
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+              e.currentTarget.style.borderColor = '#000'
+              e.currentTarget.style.background = '#f9fafb'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+              e.currentTarget.style.borderColor = '#d1d5db'
               e.currentTarget.style.background = 'transparent'
             }}
           >
@@ -177,8 +177,8 @@ const BrandGuidelines = () => {
       {/* Image Specifications */}
       <section style={{
         padding: '60px 40px',
-        background: 'rgba(255, 255, 255, 0.02)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        background: '#f9fafb',
+        borderBottom: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '1400px',
@@ -264,18 +264,18 @@ const BrandGuidelines = () => {
                       gridTemplateColumns: '200px 150px 80px 100px 100px 1fr',
                       gap: '20px',
                       padding: '16px 20px',
-                      background: 'rgba(255, 255, 255, 0.02)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      background: '#f9fafb',
+                      border: '1px solid #e5e7eb',
                       alignItems: 'center',
                       transition: 'all 0.3s'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)'
+                      e.currentTarget.style.borderColor = '#d1d5db'
+                      e.currentTarget.style.background = '#f9fafb'
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)'
+                      e.currentTarget.style.borderColor = '#e5e7eb'
+                      e.currentTarget.style.background = '#f9fafb'
                     }}
                   >
                     <div>
@@ -319,8 +319,8 @@ const BrandGuidelines = () => {
           {/* Quick Upload Guide */}
           <div style={{
             padding: '24px',
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#f9fafb',
+            border: '1px solid #e5e7eb',
             marginTop: '40px'
           }}>
             <h4 style={{
@@ -361,7 +361,7 @@ const BrandGuidelines = () => {
       {/* Color Palette */}
       <section style={{
         padding: '60px 40px',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        borderBottom: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '1400px',
@@ -396,7 +396,7 @@ const BrandGuidelines = () => {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
                 style={{
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  border: '1px solid #d1d5db',
                   overflow: 'hidden'
                 }}
               >
@@ -407,7 +407,7 @@ const BrandGuidelines = () => {
                 }} />
                 <div style={{
                   padding: '16px',
-                  background: 'rgba(255, 255, 255, 0.02)'
+                  background: '#f9fafb'
                 }}>
                   <h4 style={{
                     fontSize: '12px',
@@ -456,8 +456,8 @@ const BrandGuidelines = () => {
       {/* Typography */}
       <section style={{
         padding: '60px 40px',
-        background: 'rgba(255, 255, 255, 0.02)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        background: '#f9fafb',
+        borderBottom: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '1400px',
@@ -483,8 +483,8 @@ const BrandGuidelines = () => {
             fontFamily: 'system-ui, -apple-system, sans-serif',
             marginBottom: '40px',
             padding: '24px',
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.1)'
+            background: '#f9fafb',
+            border: '1px solid #e5e7eb'
           }}>
             <p style={{
               fontSize: '14px',
@@ -514,8 +514,8 @@ const BrandGuidelines = () => {
                   gridTemplateColumns: '150px 120px 100px 120px 1fr',
                   gap: '20px',
                   padding: '20px',
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb',
                   alignItems: 'center'
                 }}
               >
@@ -595,8 +595,8 @@ const BrandGuidelines = () => {
                 transition={{ delay: index * 0.1 }}
                 style={{
                   padding: '24px',
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb'
                 }}
               >
                 <h3 style={{
@@ -604,7 +604,7 @@ const BrandGuidelines = () => {
                   letterSpacing: '0.2em',
                   marginBottom: '20px',
                   paddingBottom: '12px',
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+                  borderBottom: '1px solid #e5e7eb'
                 }}>
                   {section.title}
                 </h3>
@@ -639,8 +639,8 @@ const BrandGuidelines = () => {
       {/* Download Section */}
       <section style={{
         padding: '60px 40px',
-        background: 'rgba(255, 255, 255, 0.02)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+        background: '#f9fafb',
+        borderTop: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '800px',
@@ -682,19 +682,19 @@ const BrandGuidelines = () => {
               style={{
                 padding: '14px 32px',
                 background: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                color: '#fff',
+                border: '1px solid #d1d5db',
+                color: '#000',
                 fontSize: '11px',
                 letterSpacing: '0.2em',
                 cursor: 'pointer',
                 transition: 'all 0.3s'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#fff'
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+                e.currentTarget.style.borderColor = '#000'
+                e.currentTarget.style.background = '#f9fafb'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+                e.currentTarget.style.borderColor = '#d1d5db'
                 e.currentTarget.style.background = 'transparent'
               }}
             >
@@ -705,19 +705,19 @@ const BrandGuidelines = () => {
               style={{
                 padding: '14px 32px',
                 background: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                color: '#fff',
+                border: '1px solid #d1d5db',
+                color: '#000',
                 fontSize: '11px',
                 letterSpacing: '0.2em',
                 cursor: 'pointer',
                 transition: 'all 0.3s'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#fff'
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+                e.currentTarget.style.borderColor = '#000'
+                e.currentTarget.style.background = '#f9fafb'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+                e.currentTarget.style.borderColor = '#d1d5db'
                 e.currentTarget.style.background = 'transparent'
               }}
             >

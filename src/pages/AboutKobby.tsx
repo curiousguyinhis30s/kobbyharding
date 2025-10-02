@@ -1,9 +1,19 @@
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { Award, Globe, Users, Heart, Sparkles, Music, BookOpen, MessageCircle, Star, MapPin, Calendar } from 'lucide-react'
 
 const AboutKobby = () => {
   const navigate = useNavigate()
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const achievements = [
     { icon: Globe, text: '15+ years in Afro dance', highlight: true },
@@ -43,10 +53,10 @@ const AboutKobby = () => {
         <div style={{
           maxWidth: '1400px',
           margin: '0 auto',
-          padding: '80px 40px',
+          padding: isMobile ? '60px 20px' : '80px 40px',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-          gap: '60px',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))',
+          gap: isMobile ? '40px' : '60px',
           alignItems: 'center'
         }}>
           {/* Text Content */}
@@ -144,7 +154,7 @@ const AboutKobby = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             style={{
               position: 'relative',
-              height: '600px',
+              height: isMobile ? '400px' : '600px',
               borderRadius: '8px',
               overflow: 'hidden'
             }}
@@ -186,7 +196,7 @@ const AboutKobby = () => {
 
       {/* Story Section */}
       <section style={{
-        padding: '100px 40px',
+        padding: isMobile ? '60px 20px' : '100px 40px',
         background: '#ffffff',
         borderTop: `1px solid ${'#e0e0e0'}`
       }}>
@@ -197,10 +207,10 @@ const AboutKobby = () => {
             viewport={{ once: true }}
           >
             <h2 style={{
-              fontSize: '36px',
+              fontSize: isMobile ? '28px' : '36px',
               fontWeight: '200',
-              letterSpacing: '0.15em',
-              marginBottom: '50px',
+              letterSpacing: isMobile ? '0.1em' : '0.15em',
+              marginBottom: isMobile ? '30px' : '50px',
               textAlign: 'center'
             }}>
               THE JOURNEY
@@ -208,9 +218,9 @@ const AboutKobby = () => {
 
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: '40px',
-              marginBottom: '60px'
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: isMobile ? '30px' : '40px',
+              marginBottom: isMobile ? '40px' : '60px'
             }}>
               <div>
                 <h3 style={{
@@ -269,13 +279,13 @@ const AboutKobby = () => {
 
             {/* Quote */}
             <div style={{
-              padding: '40px',
+              padding: isMobile ? '24px' : '40px',
               background: 'rgba(0, 0, 0, 0.05)',
               borderLeft: `4px solid ${'#000000'}`,
-              margin: '60px 0'
+              margin: isMobile ? '40px 0' : '60px 0'
             }}>
               <p style={{
-                fontSize: '20px',
+                fontSize: isMobile ? '16px' : '20px',
                 fontStyle: 'italic',
                 lineHeight: '1.6',
                 marginBottom: '20px',
@@ -297,15 +307,15 @@ const AboutKobby = () => {
 
       {/* Timeline Section */}
       <section style={{
-        padding: '100px 40px',
+        padding: isMobile ? '60px 20px' : '100px 40px',
         background: '#ffffff'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <h2 style={{
-            fontSize: '36px',
+            fontSize: isMobile ? '28px' : '36px',
             fontWeight: '200',
-            letterSpacing: '0.15em',
-            marginBottom: '60px',
+            letterSpacing: isMobile ? '0.1em' : '0.15em',
+            marginBottom: isMobile ? '40px' : '60px',
             textAlign: 'center'
           }}>
             MILESTONES
@@ -313,15 +323,17 @@ const AboutKobby = () => {
 
           <div style={{ position: 'relative' }}>
             {/* Timeline Line */}
-            <div style={{
-              position: 'absolute',
-              left: '50%',
-              top: 0,
-              bottom: 0,
-              width: '1px',
-              background: '#e0e0e0',
-              transform: 'translateX(-50%)'
-            }} />
+            {!isMobile && (
+              <div style={{
+                position: 'absolute',
+                left: '50%',
+                top: 0,
+                bottom: 0,
+                width: '1px',
+                background: '#e0e0e0',
+                transform: 'translateX(-50%)'
+              }} />
+            )}
 
             {/* Timeline Items */}
             {timeline.map((item, index) => {
@@ -334,85 +346,123 @@ const AboutKobby = () => {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                   style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 100px 1fr',
-                    alignItems: 'center',
-                    marginBottom: '60px'
+                    display: isMobile ? 'flex' : 'grid',
+                    gridTemplateColumns: isMobile ? 'none' : '1fr 100px 1fr',
+                    flexDirection: isMobile ? 'row' : undefined,
+                    alignItems: isMobile ? 'flex-start' : 'center',
+                    gap: isMobile ? '16px' : '0',
+                    marginBottom: isMobile ? '32px' : '60px'
                   }}
                 >
-                  {/* Left Content */}
-                  <div style={{
-                    textAlign: index % 2 === 0 ? 'right' : 'left',
-                    paddingRight: index % 2 === 0 ? '40px' : 0,
-                    paddingLeft: index % 2 === 1 ? '40px' : 0
-                  }}>
-                    {index % 2 === 0 && (
-                      <>
+                  {isMobile ? (
+                    <>
+                      {/* Mobile Layout */}
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        background: '#ffffff',
+                        border: `2px solid ${'#000000'}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0
+                      }}>
+                        <Icon style={{ width: '20px', height: '20px', color: '#000000' }} />
+                      </div>
+                      <div style={{ flex: 1 }}>
                         <h3 style={{
-                          fontSize: '24px',
+                          fontSize: '20px',
                           fontWeight: '300',
                           color: '#000000',
-                          marginBottom: '8px'
+                          marginBottom: '4px'
                         }}>
                           {item.year}
                         </h3>
                         <p style={{
-                          fontSize: '15px',
+                          fontSize: '14px',
                           color: '#666666',
                           lineHeight: '1.6'
                         }}>
                           {item.event}
                         </p>
-                      </>
-                    )}
-                  </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Desktop Layout */}
+                      <div style={{
+                        textAlign: index % 2 === 0 ? 'right' : 'left',
+                        paddingRight: index % 2 === 0 ? '40px' : 0,
+                        paddingLeft: index % 2 === 1 ? '40px' : 0
+                      }}>
+                        {index % 2 === 0 && (
+                          <>
+                            <h3 style={{
+                              fontSize: '24px',
+                              fontWeight: '300',
+                              color: '#000000',
+                              marginBottom: '8px'
+                            }}>
+                              {item.year}
+                            </h3>
+                            <p style={{
+                              fontSize: '15px',
+                              color: '#666666',
+                              lineHeight: '1.6'
+                            }}>
+                              {item.event}
+                            </p>
+                          </>
+                        )}
+                      </div>
 
-                  {/* Center Icon */}
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}>
-                    <div style={{
-                      width: '50px',
-                      height: '50px',
-                      borderRadius: '50%',
-                      background: '#ffffff',
-                      border: `2px solid ${'#000000'}`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <Icon style={{ width: '24px', height: '24px', color: '#000000' }} />
-                    </div>
-                  </div>
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}>
+                        <div style={{
+                          width: '50px',
+                          height: '50px',
+                          borderRadius: '50%',
+                          background: '#ffffff',
+                          border: `2px solid ${'#000000'}`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <Icon style={{ width: '24px', height: '24px', color: '#000000' }} />
+                        </div>
+                      </div>
 
-                  {/* Right Content */}
-                  <div style={{
-                    textAlign: index % 2 === 1 ? 'left' : 'right',
-                    paddingLeft: index % 2 === 1 ? '40px' : 0,
-                    paddingRight: index % 2 === 0 ? '40px' : 0
-                  }}>
-                    {index % 2 === 1 && (
-                      <>
-                        <h3 style={{
-                          fontSize: '24px',
-                          fontWeight: '300',
-                          color: '#000000',
-                          marginBottom: '8px'
-                        }}>
-                          {item.year}
-                        </h3>
-                        <p style={{
-                          fontSize: '15px',
-                          color: '#666666',
-                          lineHeight: '1.6'
-                        }}>
-                          {item.event}
-                        </p>
-                      </>
-                    )}
-                  </div>
+                      <div style={{
+                        textAlign: index % 2 === 1 ? 'left' : 'right',
+                        paddingLeft: index % 2 === 1 ? '40px' : 0,
+                        paddingRight: index % 2 === 0 ? '40px' : 0
+                      }}>
+                        {index % 2 === 1 && (
+                          <>
+                            <h3 style={{
+                              fontSize: '24px',
+                              fontWeight: '300',
+                              color: '#000000',
+                              marginBottom: '8px'
+                            }}>
+                              {item.year}
+                            </h3>
+                            <p style={{
+                              fontSize: '15px',
+                              color: '#666666',
+                              lineHeight: '1.6'
+                            }}>
+                              {item.event}
+                            </p>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </motion.div>
               )
             })}
@@ -422,15 +472,15 @@ const AboutKobby = () => {
 
       {/* Global Reach */}
       <section style={{
-        padding: '100px 40px',
+        padding: isMobile ? '60px 20px' : '100px 40px',
         background: '#ffffff',
         borderTop: `1px solid ${'#e0e0e0'}`
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{
-            fontSize: '36px',
+            fontSize: isMobile ? '28px' : '36px',
             fontWeight: '200',
-            letterSpacing: '0.15em',
+            letterSpacing: isMobile ? '0.1em' : '0.15em',
             marginBottom: '20px'
           }}>
             GLOBAL REACH
@@ -486,14 +536,14 @@ const AboutKobby = () => {
 
       {/* CTA Section */}
       <section style={{
-        padding: '80px 40px',
+        padding: isMobile ? '60px 20px' : '80px 40px',
         background: `linear-gradient(135deg, ${'#000000'} 0%, ${'#000000'}dd 100%)`,
         textAlign: 'center'
       }}>
         <h2 style={{
-          fontSize: '32px',
+          fontSize: isMobile ? '24px' : '32px',
           fontWeight: '200',
-          letterSpacing: '0.15em',
+          letterSpacing: isMobile ? '0.1em' : '0.15em',
           marginBottom: '20px',
           color: 'white'
         }}>
@@ -514,11 +564,11 @@ const AboutKobby = () => {
         <button
           onClick={() => navigate('/collection')}
           style={{
-            padding: '14px 32px',
+            padding: isMobile ? '12px 24px' : '14px 32px',
             background: 'white',
             color: '#000000',
             border: 'none',
-            fontSize: '14px',
+            fontSize: isMobile ? '12px' : '14px',
             letterSpacing: '0.15em',
             cursor: 'pointer',
             transition: 'all 0.3s'

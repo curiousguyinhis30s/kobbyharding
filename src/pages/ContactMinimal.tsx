@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { Instagram, Mail, MapPin, Phone, Send } from 'lucide-react'
@@ -12,6 +12,15 @@ const ContactMinimal = () => {
     message: ''
   })
   const [submitted, setSubmitted] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -53,7 +62,7 @@ const ContactMinimal = () => {
           backgroundImage: 'url(/kobby-assets/models/IMG_3644.JPG)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          filter: 'grayscale(100%) brightness(0.3)'
+          filter: 'brightness(0.3)'
         }} />
         
         {/* Title */}
@@ -68,15 +77,15 @@ const ContactMinimal = () => {
           }}
         >
           <h1 style={{
-            fontSize: '48px',
+            fontSize: isMobile ? '32px' : '48px',
             fontWeight: '100',
-            letterSpacing: '0.4em',
+            letterSpacing: isMobile ? '0.3em' : '0.4em',
             marginBottom: '16px'
           }}>
             CONTACT
           </h1>
           <p style={{
-            fontSize: '13px',
+            fontSize: isMobile ? '11px' : '13px',
             letterSpacing: '0.2em',
             opacity: 0.7
           }}>
@@ -89,10 +98,10 @@ const ContactMinimal = () => {
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '80px 40px',
+        padding: isMobile ? '40px 20px' : '80px 40px',
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '80px'
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+        gap: isMobile ? '40px' : '80px'
       }}>
         {/* Left: Contact Form */}
         <motion.div
@@ -113,7 +122,7 @@ const ContactMinimal = () => {
             {/* Name & Email Row */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
+              gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
               gap: '20px',
               marginBottom: '20px'
             }}>
@@ -427,9 +436,9 @@ const ContactMinimal = () => {
 
           {/* Festival Schedule */}
           <div style={{
-            padding: '32px',
+            padding: isMobile ? '20px' : '32px',
             border: '1px solid rgba(255,255,255,0.1)',
-            marginBottom: '32px'
+            marginBottom: isMobile ? '24px' : '32px'
           }}>
             <h3 style={{
               fontSize: '12px',

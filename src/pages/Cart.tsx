@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, X, Plus, Minus, ShoppingBag, Truck, Shield, Package } from 'lucide-react'
@@ -8,6 +9,15 @@ const Cart = () => {
   const navigate = useNavigate()
   const { cartItems, pieces, updateQuantity, removeFromCart, getCartTotal } = useStore()
   const { addToast } = useToast()
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   const cartPieces = cartItems.map(item => ({
     ...item,
@@ -36,19 +46,19 @@ const Cart = () => {
   const itemCardStyle = {
     border: `1px solid rgba(255, 255, 255, 0.1)`,
     background: 'rgba(255, 255, 255, 0.02)',
-    padding: '20px',
+    padding: isMobile ? '16px' : '20px',
     borderRadius: '0',
     transition: 'all 0.3s',
-    marginBottom: '16px'
+    marginBottom: isMobile ? '12px' : '16px'
   }
 
   const summaryCardStyle = {
     border: `1px solid rgba(255, 255, 255, 0.1)`,
     background: 'rgba(255, 255, 255, 0.02)',
-    padding: '24px',
+    padding: isMobile ? '20px' : '24px',
     borderRadius: '0',
-    position: 'sticky' as const,
-    top: '88px'
+    position: isMobile ? 'relative' as const : 'sticky' as const,
+    top: isMobile ? '0' : '88px'
   }
 
   const quantityButtonStyle = {
@@ -67,11 +77,11 @@ const Cart = () => {
 
   const checkoutButtonStyle = {
     width: '100%',
-    padding: '16px',
+    padding: isMobile ? '14px' : '16px',
     background: '#ffffff',
     color: '#000000',
     border: 'none',
-    fontSize: '14px',
+    fontSize: isMobile ? '12px' : '14px',
     fontWeight: '300',
     letterSpacing: '0.2em',
     textTransform: 'uppercase' as const,
@@ -84,9 +94,9 @@ const Cart = () => {
     <div style={containerStyle}>
       {/* Header */}
       <header style={headerStyle}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '80px' }}>
-            <button 
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: isMobile ? '64px' : '80px' }}>
+            <button
               onClick={() => navigate('/collection')}
               style={{
                 display: 'flex',
@@ -95,7 +105,7 @@ const Cart = () => {
                 color: 'rgba(255, 255, 255, 0.6)',
                 background: 'none',
                 border: 'none',
-                fontSize: '13px',
+                fontSize: isMobile ? '11px' : '13px',
                 fontWeight: '300',
                 letterSpacing: '0.1em',
                 cursor: 'pointer',
@@ -111,28 +121,28 @@ const Cart = () => {
               }}
             >
               <ArrowLeft style={{ width: '16px', height: '16px' }} />
-              CONTINUE SHOPPING
+              {!isMobile && 'CONTINUE SHOPPING'}
             </button>
-            
+
             <h1 style={{
-              fontSize: '24px',
+              fontSize: isMobile ? '16px' : '24px',
               fontWeight: '200',
-              letterSpacing: '0.3em',
+              letterSpacing: isMobile ? '0.2em' : '0.3em',
               color: '#ffffff'
             }}>
               YOUR BAG
             </h1>
-            
+
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              fontSize: '13px',
+              fontSize: isMobile ? '11px' : '13px',
               color: '#ffffff',
               fontWeight: '300'
             }}>
               <ShoppingBag style={{ width: '16px', height: '16px' }} />
-              {cartItems.length} {cartItems.length === 1 ? 'ITEM' : 'ITEMS'}
+              {cartItems.length}
             </div>
           </div>
         </div>
@@ -143,20 +153,22 @@ const Cart = () => {
         <div style={{
           background: 'rgba(0, 0, 0, 0.02)',
           borderBottom: `1px solid ${'rgba(255, 255, 255, 0.1)'}`,
-          padding: '16px 0'
+          padding: isMobile ? '12px 0' : '16px 0'
         }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 24px' }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '12px'
+              marginBottom: '12px',
+              flexDirection: isMobile ? 'column' : 'row',
+              gap: isMobile ? '8px' : '0'
             }}>
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                fontSize: '13px',
+                fontSize: isMobile ? '11px' : '13px',
                 color: 'rgba(255, 255, 255, 0.6)'
               }}>
                 <Package style={{ width: '16px', height: '16px' }} />
@@ -171,7 +183,7 @@ const Cart = () => {
                 )}
               </div>
               <span style={{
-                fontSize: '12px',
+                fontSize: isMobile ? '10px' : '12px',
                 color: 'rgba(255, 255, 255, 0.6)'
               }}>
                 ${currentTotal} / ${freeShippingThreshold}
@@ -221,25 +233,25 @@ const Cart = () => {
         </div>
       )}
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '24px 16px' : '40px 24px' }}>
         {cartItems.length === 0 ? (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{ textAlign: 'center', padding: '80px 20px' }}
+            style={{ textAlign: 'center', padding: isMobile ? '40px 20px' : '80px 20px' }}
           >
-            <ShoppingBag style={{ width: '64px', height: '64px', margin: '0 auto 24px', color: 'rgba(255, 255, 255, 0.6)' }} />
-            <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: '18px', fontWeight: '300' }}>
+            <ShoppingBag style={{ width: isMobile ? '48px' : '64px', height: isMobile ? '48px' : '64px', margin: '0 auto 24px', color: 'rgba(255, 255, 255, 0.6)' }} />
+            <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: isMobile ? '14px' : '18px', fontWeight: '300' }}>
               Your bag is currently empty
             </p>
             <button
               onClick={() => navigate('/collection')}
               style={{
-                padding: '14px 32px',
+                padding: isMobile ? '12px 24px' : '14px 32px',
                 background: '#ffffff',
                 color: '#000000',
                 border: 'none',
-                fontSize: '13px',
+                fontSize: isMobile ? '11px' : '13px',
                 fontWeight: '300',
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
@@ -262,8 +274,8 @@ const Cart = () => {
         ) : (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: window.innerWidth >= 1024 ? '1fr 380px' : '1fr',
-            gap: '32px'
+            gridTemplateColumns: isMobile ? '1fr' : '1fr 380px',
+            gap: isMobile ? '24px' : '32px'
           }}>
             {/* Cart Items */}
             <div>
@@ -295,13 +307,13 @@ const Cart = () => {
                       e.currentTarget.style.transform = 'translateY(0)'
                     }}
                   >
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                      <img 
-                        src={piece.imageUrl} 
+                    <div style={{ display: 'flex', gap: isMobile ? '12px' : '20px', flexDirection: isMobile ? 'column' : 'row' }}>
+                      <img
+                        src={piece.imageUrl}
                         alt={piece.name}
                         style={{
-                          width: '100px',
-                          height: '133px',
+                          width: isMobile ? '100%' : '100px',
+                          height: isMobile ? 'auto' : '133px',
                           objectFit: 'cover',
                           borderRadius: '4px'
                         }}
@@ -309,7 +321,7 @@ const Cart = () => {
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                           <h3 style={{
-                            fontSize: '16px',
+                            fontSize: isMobile ? '14px' : '16px',
                             fontWeight: '300',
                             letterSpacing: '0.1em',
                             textTransform: 'uppercase',
@@ -337,14 +349,14 @@ const Cart = () => {
                           </button>
                         </div>
                         
-                        <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '4px' }}>
+                        <p style={{ fontSize: isMobile ? '11px' : '13px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '4px' }}>
                           {piece.vibe}
                         </p>
-                        <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '16px' }}>
+                        <p style={{ fontSize: isMobile ? '11px' : '13px', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '16px' }}>
                           Size: {size}
                         </p>
-                        
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: isMobile ? 'wrap' : 'nowrap', gap: isMobile ? '12px' : '0' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <button
                               onClick={() => updateQuantity(pieceId, size, quantity - 1)}
@@ -379,7 +391,7 @@ const Cart = () => {
                             </button>
                           </div>
                           
-                          <p style={{ fontSize: '18px', color: '#ffffff', fontWeight: '300' }}>
+                          <p style={{ fontSize: isMobile ? '16px' : '18px', color: '#ffffff', fontWeight: '300' }}>
                             ${piece.price * quantity}
                           </p>
                         </div>
@@ -398,22 +410,22 @@ const Cart = () => {
                 style={summaryCardStyle}
               >
                 <h2 style={{
-                  fontSize: '16px',
+                  fontSize: isMobile ? '14px' : '16px',
                   fontWeight: '300',
                   letterSpacing: '0.2em',
                   color: '#ffffff',
-                  marginBottom: '24px',
+                  marginBottom: isMobile ? '16px' : '24px',
                   textTransform: 'uppercase'
                 }}>
                   Order Summary
                 </h2>
                 
-                <div style={{ paddingBottom: '20px', borderBottom: `1px solid ${'rgba(255, 255, 255, 0.1)'}` }}>
+                <div style={{ paddingBottom: isMobile ? '16px' : '20px', borderBottom: `1px solid ${'rgba(255, 255, 255, 0.1)'}` }}>
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     marginBottom: '12px',
-                    fontSize: '14px'
+                    fontSize: isMobile ? '12px' : '14px'
                   }}>
                     <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Subtotal</span>
                     <span style={{ color: '#ffffff' }}>${getCartTotal()}</span>
@@ -422,7 +434,7 @@ const Cart = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     marginBottom: '12px',
-                    fontSize: '14px'
+                    fontSize: isMobile ? '12px' : '14px'
                   }}>
                     <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Shipping</span>
                     <span style={{ color: '#ffffff' }}>FREE</span>
@@ -430,18 +442,18 @@ const Cart = () => {
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    fontSize: '14px'
+                    fontSize: isMobile ? '12px' : '14px'
                   }}>
                     <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Tax</span>
-                    <span style={{ color: '#ffffff' }}>Calculated at checkout</span>
+                    <span style={{ color: '#ffffff', fontSize: isMobile ? '10px' : '14px' }}>Calculated at checkout</span>
                   </div>
                 </div>
-                
+
                 <div style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  padding: '20px 0',
-                  fontSize: '18px',
+                  padding: isMobile ? '16px 0' : '20px 0',
+                  fontSize: isMobile ? '16px' : '18px',
                   fontWeight: '300'
                 }}>
                   <span style={{ color: '#ffffff' }}>Total</span>
@@ -464,13 +476,13 @@ const Cart = () => {
                 </button>
                 
                 {/* Trust Badges */}
-                <div style={{ marginTop: '24px', paddingTop: '24px', borderTop: `1px solid ${'rgba(255, 255, 255, 0.1)'}` }}>
+                <div style={{ marginTop: isMobile ? '16px' : '24px', paddingTop: isMobile ? '16px' : '24px', borderTop: `1px solid ${'rgba(255, 255, 255, 0.1)'}` }}>
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
                     marginBottom: '12px',
-                    fontSize: '12px',
+                    fontSize: isMobile ? '10px' : '12px',
                     color: 'rgba(255, 255, 255, 0.6)'
                   }}>
                     <Shield style={{ width: '14px', height: '14px' }} />
@@ -480,7 +492,7 @@ const Cart = () => {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px',
-                    fontSize: '12px',
+                    fontSize: isMobile ? '10px' : '12px',
                     color: 'rgba(255, 255, 255, 0.6)'
                   }}>
                     <Truck style={{ width: '14px', height: '14px' }} />

@@ -254,7 +254,7 @@ const AnalyticsDashboard = () => {
 
   const statCardStyle = {
     padding: '20px',
-    background: 'rgba(255, 255, 255, 0.5)',
+    background: '#d1d5db',
     border: `1px solid ${'#e0e0e0'}`,
     borderRadius: '8px',
     transition: 'all 0.3s'
@@ -262,7 +262,7 @@ const AnalyticsDashboard = () => {
 
   const healthCardStyle = (status: string) => ({
     padding: '16px',
-    background: 'rgba(255, 255, 255, 0.5)',
+    background: '#d1d5db',
     border: `1px solid ${
       status === 'healthy' ? '#10b981' : 
       status === 'degraded' ? '#000000' : 
@@ -532,7 +532,7 @@ const AnalyticsDashboard = () => {
           </h3>
           <div style={{
             padding: '20px',
-            background: 'rgba(255, 255, 255, 0.5)',
+            background: '#d1d5db',
             border: `1px solid ${'#e0e0e0'}`,
             borderRadius: '8px'
           }}>
@@ -584,7 +584,7 @@ const AnalyticsDashboard = () => {
           </h3>
           <div style={{
             padding: '20px',
-            background: 'rgba(255, 255, 255, 0.5)',
+            background: '#d1d5db',
             border: `1px solid ${'#e0e0e0'}`,
             borderRadius: '8px'
           }}>
@@ -621,7 +621,7 @@ const AnalyticsDashboard = () => {
           TOP PAGES
         </h3>
         <div style={{
-          background: 'rgba(255, 255, 255, 0.5)',
+          background: '#d1d5db',
           border: `1px solid ${'#e0e0e0'}`,
           borderRadius: '8px',
           overflow: 'hidden'
@@ -666,7 +666,7 @@ const AnalyticsDashboard = () => {
         </h3>
         <div style={{
           padding: '20px',
-          background: 'rgba(255, 255, 255, 0.5)',
+          background: '#d1d5db',
           border: `1px solid ${'#e0e0e0'}`,
           borderRadius: '8px'
         }}>
@@ -761,7 +761,7 @@ const AnalyticsDashboard = () => {
         </h3>
         <div style={{
           padding: '16px',
-          background: 'rgba(255, 255, 255, 0.5)',
+          background: '#d1d5db',
           border: `1px solid ${'#e0e0e0'}`,
           borderRadius: '8px',
           maxHeight: '200px',

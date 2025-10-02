@@ -224,8 +224,8 @@ const OrderManagement = () => {
               style={{
                 padding: '12px 24px',
                 background: showGuidelines ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                color: '#fff',
+                border: '1px solid #d1d5db',
+                color: '#000',
                 fontSize: '11px',
                 letterSpacing: '0.2em',
                 cursor: 'pointer',
@@ -240,19 +240,19 @@ const OrderManagement = () => {
               style={{
                 padding: '12px 24px',
                 background: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                color: '#fff',
+                border: '1px solid #d1d5db',
+                color: '#000',
                 fontSize: '11px',
                 letterSpacing: '0.2em',
                 cursor: 'pointer',
                 transition: 'all 0.3s'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#fff'
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+                e.currentTarget.style.borderColor = '#000'
+                e.currentTarget.style.background = '#f9fafb'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+                e.currentTarget.style.borderColor = '#d1d5db'
                 e.currentTarget.style.background = 'transparent'
               }}
             >
@@ -316,8 +316,8 @@ const OrderManagement = () => {
                     <div key={index} style={{
                       marginBottom: '20px',
                       padding: '16px',
-                      background: 'rgba(255, 255, 255, 0.02)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)'
+                      background: '#f9fafb',
+                      border: '1px solid #e5e7eb'
                     }}>
                       <div style={{
                         fontSize: '12px',
@@ -398,8 +398,8 @@ const OrderManagement = () => {
                     <button style={{
                       padding: '12px',
                       background: 'transparent',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      color: '#fff',
+                      border: '1px solid #d1d5db',
+                      color: '#000',
                       fontSize: '11px',
                       letterSpacing: '0.1em',
                       cursor: 'pointer',
@@ -412,8 +412,8 @@ const OrderManagement = () => {
                     <button style={{
                       padding: '12px',
                       background: 'transparent',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      color: '#fff',
+                      border: '1px solid #d1d5db',
+                      color: '#000',
                       fontSize: '11px',
                       letterSpacing: '0.1em',
                       cursor: 'pointer',
@@ -426,8 +426,8 @@ const OrderManagement = () => {
                     <button style={{
                       padding: '12px',
                       background: 'transparent',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      color: '#fff',
+                      border: '1px solid #d1d5db',
+                      color: '#000',
                       fontSize: '11px',
                       letterSpacing: '0.1em',
                       cursor: 'pointer',
@@ -448,8 +448,8 @@ const OrderManagement = () => {
       {/* Filters and Search */}
       <section style={{
         padding: '32px 40px',
-        background: 'rgba(255, 255, 255, 0.02)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        background: '#f9fafb',
+        borderBottom: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '1400px',
@@ -472,9 +472,9 @@ const OrderManagement = () => {
                 onClick={() => setFilterStatus(status.value)}
                 style={{
                   padding: '8px 16px',
-                  background: filterStatus === status.value ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  color: filterStatus === status.value ? '#fff' : 'rgba(255, 255, 255, 0.6)',
+                  background: filterStatus === status.value ? '#f3f4f6' : 'transparent',
+                  border: '1px solid #d1d5db',
+                  color: filterStatus === status.value ? '#000' : '#6b7280',
                   fontSize: '11px',
                   letterSpacing: '0.1em',
                   cursor: 'pointer',
@@ -487,7 +487,7 @@ const OrderManagement = () => {
                 {status.label}
                 <span style={{
                   padding: '2px 6px',
-                  background: 'rgba(255, 255, 255, 0.1)',
+                  background: '#f3f4f6',
                   borderRadius: '10px',
                   fontSize: '10px'
                 }}>
@@ -520,8 +520,8 @@ const OrderManagement = () => {
                 width: '100%',
                 padding: '10px 12px 10px 40px',
                 background: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: '#fff',
+                border: '1px solid #d1d5db',
+                color: '#000',
                 fontSize: '12px',
                 outline: 'none'
               }}
@@ -537,8 +537,8 @@ const OrderManagement = () => {
         margin: '0 auto'
       }}>
         <div style={{
-          background: 'rgba(255, 255, 255, 0.02)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          background: '#f9fafb',
+          border: '1px solid #e5e7eb',
           overflow: 'hidden'
         }}>
           {/* Table Header */}
@@ -546,8 +546,8 @@ const OrderManagement = () => {
             display: 'grid',
             gridTemplateColumns: '120px 120px 200px 200px 120px 120px 100px',
             padding: '16px 24px',
-            background: 'rgba(255, 255, 255, 0.02)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#f9fafb',
+            borderBottom: '1px solid #e5e7eb',
             fontSize: '10px',
             letterSpacing: '0.2em',
             opacity: 0.5
@@ -569,13 +569,13 @@ const OrderManagement = () => {
                 display: 'grid',
                 gridTemplateColumns: '120px 120px 200px 200px 120px 120px 100px',
                 padding: '20px 24px',
-                borderBottom: index < filteredOrders.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
+                borderBottom: index < filteredOrders.length - 1 ? '1px solid #f3f4f6' : 'none',
                 fontSize: '12px',
                 alignItems: 'center',
                 transition: 'background 0.3s',
                 cursor: 'pointer'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)'}
+              onMouseEnter={(e) => e.currentTarget.style.background = '#f9fafb'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               onClick={() => setSelectedOrder(order)}
             >
@@ -614,8 +614,8 @@ const OrderManagement = () => {
                   style={{
                     padding: '6px 12px',
                     background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#fff',
+                    border: '1px solid #d1d5db',
+                    color: '#000',
                     fontSize: '10px',
                     letterSpacing: '0.1em',
                     cursor: 'pointer',
@@ -665,8 +665,8 @@ const OrderManagement = () => {
                 width: '90%',
                 maxWidth: '800px',
                 maxHeight: '80vh',
-                background: '#000',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
+                background: '#ffffff',
+                border: '1px solid #d1d5db',
                 zIndex: 101,
                 overflow: 'auto'
               }}
@@ -677,7 +677,7 @@ const OrderManagement = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '24px',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+                borderBottom: '1px solid #e5e7eb'
               }}>
                 <div>
                   <h2 style={{
@@ -701,7 +701,7 @@ const OrderManagement = () => {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: 'rgba(255, 255, 255, 0.5)',
+                    color: '#6b7280',
                     cursor: 'pointer',
                     padding: '4px'
                   }}
@@ -715,8 +715,8 @@ const OrderManagement = () => {
                 {/* Status Update */}
                 <div style={{
                   padding: '20px',
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb',
                   marginBottom: '24px'
                 }}>
                   <h3 style={{
@@ -764,8 +764,8 @@ const OrderManagement = () => {
                   {/* Customer Info */}
                   <div style={{
                     padding: '20px',
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                    background: '#f9fafb',
+                    border: '1px solid #e5e7eb'
                   }}>
                     <div style={{
                       display: 'flex',
@@ -792,8 +792,8 @@ const OrderManagement = () => {
                   {/* Shipping Info */}
                   <div style={{
                     padding: '20px',
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                    background: '#f9fafb',
+                    border: '1px solid #e5e7eb'
                   }}>
                     <div style={{
                       display: 'flex',
@@ -825,8 +825,8 @@ const OrderManagement = () => {
                   {/* Items */}
                   <div style={{
                     padding: '20px',
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                    background: '#f9fafb',
+                    border: '1px solid #e5e7eb'
                   }}>
                     <div style={{
                       display: 'flex',
@@ -861,8 +861,8 @@ const OrderManagement = () => {
                   {/* Payment */}
                   <div style={{
                     padding: '20px',
-                    background: 'rgba(255, 255, 255, 0.02)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)'
+                    background: '#f9fafb',
+                    border: '1px solid #e5e7eb'
                   }}>
                     <div style={{
                       display: 'flex',
@@ -909,8 +909,8 @@ const OrderManagement = () => {
                 <div style={{
                   marginTop: '24px',
                   padding: '20px',
-                  background: 'rgba(255, 255, 255, 0.02)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb'
                 }}>
                   <h3 style={{
                     fontSize: '12px',
@@ -927,8 +927,8 @@ const OrderManagement = () => {
                       minHeight: '80px',
                       padding: '12px',
                       background: 'transparent',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
-                      color: '#fff',
+                      border: '1px solid #d1d5db',
+                      color: '#000',
                       fontSize: '12px',
                       outline: 'none',
                       resize: 'vertical'
@@ -947,8 +947,8 @@ const OrderManagement = () => {
                     style={{
                       padding: '12px 24px',
                       background: 'transparent',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      color: '#fff',
+                      border: '1px solid #d1d5db',
+                      color: '#000',
                       fontSize: '11px',
                       letterSpacing: '0.2em',
                       cursor: 'pointer'
@@ -960,8 +960,8 @@ const OrderManagement = () => {
                     style={{
                       padding: '12px 24px',
                       background: 'transparent',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      color: '#fff',
+                      border: '1px solid #d1d5db',
+                      color: '#000',
                       fontSize: '11px',
                       letterSpacing: '0.2em',
                       cursor: 'pointer'

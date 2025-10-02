@@ -95,14 +95,14 @@ const AdminSettings = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#000',
-      color: '#fff',
+      background: '#ffffff',
+      color: '#000',
       paddingTop: '64px'
     }}>
       {/* Header */}
       <section style={{
         padding: '40px',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        borderBottom: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '1200px',
@@ -122,7 +122,7 @@ const AdminSettings = () => {
             </h1>
             <p style={{
               fontSize: '12px',
-              color: 'rgba(255, 255, 255, 0.5)',
+              color: '#6b7280',
               letterSpacing: '0.1em'
             }}>
               Configure API keys and system settings
@@ -134,19 +134,19 @@ const AdminSettings = () => {
             style={{
               padding: '12px 24px',
               background: 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: '#fff',
+              border: '1px solid #d1d5db',
+              color: '#000',
               fontSize: '11px',
               letterSpacing: '0.2em',
               cursor: 'pointer',
               transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#fff'
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+              e.currentTarget.style.borderColor = '#000'
+              e.currentTarget.style.background = '#f9fafb'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+              e.currentTarget.style.borderColor = '#d1d5db'
               e.currentTarget.style.background = 'transparent'
             }}
           >
@@ -195,8 +195,8 @@ const AdminSettings = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#f9fafb',
+            border: '1px solid #e5e7eb',
             padding: '32px'
           }}
         >
@@ -263,7 +263,7 @@ const AdminSettings = () => {
                   paddingRight: '40px',
                   background: 'transparent',
                   border: '1px solid rgba(74, 222, 128, 0.3)',
-                  color: '#fff',
+                  color: '#000',
                   fontSize: '12px',
                   outline: 'none',
                   fontFamily: 'monospace'
@@ -279,7 +279,7 @@ const AdminSettings = () => {
                   transform: 'translateY(-50%)',
                   background: 'none',
                   border: 'none',
-                  color: 'rgba(255, 255, 255, 0.5)',
+                  color: '#6b7280',
                   cursor: 'pointer'
                 }}
               >
@@ -328,8 +328,8 @@ const AdminSettings = () => {
                     padding: '12px',
                     paddingRight: '40px',
                     background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#fff',
+                    border: '1px solid #d1d5db',
+                    color: '#000',
                     fontSize: '12px',
                     outline: 'none',
                     fontFamily: 'monospace',
@@ -348,7 +348,7 @@ const AdminSettings = () => {
                     transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
-                    color: 'rgba(255, 255, 255, 0.5)',
+                    color: '#6b7280',
                     cursor: 'pointer'
                   }}
                 >
@@ -368,8 +368,8 @@ const AdminSettings = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
           style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#f9fafb',
+            border: '1px solid #e5e7eb',
             padding: '32px'
           }}
         >
@@ -424,8 +424,8 @@ const AdminSettings = () => {
                     width: '100%',
                     padding: '12px',
                     background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#fff',
+                    border: '1px solid #d1d5db',
+                    color: '#000',
                     fontSize: '12px',
                     outline: 'none',
                     transition: 'border 0.3s'
@@ -469,9 +469,9 @@ const AdminSettings = () => {
                   style={{
                     width: '100%',
                     padding: '12px',
-                    background: '#000',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#fff',
+                    background: '#ffffff',
+                    border: '1px solid #d1d5db',
+                    color: '#000',
                     fontSize: '12px',
                     outline: 'none'
                   }}
@@ -501,8 +501,8 @@ const AdminSettings = () => {
                     width: '100%',
                     padding: '12px',
                     background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#fff',
+                    border: '1px solid #d1d5db',
+                    color: '#000',
                     fontSize: '12px',
                     outline: 'none'
                   }}
@@ -527,8 +527,8 @@ const AdminSettings = () => {
                     width: '100%',
                     padding: '12px',
                     background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#fff',
+                    border: '1px solid #d1d5db',
+                    color: '#000',
                     fontSize: '12px',
                     outline: 'none'
                   }}
@@ -553,8 +553,8 @@ const AdminSettings = () => {
                     width: '100%',
                     padding: '12px',
                     background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    color: '#fff',
+                    border: '1px solid #d1d5db',
+                    color: '#000',
                     fontSize: '12px',
                     outline: 'none'
                   }}
@@ -570,8 +570,8 @@ const AdminSettings = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#f9fafb',
+            border: '1px solid #e5e7eb',
             padding: '32px'
           }}
         >
@@ -606,17 +606,17 @@ const AdminSettings = () => {
                 justifyContent: 'space-between',
                 padding: '16px',
                 marginBottom: '12px',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid #e5e7eb',
                 cursor: 'pointer',
                 transition: 'all 0.3s'
               }}
               onClick={() => handleNotificationChange(setting.key)}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)'
+                e.currentTarget.style.borderColor = '#d1d5db'
+                e.currentTarget.style.background = '#f9fafb'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
+                e.currentTarget.style.borderColor = '#e5e7eb'
                 e.currentTarget.style.background = 'transparent'
               }}
             >
@@ -657,8 +657,8 @@ const AdminSettings = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           style={{
-            background: 'rgba(255, 255, 255, 0.02)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#f9fafb',
+            border: '1px solid #e5e7eb',
             padding: '32px'
           }}
         >
@@ -698,7 +698,7 @@ const AdminSettings = () => {
                   justifyContent: 'space-between',
                   padding: '12px',
                   background: 'rgba(255, 255, 255, 0.01)',
-                  border: '1px solid rgba(255, 255, 255, 0.05)'
+                  border: '1px solid #f3f4f6'
                 }}
               >
                 <span style={{
@@ -729,7 +729,7 @@ const AdminSettings = () => {
       {/* Save Button */}
       <section style={{
         padding: '40px',
-        borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+        borderTop: '1px solid #e5e7eb'
       }}>
         <div style={{
           maxWidth: '1200px',
@@ -765,19 +765,19 @@ const AdminSettings = () => {
             style={{
               padding: '16px 48px',
               background: 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: '#fff',
+              border: '1px solid #d1d5db',
+              color: '#000',
               fontSize: '12px',
               letterSpacing: '0.2em',
               cursor: 'pointer',
               transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = '#fff'
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+              e.currentTarget.style.borderColor = '#000'
+              e.currentTarget.style.background = '#f9fafb'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+              e.currentTarget.style.borderColor = '#d1d5db'
               e.currentTarget.style.background = 'transparent'
             }}
           >
