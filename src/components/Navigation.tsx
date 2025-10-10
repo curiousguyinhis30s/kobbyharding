@@ -144,12 +144,12 @@ const Navigation = () => {
                 K
               </div>
               <span style={{
-                fontSize: '18px',
+                fontSize: '16px',
                 fontWeight: '100',
-                letterSpacing: '0.3em',
+                letterSpacing: '0.25em',
                 color: '#fff'
               }}>
-                KOBBY
+                KHARDING CLASSICS
               </span>
             </button>
 

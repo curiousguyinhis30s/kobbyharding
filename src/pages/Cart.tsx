@@ -46,7 +46,7 @@ const Cart = () => {
   const itemCardStyle = {
     border: `1px solid rgba(255, 255, 255, 0.1)`,
     background: 'rgba(255, 255, 255, 0.02)',
-    padding: isMobile ? '16px' : '20px',
+    padding: '16px',
     borderRadius: '0',
     transition: 'all 0.3s',
     marginBottom: isMobile ? '12px' : '16px'
@@ -55,7 +55,7 @@ const Cart = () => {
   const summaryCardStyle = {
     border: `1px solid rgba(255, 255, 255, 0.1)`,
     background: 'rgba(255, 255, 255, 0.02)',
-    padding: isMobile ? '20px' : '24px',
+    padding: '20px',
     borderRadius: '0',
     position: isMobile ? 'relative' as const : 'sticky' as const,
     top: isMobile ? '0' : '88px'
@@ -77,7 +77,7 @@ const Cart = () => {
 
   const checkoutButtonStyle = {
     width: '100%',
-    padding: isMobile ? '14px' : '16px',
+    padding: '12px',
     background: '#ffffff',
     color: '#000000',
     border: 'none',
@@ -95,7 +95,7 @@ const Cart = () => {
       {/* Header */}
       <header style={headerStyle}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '0 16px' : '0 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: isMobile ? '64px' : '80px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
             <button
               onClick={() => navigate('/collection')}
               style={{

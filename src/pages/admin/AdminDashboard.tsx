@@ -788,91 +788,9 @@ const AdminDashboard = () => {
   )
 
   return (
-    <div style={containerStyle}>
-      {/* Header */}
-      <header style={{
-        borderBottom: `1px solid ${'#e0e0e0'}`,
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(8px)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 20
-      }}>
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-              <h1 style={{
-                fontSize: '20px',
-                fontWeight: '200',
-                letterSpacing: '0.2em',
-                color: '#000000'
-              }}>
-                KOBBY HARDING ADMIN
-              </h1>
-              <nav style={{ display: 'flex', gap: '20px' }}>
-                {['dashboard', 'analytics', 'products', 'inventory', 'orders', 'customers', 'content', 'image-studio'].map(tab => (
-                  <button
-                    key={tab}
-                    onClick={() => setActiveTab(tab as any)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      fontSize: '13px',
-                      letterSpacing: '0.1em',
-                      textTransform: 'uppercase',
-                      color: activeTab === tab ? '#000000' : '#666666',
-                      borderBottom: activeTab === tab ? `2px solid ${'#000000'}` : 'none',
-                      paddingBottom: '4px',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (activeTab !== tab) e.currentTarget.style.color = '#000000'
-                    }}
-                    onMouseLeave={(e) => {
-                      if (activeTab !== tab) e.currentTarget.style.color = '#666666'
-                    }}
-                  >
-                    {tab}
-                  </button>
-                ))}
-              </nav>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <button style={{
-                padding: '8px',
-                background: 'none',
-                border: 'none',
-                color: '#666666',
-                cursor: 'pointer'
-              }}>
-                <Bell style={{ width: '18px', height: '18px' }} />
-              </button>
-              <button 
-                onClick={() => navigate('/')}
-                style={{
-                  padding: '8px 16px',
-                  background: 'none',
-                  border: `1px solid ${'#e0e0e0'}`,
-                  borderRadius: '4px',
-                  color: '#666666',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                <LogOut style={{ width: '14px', height: '14px' }} />
-                Exit Admin
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
+    <div style={{...containerStyle, paddingTop: '64px'}}>
       {/* Main Content */}
-      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '32px 24px' }}>
+      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px' }}>
         {activeTab === 'dashboard' && renderDashboard()}
         {activeTab === 'analytics' && <AnalyticsDashboard />}
         {activeTab === 'products' && renderProducts()}

@@ -133,7 +133,7 @@ const Checkout = () => {
 
   const inputStyle = {
     width: '100%',
-    padding: '14px 16px',
+    padding: '10px 14px',
     background: 'rgba(255, 255, 255, 0.05)',
     border: `1px solid rgba(255, 255, 255, 0.08)`,
     borderRadius: '6px',
@@ -145,7 +145,7 @@ const Checkout = () => {
 
   const labelStyle = {
     display: 'block',
-    marginBottom: '8px',
+    marginBottom: '6px',
     fontSize: '12px',
     fontWeight: '400',
     letterSpacing: '0.08em',
@@ -154,8 +154,8 @@ const Checkout = () => {
   }
 
   const sectionStyle = {
-    marginBottom: '32px',
-    padding: '28px',
+    marginBottom: '24px',
+    padding: '20px',
     background: 'rgba(255, 255, 255, 0.03)',
     border: 'none',
     borderRadius: '8px'
@@ -163,7 +163,7 @@ const Checkout = () => {
 
   const buttonStyle = {
     width: '100%',
-    padding: '16px',
+    padding: '12px',
     background: '#ffffff',
     color: '#000000',
     border: 'none',
@@ -185,7 +185,7 @@ const Checkout = () => {
       {/* Header */}
       <header style={headerStyle}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '72px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
             <button
               onClick={() => navigate('/cart')}
               style={{
@@ -237,7 +237,7 @@ const Checkout = () => {
         </div>
       </header>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
         <form onSubmit={handleSubmit}>
           <div style={{
             display: 'grid',

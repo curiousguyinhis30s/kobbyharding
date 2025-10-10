@@ -77,7 +77,7 @@ const AnalyticsDashboard = () => {
     }}>
       {/* Header */}
       <section style={{
-        padding: '40px',
+        padding: '24px',
         borderBottom: '1px solid #e5e7eb'
       }}>
         <div style={{
@@ -130,16 +130,16 @@ const AnalyticsDashboard = () => {
       </section>
 
       {/* Overview Stats */}
-      <section style={{ padding: '40px' }}>
+      <section style={{ padding: '24px' }}>
         <div style={{
           maxWidth: '1400px',
           margin: '0 auto'
         }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '20px',
-            marginBottom: '40px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '12px',
+            marginBottom: '20px'
           }}>
             {/* Stat Cards */}
             {[
@@ -194,7 +194,7 @@ const AnalyticsDashboard = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   style={{
-                    padding: '24px',
+                    padding: '12px',
                     background: '#ffffff',
                     border: '1px solid #e5e7eb',
                     transition: 'all 0.3s'
@@ -211,21 +211,21 @@ const AnalyticsDashboard = () => {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                     <div>
                       <Icon style={{
-                        width: '20px',
-                        height: '20px',
-                        marginBottom: '12px',
+                        width: '18px',
+                        height: '18px',
+                        marginBottom: '8px',
                         opacity: 0.6
                       }} />
                       <p style={{
-                        fontSize: '10px',
+                        fontSize: '9px',
                         letterSpacing: '0.2em',
-                        marginBottom: '8px',
+                        marginBottom: '6px',
                         opacity: 0.5
                       }}>
                         {stat.label}
                       </p>
                       <p style={{
-                        fontSize: '24px',
+                        fontSize: '20px',
                         fontWeight: '300'
                       }}>
                         {stat.value}
@@ -257,13 +257,13 @@ const AnalyticsDashboard = () => {
 
           {/* Top Products */}
           <div style={{
-            marginBottom: '40px'
+            marginBottom: '20px'
           }}>
             <h2 style={{
-              fontSize: '18px',
+              fontSize: '14px',
               fontWeight: '200',
               letterSpacing: '0.2em',
-              marginBottom: '24px'
+              marginBottom: '12px'
             }}>
               TOP PERFORMING PRODUCTS
             </h2>
@@ -277,7 +277,7 @@ const AnalyticsDashboard = () => {
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '40px 2fr 1fr 1fr 1fr 1fr 1fr 1fr',
-                padding: '16px 24px',
+                padding: '12px 16px',
                 borderBottom: '1px solid #e5e7eb',
                 fontSize: '10px',
                 letterSpacing: '0.2em',
@@ -300,7 +300,7 @@ const AnalyticsDashboard = () => {
                   style={{
                     display: 'grid',
                     gridTemplateColumns: '40px 2fr 1fr 1fr 1fr 1fr 1fr 1fr',
-                    padding: '20px 24px',
+                    padding: '14px 16px',
                     borderBottom: index < topProducts.length - 1 ? '1px solid #f3f4f6' : 'none',
                     fontSize: '12px',
                     transition: 'background 0.3s',
@@ -348,24 +348,24 @@ const AnalyticsDashboard = () => {
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(2, 1fr)',
-            gap: '20px'
+            gap: '12px'
           }}>
             {/* User Demographics */}
             <div style={{
-              padding: '24px',
+              padding: '12px',
               background: '#f9fafb',
               border: '1px solid #e5e7eb'
             }}>
               <h3 style={{
-                fontSize: '14px',
+                fontSize: '12px',
                 fontWeight: '200',
                 letterSpacing: '0.2em',
-                marginBottom: '20px'
+                marginBottom: '10px'
               }}>
                 USER DEMOGRAPHICS
               </h3>
 
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span style={{ fontSize: '11px', opacity: 0.7 }}>Asia Pacific</span>
                   <span style={{ fontSize: '11px' }}>68%</span>
@@ -387,7 +387,7 @@ const AnalyticsDashboard = () => {
                 </div>
               </div>
 
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                   <span style={{ fontSize: '11px', opacity: 0.7 }}>Europe</span>
                   <span style={{ fontSize: '11px' }}>22%</span>
@@ -434,15 +434,15 @@ const AnalyticsDashboard = () => {
 
             {/* Festival Interest */}
             <div style={{
-              padding: '24px',
+              padding: '12px',
               background: '#f9fafb',
               border: '1px solid #e5e7eb'
             }}>
               <h3 style={{
-                fontSize: '14px',
+                fontSize: '12px',
                 fontWeight: '200',
                 letterSpacing: '0.2em',
-                marginBottom: '20px'
+                marginBottom: '10px'
               }}>
                 FESTIVAL INTEREST
               </h3>
@@ -453,7 +453,7 @@ const AnalyticsDashboard = () => {
                 { name: 'Bali Tarraxo Fest', interest: 90 },
                 { name: 'Tokyo Kizomba Week', interest: 65 }
               ].map((festival, index) => (
-                <div key={index} style={{ marginBottom: index < 3 ? '16px' : '0' }}>
+                <div key={index} style={{ marginBottom: index < 3 ? '12px' : '0' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                     <span style={{ fontSize: '11px', opacity: 0.7 }}>{festival.name}</span>
                     <span style={{ fontSize: '11px' }}>{festival.interest}%</span>
@@ -483,7 +483,7 @@ const AnalyticsDashboard = () => {
 
       {/* Back Button */}
       <section style={{
-        padding: '40px',
+        padding: '24px',
         borderTop: '1px solid #e5e7eb'
       }}>
         <div style={{

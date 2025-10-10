@@ -49,8 +49,8 @@ const WelcomeMinimal = () => {
     {
       id: 'hero',
       bg: '/kobby-assets/models/IMG_3479.JPG',
-      title: 'KOBBY',
-      subtitle: 'HARDING',
+      title: 'KHARDING',
+      subtitle: 'CLASSICS',
       description: 'African heritage. Modern expression.',
       cta: 'Enter Collection',
       action: () => navigate('/collection')
@@ -242,7 +242,7 @@ const WelcomeMinimal = () => {
               letterSpacing: '0.1em',
               marginBottom: '40px'
             }}>
-              KOBBY HARDING
+              KHARDING CLASSICS
             </h3>
           </div>
 
@@ -413,7 +413,7 @@ const WelcomeMinimal = () => {
               letterSpacing: '0.2em',
               opacity: 0.5
             }}>
-              — KOBBY HARDING
+              — KHARDING CLASSICS
             </cite>
           </motion.div>
 
@@ -665,7 +665,7 @@ const WelcomeMinimal = () => {
             opacity: 0.5,
             margin: 0
           }}>
-            © 2025 KOBBY HARDING
+            © 2025 KHARDING CLASSICS
           </p>
         </div>
         

@@ -266,30 +266,30 @@ const PieceMinimal = () => {
           justifyContent: isMobile ? 'flex-start' : 'center'
         }}>
           {/* Product Info */}
-          <div style={{ marginBottom: '40px' }}>
+          <div style={{ marginBottom: '24px' }}>
             <h1 style={{
-              fontSize: '24px',
+              fontSize: '22px',
               fontWeight: '100',
               letterSpacing: '0.2em',
-              marginBottom: '12px'
+              marginBottom: '10px'
             }}>
               {piece.name.toUpperCase()}
             </h1>
-            
+
             <p style={{
-              fontSize: '13px',
+              fontSize: '12px',
               opacity: 0.6,
               letterSpacing: '0.1em',
-              marginBottom: '24px'
+              marginBottom: '16px'
             }}>
               {piece.vibe}
             </p>
-            
+
             <div style={{
-              fontSize: '20px',
+              fontSize: '18px',
               fontWeight: '200',
               letterSpacing: '0.05em',
-              marginBottom: '32px'
+              marginBottom: '20px'
             }}>
               ${piece.price}
             </div>
@@ -310,12 +310,12 @@ const PieceMinimal = () => {
           </div>
 
           {/* Size Selection */}
-          <div style={{ marginBottom: '32px' }}>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
               justifyContent: 'space-between',
-              marginBottom: '16px'
+              marginBottom: '12px'
             }}>
               <label style={{
                 fontSize: '11px',
@@ -357,8 +357,8 @@ const PieceMinimal = () => {
                   key={size}
                   onClick={() => setSelectedSize(size)}
                   style={{
-                    padding: '16px',
-                    fontSize: '12px',
+                    padding: '12px',
+                    fontSize: '11px',
                     fontWeight: '300',
                     letterSpacing: '0.1em',
                     border: 'none',
@@ -428,13 +428,13 @@ const PieceMinimal = () => {
           </AnimatePresence>
 
           {/* Quantity */}
-          <div style={{ marginBottom: '32px' }}>
+          <div style={{ marginBottom: '24px' }}>
             <label style={{
               fontSize: '11px',
               letterSpacing: '0.2em',
               opacity: 0.7,
               display: 'block',
-              marginBottom: '16px'
+              marginBottom: '12px'
             }}>
               QUANTITY
             </label>
@@ -499,8 +499,8 @@ const PieceMinimal = () => {
             onClick={handleAddToBag}
             style={{
               width: '100%',
-              padding: '20px',
-              fontSize: '12px',
+              padding: '14px',
+              fontSize: '11px',
               fontWeight: '300',
               letterSpacing: '0.25em',
               textTransform: 'uppercase',
@@ -509,11 +509,11 @@ const PieceMinimal = () => {
               border: addedToCart ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.3)',
               cursor: 'pointer',
               transition: 'all 0.3s',
-              marginBottom: '16px',
+              marginBottom: '12px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '12px'
+              gap: '10px'
             }}
             onMouseEnter={(e) => {
               if (!addedToCart) {
@@ -540,8 +540,8 @@ const PieceMinimal = () => {
             }}
             style={{
               width: '100%',
-              padding: '20px',
-              fontSize: '12px',
+              padding: '14px',
+              fontSize: '11px',
               fontWeight: '300',
               letterSpacing: '0.25em',
               textTransform: 'uppercase',
@@ -559,8 +559,8 @@ const PieceMinimal = () => {
 
           {/* Shipping Info */}
           <div style={{
-            marginTop: '40px',
-            padding: '20px',
+            marginTop: '24px',
+            padding: '14px',
             border: '1px solid rgba(255,255,255,0.1)',
             fontSize: '11px',
             letterSpacing: '0.1em'
@@ -576,8 +576,8 @@ const PieceMinimal = () => {
 
           {/* Product Details */}
           <div style={{
-            marginTop: '40px',
-            paddingTop: '40px',
+            marginTop: '24px',
+            paddingTop: '24px',
             borderTop: '1px solid rgba(255,255,255,0.1)'
           }}>
             <h3 style={{
