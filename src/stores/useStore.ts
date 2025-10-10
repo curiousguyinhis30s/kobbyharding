@@ -78,7 +78,10 @@ interface Store {
     festivalPlan?: string
     connectionStory?: string
   }
-  
+  recentlyViewed: string[]
+  searchHistory: string[]
+  favorites: string[]
+
   setPieces: (pieces: Piece[]) => void
   setCurrentLocation: (location: KobyLocation) => void
   startJourney: (emotion: string) => void
@@ -102,6 +105,12 @@ interface Store {
     averageTimeSpent: number
     returnRate: number
   }
+  // New functional features
+  addToRecentlyViewed: (pieceId: string) => void
+  addToSearchHistory: (query: string) => void
+  clearSearchHistory: () => void
+  toggleFavorite: (pieceId: string) => void
+  isFavorite: (pieceId: string) => boolean
 }
 
 const useStore = create<Store>()(
@@ -122,6 +131,9 @@ const useStore = create<Store>()(
       cartItems: [],
       tryOnReservations: [],
       userStory: {},
+      recentlyViewed: [],
+      searchHistory: [],
+      favorites: [],
       
       setPieces: (pieces) => set({ pieces }),
       
@@ -311,32 +323,64 @@ const useStore = create<Store>()(
       
       getInsights: () => {
         const { pieces, userJourney } = get()
-        
+
         const vibeCount: Record<string, number> = {}
         pieces.forEach(p => {
           vibeCount[p.vibe] = (vibeCount[p.vibe] || 0) + p.views
         })
-        
+
         const popularVibes = Object.entries(vibeCount)
           .sort(([,a], [,b]) => b - a)
           .slice(0, 3)
           .map(([vibe]) => vibe)
-        
+
         return {
           popularVibes,
           emotionalConnections: pieces.reduce((sum, p) => sum + p.hearts, 0),
           averageTimeSpent: userJourney?.timeSpent || 0,
           returnRate: 0.73
         }
+      },
+
+      addToRecentlyViewed: (pieceId) => {
+        const { recentlyViewed } = get()
+        const filtered = recentlyViewed.filter(id => id !== pieceId)
+        const updated = [pieceId, ...filtered].slice(0, 6)
+        set({ recentlyViewed: updated })
+      },
+
+      addToSearchHistory: (query) => {
+        if (!query || query.trim().length === 0) return
+        const { searchHistory } = get()
+        const filtered = searchHistory.filter(q => q.toLowerCase() !== query.toLowerCase())
+        const updated = [query, ...filtered].slice(0, 10)
+        set({ searchHistory: updated })
+      },
+
+      clearSearchHistory: () => set({ searchHistory: [] }),
+
+      toggleFavorite: (pieceId) => {
+        const { favorites } = get()
+        const updated = favorites.includes(pieceId)
+          ? favorites.filter(id => id !== pieceId)
+          : [...favorites, pieceId]
+        set({ favorites: updated })
+      },
+
+      isFavorite: (pieceId) => {
+        return get().favorites.includes(pieceId)
       }
     }),
     {
       name: 'kobys-threads-storage',
-      partialize: (state) => ({ 
+      partialize: (state) => ({
         heartedPieces: state.heartedPieces,
         cartItems: state.cartItems,
         tryOnReservations: state.tryOnReservations,
-        userStory: state.userStory
+        userStory: state.userStory,
+        recentlyViewed: state.recentlyViewed,
+        searchHistory: state.searchHistory,
+        favorites: state.favorites
       })
     }
   )

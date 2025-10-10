@@ -12,8 +12,9 @@ import './App.css'
 
 // Lazy load pages for better performance
 const Welcome = lazy(() => import('./pages/WelcomeMinimal'))
-const Collection = lazy(() => import('./pages/CollectionMinimal'))
+const Collection = lazy(() => import('./pages/CollectionMinimalEnhanced'))
 const Piece = lazy(() => import('./pages/PieceMinimal'))
+const Favorites = lazy(() => import('./pages/FavoritesMinimal'))
 const Cart = lazy(() => import('./pages/Cart'))
 const DeliveryOptions = lazy(() => import('./pages/DeliveryOptionsMinimal'))
 const Checkout = lazy(() => import('./pages/Checkout'))
@@ -68,6 +69,7 @@ const AppContent = () => {
             <Route path="/" element={<Welcome />} />
             <Route path="/collection" element={<Collection />} />
             <Route path="/piece/:id" element={<Piece />} />
+            <Route path="/favorites" element={<Favorites />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/delivery" element={<DeliveryOptions />} />
             <Route path="/checkout" element={<Checkout />} />

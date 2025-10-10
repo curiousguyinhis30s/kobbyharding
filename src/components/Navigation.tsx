@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Menu, X, ShoppingBag, User, Search, LogOut } from 'lucide-react'
+import { Menu, X, ShoppingBag, User, Search, LogOut, Heart } from 'lucide-react'
 import useStore from '../stores/useStore'
 import { useAuth } from '../contexts/AuthContext'
 
 const Navigation = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { cartItems } = useStore()
+  const { cartItems, favorites } = useStore()
   const { user, isAuthenticated, logout } = useAuth()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
@@ -207,6 +207,43 @@ const Navigation = () => {
                 onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
               >
                 <Search style={{ width: '18px', height: '18px' }} />
+              </button>
+
+              {/* Favorites Button */}
+              <button
+                onClick={() => navigate('/favorites')}
+                style={{
+                  position: 'relative',
+                  padding: '8px',
+                  color: 'rgba(255, 255, 255, 0.7)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'opacity 0.3s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                onMouseLeave={(e) => e.currentTarget.style.opacity = '0.7'}
+              >
+                <Heart style={{ width: '18px', height: '18px' }} />
+                {favorites.length > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '-2px',
+                    right: '-2px',
+                    width: '16px',
+                    height: '16px',
+                    backgroundColor: '#fff',
+                    color: '#000',
+                    fontSize: '10px',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: '400'
+                  }}>
+                    {favorites.length}
+                  </span>
+                )}
               </button>
 
               {/* Cart Button */}

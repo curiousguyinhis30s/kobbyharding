@@ -9,7 +9,7 @@ import { useToast } from '../components/Toast'
 const PieceMinimal = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { pieces, setPieces, addToCart } = useStore()
+  const { pieces, setPieces, addToCart, addToRecentlyViewed, recentlyViewed } = useStore()
   const { addToast } = useToast()
   const [selectedSize, setSelectedSize] = useState('M')
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -27,6 +27,18 @@ const PieceMinimal = () => {
 
   const piece = pieces.find(p => p.id === id)
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+
+  // Track recently viewed
+  useEffect(() => {
+    if (piece) {
+      addToRecentlyViewed(piece.id)
+    }
+  }, [piece, addToRecentlyViewed])
+
+  // Get recently viewed pieces (excluding current one)
+  const recentlyViewedPieces = pieces.filter(p =>
+    recentlyViewed.includes(p.id) && p.id !== id
+  ).slice(0, 4)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -604,6 +616,82 @@ const PieceMinimal = () => {
           </div>
         </div>
       </div>
+
+      {/* Recently Viewed Section */}
+      {recentlyViewedPieces.length > 0 && (
+        <div style={{
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          padding: isMobile ? '40px 20px' : '60px 40px',
+          maxWidth: '1400px',
+          margin: '0 auto'
+        }}>
+          <h2 style={{
+            fontSize: '12px',
+            fontWeight: '100',
+            letterSpacing: '0.3em',
+            marginBottom: '32px',
+            opacity: 0.7
+          }}>
+            RECENTLY VIEWED
+          </h2>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile
+              ? 'repeat(2, 1fr)'
+              : 'repeat(auto-fill, minmax(250px, 1fr))',
+            gap: isMobile ? '16px' : '24px'
+          }}>
+            {recentlyViewedPieces.map((recentPiece) => (
+              <motion.div
+                key={recentPiece.id}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => navigate(`/piece/${recentPiece.id}`)}
+                style={{
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  transition: 'border-color 0.3s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+              >
+                <div style={{
+                  aspectRatio: '1',
+                  overflow: 'hidden'
+                }}>
+                  <img
+                    src={recentPiece.imageUrl}
+                    alt={recentPiece.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </div>
+                <div style={{
+                  padding: isMobile ? '12px' : '16px',
+                  borderTop: '1px solid rgba(255,255,255,0.1)'
+                }}>
+                  <h3 style={{
+                    fontSize: '11px',
+                    fontWeight: '300',
+                    letterSpacing: '0.15em',
+                    marginBottom: '8px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {recentPiece.name}
+                  </h3>
+                  <div style={{ fontSize: '12px', fontWeight: '200' }}>
+                    ${recentPiece.price}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
