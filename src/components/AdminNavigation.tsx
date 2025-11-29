@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
-  LayoutDashboard, Package, ShoppingBag, Users,
-  Settings, Palette, Calendar, BarChart2, LogOut, FileText
+  LayoutDashboard, ShoppingBag, Package,
+  Settings, Palette, Calendar, BarChart2, LogOut, FileText, MessageSquare, CreditCard, Users, Bell
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
@@ -13,10 +13,13 @@ const AdminNavigation = () => {
   const navItems = [
     { path: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { path: '/admin/orders', label: 'Orders', icon: ShoppingBag },
-    { path: '/admin/tryons', label: 'Try-Ons', icon: Calendar },
+    { path: '/admin/products', label: 'Products', icon: Package },
+    { path: '/admin/users', label: 'Users', icon: Users },
+    { path: '/admin/waitlist', label: 'Waitlist', icon: Bell },
+    { path: '/admin/commerce', label: 'Commerce', icon: CreditCard },
+    { path: '/admin/chatbot', label: 'Chatbot', icon: MessageSquare },
     { path: '/analytics', label: 'Analytics', icon: BarChart2 },
     { path: '/admin/brand', label: 'Brand', icon: Palette },
-    { path: '/admin/docs', label: 'Docs', icon: FileText },
     { path: '/admin/settings', label: 'Settings', icon: Settings }
   ]
   

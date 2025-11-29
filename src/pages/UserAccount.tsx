@@ -7,12 +7,14 @@ import {
   TrendingUp, Star, CreditCard, Truck
 } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { SkeletonBox } from '../components/SkeletonLoader'
 
 const UserAccount = () => {
   const navigate = useNavigate()
   const { user, logout } = useAuth()
   const [activeTab, setActiveTab] = useState('overview')
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,6 +32,10 @@ const UserAccount = () => {
     // Redirect admin users to admin dashboard
     if (user?.role === 'admin') {
       navigate('/admin')
+    }
+    // Simulate loading for better UX
+    if (user) {
+      setTimeout(() => setIsLoading(false), 500)
     }
   }, [user, navigate])
 
@@ -234,6 +240,27 @@ const UserAccount = () => {
               transition={{ duration: 0.3 }}
             >
               {/* Stats Cards */}
+              {isLoading ? (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)',
+                  gap: '20px',
+                  marginBottom: '40px'
+                }}>
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} style={{
+                      padding: '24px',
+                      background: 'rgba(255, 255, 255, 0.02)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      textAlign: 'center'
+                    }}>
+                      <SkeletonBox height="24px" width="24px" style={{ margin: '0 auto 12px' }} />
+                      <SkeletonBox height="24px" width="40px" style={{ margin: '0 auto 4px' }} />
+                      <SkeletonBox height="11px" width="80px" style={{ margin: '0 auto' }} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: isMobile ? '1fr 1fr' : 'repeat(4, 1fr)',
@@ -286,6 +313,7 @@ const UserAccount = () => {
                   <div style={{ fontSize: '11px', opacity: 0.5, letterSpacing: '0.1em' }}>TOTAL SPENT</div>
                 </div>
               </div>
+              )}
 
               {/* Recent Activity */}
               <h2 style={{
@@ -442,6 +470,36 @@ const UserAccount = () => {
                           </div>
                         ))}
                       </div>
+
+                      <button
+                        onClick={() => navigate(`/track-order/${order.id}`)}
+                        style={{
+                          marginTop: '16px',
+                          padding: '10px 20px',
+                          background: 'transparent',
+                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          color: '#fff',
+                          fontSize: '11px',
+                          letterSpacing: '0.1em',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          width: 'fit-content'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = '#fff'
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+                          e.currentTarget.style.background = 'transparent'
+                        }}
+                      >
+                        <Truck size={14} />
+                        TRACK ORDER
+                      </button>
 
                       {order.status === 'shipped' && (
                         <div style={{

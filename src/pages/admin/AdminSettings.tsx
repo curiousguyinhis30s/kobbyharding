@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { Key, Save, Eye, EyeOff, Shield, Database, Mail, Globe, AlertCircle, Check } from 'lucide-react'
+import { Key, Save, Eye, EyeOff, Shield, Database, Mail, Globe, AlertCircle, Check, Download, Users } from 'lucide-react'
 import { secureStorage } from '../../utils/security'
+import { useNewsletterStore } from '../../stores/useNewsletterStore'
 
 interface ApiConfig {
   geminiApiKey: string
@@ -18,6 +19,7 @@ const AdminSettings = () => {
   const navigate = useNavigate()
   const [showKeys, setShowKeys] = useState<Record<string, boolean>>({})
   const [saved, setSaved] = useState(false)
+  const { getAllSubscriptions, exportToCSV } = useNewsletterStore()
   const [apiConfig, setApiConfig] = useState<ApiConfig>({
     geminiApiKey: '',
     stripePublicKey: '',
@@ -49,10 +51,10 @@ const AdminSettings = () => {
 
   useEffect(() => {
     // Load saved settings
-    const savedApiConfig = secureStorage.getItem('api_config')
-    const savedGeneralSettings = secureStorage.getItem('general_settings')
-    const savedNotifications = secureStorage.getItem('notification_settings')
-    
+    const savedApiConfig = secureStorage.getItem<ApiConfig>('api_config')
+    const savedGeneralSettings = secureStorage.getItem<typeof generalSettings>('general_settings')
+    const savedNotifications = secureStorage.getItem<typeof notificationSettings>('notification_settings')
+
     if (savedApiConfig) setApiConfig(savedApiConfig)
     if (savedGeneralSettings) setGeneralSettings(savedGeneralSettings)
     if (savedNotifications) setNotificationSettings(savedNotifications)
@@ -62,7 +64,7 @@ const AdminSettings = () => {
     setApiConfig(prev => ({ ...prev, [key]: value }))
   }
 
-  const handleGeneralSettingChange = (key: string, value: any) => {
+  const handleGeneralSettingChange = (key: string, value: string | number) => {
     setGeneralSettings(prev => ({ ...prev, [key]: value }))
   }
 
@@ -75,11 +77,9 @@ const AdminSettings = () => {
     secureStorage.setItem('api_config', apiConfig)
     secureStorage.setItem('general_settings', generalSettings)
     secureStorage.setItem('notification_settings', notificationSettings)
-    
+
     setSaved(true)
     setTimeout(() => setSaved(false), 3000)
-    
-    console.log('[Admin] Settings saved successfully')
   }
 
   const toggleKeyVisibility = (key: string) => {
@@ -92,6 +92,26 @@ const AdminSettings = () => {
     return key.substring(0, 4) + '•'.repeat(key.length - 8) + key.substring(key.length - 4)
   }
 
+  const handleExportCSV = () => {
+    const csv = exportToCSV()
+    if (!csv) {
+      alert('No subscribers to export')
+      return
+    }
+
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `newsletter-subscribers-${new Date().toISOString().split('T')[0]}.csv`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    window.URL.revokeObjectURL(url)
+  }
+
+  const subscriptions = getAllSubscriptions()
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -101,7 +121,7 @@ const AdminSettings = () => {
     }}>
       {/* Header */}
       <section style={{
-        padding: '40px',
+        padding: '24px',
         borderBottom: '1px solid #e5e7eb'
       }}>
         <div style={{
@@ -185,10 +205,10 @@ const AdminSettings = () => {
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: '40px',
+        padding: '24px',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
-        gap: '40px'
+        gap: '24px'
       }}>
         {/* API Keys Section */}
         <motion.section
@@ -197,16 +217,16 @@ const AdminSettings = () => {
           style={{
             background: '#f9fafb',
             border: '1px solid #e5e7eb',
-            padding: '32px'
+            padding: '20px'
           }}
         >
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            marginBottom: '24px'
+            marginBottom: '20px'
           }}>
-            <Key style={{ width: '20px', height: '20px', opacity: 0.6 }} />
+            <Key style={{ width: '18px', height: '18px', opacity: 0.6 }} />
             <h2 style={{
               fontSize: '18px',
               fontWeight: '200',
@@ -370,16 +390,16 @@ const AdminSettings = () => {
           style={{
             background: '#f9fafb',
             border: '1px solid #e5e7eb',
-            padding: '32px'
+            padding: '20px'
           }}
         >
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            marginBottom: '24px'
+            marginBottom: '20px'
           }}>
-            <Globe style={{ width: '20px', height: '20px', opacity: 0.6 }} />
+            <Globe style={{ width: '18px', height: '18px', opacity: 0.6 }} />
             <h2 style={{
               fontSize: '18px',
               fontWeight: '200',
@@ -572,16 +592,16 @@ const AdminSettings = () => {
           style={{
             background: '#f9fafb',
             border: '1px solid #e5e7eb',
-            padding: '32px'
+            padding: '20px'
           }}
         >
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            marginBottom: '24px'
+            marginBottom: '20px'
           }}>
-            <Mail style={{ width: '20px', height: '20px', opacity: 0.6 }} />
+            <Mail style={{ width: '18px', height: '18px', opacity: 0.6 }} />
             <h2 style={{
               fontSize: '18px',
               fontWeight: '200',
@@ -659,16 +679,16 @@ const AdminSettings = () => {
           style={{
             background: '#f9fafb',
             border: '1px solid #e5e7eb',
-            padding: '32px'
+            padding: '20px'
           }}
         >
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            marginBottom: '24px'
+            marginBottom: '20px'
           }}>
-            <Shield style={{ width: '20px', height: '20px', opacity: 0.6 }} />
+            <Shield style={{ width: '18px', height: '18px', opacity: 0.6 }} />
             <h2 style={{
               fontSize: '18px',
               fontWeight: '200',
@@ -724,11 +744,167 @@ const AdminSettings = () => {
             ))}
           </div>
         </motion.section>
+
+        {/* Newsletter Subscribers */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          style={{
+            background: '#fff',
+            border: '1px solid #e5e7eb',
+            padding: '24px'
+          }}
+        >
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '24px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Users style={{ width: '20px', height: '20px' }} />
+              <h2 style={{
+                fontSize: '14px',
+                fontWeight: '600',
+                letterSpacing: '0.1em'
+              }}>
+                NEWSLETTER SUBSCRIBERS
+              </h2>
+            </div>
+            <button
+              onClick={handleExportCSV}
+              disabled={subscriptions.length === 0}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 20px',
+                background: subscriptions.length === 0 ? '#e5e7eb' : '#000',
+                color: subscriptions.length === 0 ? '#9ca3af' : '#fff',
+                border: 'none',
+                fontSize: '11px',
+                letterSpacing: '0.15em',
+                cursor: subscriptions.length === 0 ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                if (subscriptions.length > 0) {
+                  e.currentTarget.style.background = '#333'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (subscriptions.length > 0) {
+                  e.currentTarget.style.background = '#000'
+                }
+              }}
+            >
+              <Download style={{ width: '14px', height: '14px' }} />
+              EXPORT CSV
+            </button>
+          </div>
+
+          <div style={{
+            fontSize: '12px',
+            color: '#6b7280',
+            marginBottom: '16px',
+            letterSpacing: '0.05em'
+          }}>
+            Total Subscribers: <strong>{subscriptions.length}</strong>
+          </div>
+
+          {subscriptions.length === 0 ? (
+            <div style={{
+              padding: '40px',
+              textAlign: 'center',
+              color: '#9ca3af',
+              fontSize: '13px',
+              letterSpacing: '0.05em'
+            }}>
+              No newsletter subscribers yet
+            </div>
+          ) : (
+            <div style={{
+              border: '1px solid #e5e7eb',
+              maxHeight: '400px',
+              overflowY: 'auto'
+            }}>
+              <table style={{
+                width: '100%',
+                borderCollapse: 'collapse'
+              }}>
+                <thead style={{
+                  background: '#f9fafb',
+                  position: 'sticky',
+                  top: 0
+                }}>
+                  <tr>
+                    <th style={{
+                      padding: '12px 16px',
+                      textAlign: 'left',
+                      fontSize: '11px',
+                      letterSpacing: '0.1em',
+                      fontWeight: '600',
+                      borderBottom: '1px solid #e5e7eb'
+                    }}>
+                      EMAIL
+                    </th>
+                    <th style={{
+                      padding: '12px 16px',
+                      textAlign: 'left',
+                      fontSize: '11px',
+                      letterSpacing: '0.1em',
+                      fontWeight: '600',
+                      borderBottom: '1px solid #e5e7eb'
+                    }}>
+                      SUBSCRIBED DATE
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {subscriptions.map((sub, index) => (
+                    <tr key={index} style={{
+                      background: index % 2 === 0 ? '#fff' : '#f9fafb',
+                      transition: 'background 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#f3f4f6'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = index % 2 === 0 ? '#fff' : '#f9fafb'
+                    }}
+                    >
+                      <td style={{
+                        padding: '12px 16px',
+                        fontSize: '12px',
+                        borderBottom: '1px solid #e5e7eb'
+                      }}>
+                        {sub.email}
+                      </td>
+                      <td style={{
+                        padding: '12px 16px',
+                        fontSize: '12px',
+                        color: '#6b7280',
+                        borderBottom: '1px solid #e5e7eb'
+                      }}>
+                        {new Date(sub.timestamp).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </motion.section>
       </div>
 
       {/* Save Button */}
       <section style={{
-        padding: '40px',
+        padding: '24px',
         borderTop: '1px solid #e5e7eb'
       }}>
         <div style={{

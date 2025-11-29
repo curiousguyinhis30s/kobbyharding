@@ -99,42 +99,56 @@ const FavoritesMinimal = () => {
             padding: '60px 20px'
           }}>
             <Heart style={{
-              width: '48px',
-              height: '48px',
-              margin: '0 auto 24px',
+              width: '64px',
+              height: '64px',
+              margin: '0 auto 32px',
               opacity: 0.2
             }} />
-            <p style={{
-              fontSize: '13px',
-              letterSpacing: '0.2em',
-              opacity: 0.5,
-              marginBottom: '24px'
+            <h2 style={{
+              fontSize: isMobile ? '18px' : '24px',
+              fontWeight: '300',
+              letterSpacing: '0.1em',
+              color: '#ffffff',
+              marginBottom: '12px'
             }}>
               NO FAVORITES YET
+            </h2>
+            <p style={{
+              fontSize: '13px',
+              letterSpacing: '0.05em',
+              opacity: 0.5,
+              marginBottom: '32px',
+              maxWidth: '400px',
+              margin: '0 auto 32px',
+              lineHeight: '1.6'
+            }}>
+              Start building your collection by marking pieces you love. They'll appear here for easy access.
             </p>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/collection')}
               style={{
-                padding: '12px 32px',
-                background: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.3)',
-                color: '#fff',
+                padding: '14px 40px',
+                background: '#ffffff',
+                color: '#000000',
+                border: 'none',
                 fontSize: '11px',
+                fontWeight: '300',
                 letterSpacing: '0.2em',
+                textTransform: 'uppercase',
                 cursor: 'pointer',
                 transition: 'all 0.3s'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = '#fff'
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
-                e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.background = '#ffffff'
               }}
             >
-              EXPLORE COLLECTION
-            </button>
+              BROWSE COLLECTION
+            </motion.button>
           </div>
         ) : (
           <div style={{
@@ -171,6 +185,7 @@ const FavoritesMinimal = () => {
                   <img
                     src={piece.imageUrl}
                     alt={piece.name}
+                    loading="lazy"
                     style={{
                       width: '100%',
                       height: '100%',

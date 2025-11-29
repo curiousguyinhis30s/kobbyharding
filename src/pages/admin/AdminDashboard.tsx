@@ -13,6 +13,7 @@ import ImageStudio from '../../components/admin/ImageStudio'
 import AnalyticsDashboard from '../../components/admin/AnalyticsDashboard'
 import InventoryManagement from '../../components/admin/InventoryManagement'
 import ContentManager from '../../components/admin/ContentManager'
+import WaitlistManager from '../../components/admin/WaitlistManager'
 
 // Types
 interface Product {
@@ -68,7 +69,7 @@ const AdminDashboard = () => {
   const { pieces, setPieces } = useStore()
   const { addToast } = useToast()
 
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'orders' | 'customers' | 'analytics' | 'inventory' | 'content' | 'image-studio' | 'settings'>('dashboard')
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'products' | 'orders' | 'customers' | 'analytics' | 'inventory' | 'content' | 'image-studio' | 'waitlist' | 'settings'>('dashboard')
   const [products, setProducts] = useState<Product[]>([])
   const [orders, setOrders] = useState<Order[]>([])
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -797,6 +798,11 @@ const AdminDashboard = () => {
         {activeTab === 'inventory' && <InventoryManagement />}
         {activeTab === 'orders' && renderOrders()}
         {activeTab === 'customers' && renderCustomers()}
+        {activeTab === 'waitlist' && (
+          <div style={{ background: '#000', minHeight: '80vh', marginLeft: '-24px', marginRight: '-24px', marginTop: '-24px', paddingTop: '24px' }}>
+            <WaitlistManager />
+          </div>
+        )}
         {activeTab === 'content' && <ContentManager />}
         {activeTab === 'image-studio' && <ImageStudio />}
         {activeTab === 'settings' && (

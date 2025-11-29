@@ -562,10 +562,10 @@ By using our website, you agree to our terms of service. All products are authen
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: '24px', marginBottom: '32px', borderBottom: `1px solid ${'#e0e0e0'}` }}>
-        {['homepage', 'about', 'faqs', 'policies'].map(tab => (
+        {(['homepage', 'about', 'faqs', 'policies'] as const).map(tab => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab as any)}
+            onClick={() => setActiveTab(tab)}
             style={{
               background: 'none',
               border: 'none',

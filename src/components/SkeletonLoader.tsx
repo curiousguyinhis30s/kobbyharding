@@ -48,18 +48,18 @@ export const ProductCardSkeleton = () => {
       border: '1px solid rgba(255, 255, 255, 0.05)'
     }}>
       {/* Image skeleton */}
-      <SkeletonBox height="400px" borderRadius="0" />
+      <SkeletonBox height="200px" borderRadius="0" />
 
       {/* Content */}
-      <div style={{ padding: '16px' }}>
+      <div style={{ padding: '12px' }}>
         {/* Title */}
-        <SkeletonBox height="18px" width="70%" style={{ marginBottom: '8px' }} />
+        <SkeletonBox height="14px" width="70%" style={{ marginBottom: '6px' }} />
 
         {/* Price */}
-        <SkeletonBox height="20px" width="40%" style={{ marginBottom: '12px' }} />
+        <SkeletonBox height="16px" width="40%" style={{ marginBottom: '8px' }} />
 
         {/* Button */}
-        <SkeletonBox height="40px" width="100%" borderRadius="0" />
+        <SkeletonBox height="32px" width="100%" borderRadius="0" />
       </div>
     </div>
   )

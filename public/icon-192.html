@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Icon Generator</title>
+</head>
+<body>
+  <canvas id="canvas" width="192" height="192"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Black background
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(0, 0, 192, 192);
+
+    // White "K" letter
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '300 120px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.letterSpacing = '10px';
+    ctx.fillText('K', 96, 96);
+
+    // Line decoration
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.fillRect(56, 152, 80, 1);
+
+    // Convert to PNG and download
+    canvas.toBlob(function(blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'icon-192.png';
+      a.click();
+    });
+  </script>
+</body>
+</html>

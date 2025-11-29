@@ -77,7 +77,15 @@ const ImageStudio = () => {
   ]
 
   // Mock products from localStorage
-  const getProducts = (): any[] => {
+  interface Product {
+    id: string
+    name: string
+    imageUrl?: string
+    images?: string[]
+    price?: number
+  }
+
+  const getProducts = (): Product[] => {
     const stored = localStorage.getItem('admin_products')
     return stored ? JSON.parse(stored) : []
   }
@@ -115,10 +123,10 @@ const ImageStudio = () => {
 
   const saveToProduct = (imageUrl: string) => {
     if (!selectedProduct) return
-    
+
     // Update product with new image
     const products = getProducts()
-    const updatedProducts = products.map((p: any) => {
+    const updatedProducts = products.map((p: Product) => {
       if (p.id === selectedProduct.id) {
         return {
           ...p,
@@ -251,7 +259,7 @@ const ImageStudio = () => {
               value={selectedProduct?.id || ''}
               onChange={(e) => {
                 const products = getProducts()
-                setSelectedProduct(products.find((p: any) => p.id === e.target.value))
+                setSelectedProduct(products.find((p: Product) => p.id === e.target.value) || null)
               }}
               style={{
                 ...settingControlStyle,
@@ -259,7 +267,7 @@ const ImageStudio = () => {
               }}
             >
               <option value="">Choose a product...</option>
-              {getProducts().map((product: any) => (
+              {getProducts().map((product: Product) => (
                 <option key={product.id} value={product.id}>
                   {product.name} - ${product.price}
                 </option>

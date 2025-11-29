@@ -326,10 +326,10 @@ const ImageStudioEnhanced = () => {
         borderBottom: `1px solid ${'#e0e0e0'}`,
         paddingBottom: '16px'
       }}>
-        {['generate', 'enhance', 'gallery'].map(tab => (
+        {(['generate', 'enhance', 'gallery'] as const).map(tab => (
           <button
             key={tab}
-            onClick={() => setActiveTab(tab as any)}
+            onClick={() => setActiveTab(tab)}
             style={{
               padding: '12px 24px',
               background: activeTab === tab ? '#000000' : 'transparent',

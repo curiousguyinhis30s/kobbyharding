@@ -116,7 +116,7 @@ const FestivalPickupMinimal = () => {
       
       setShowTryOnModal(false)
       setSelectedPieces([])
-      setConfirmationMessage(`Your try-on request for ${festival.name} has been submitted! Koby will contact you soon.`)
+      setConfirmationMessage(`Your try-on request for ${festival.name} has been submitted! Kobby will contact you soon.`)
       
       setTimeout(() => {
         setConfirmationMessage('')
@@ -131,9 +131,9 @@ const FestivalPickupMinimal = () => {
       color: '#fff'
     }}>
       {/* Hero Section */}
-      <section style={{ 
+      <section style={{
         position: 'relative',
-        height: '60vh',
+        height: '40vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -163,19 +163,19 @@ const FestivalPickupMinimal = () => {
           }}
         >
           <h1 style={{
-            fontSize: 'clamp(40px, 8vw, 80px)',
+            fontSize: 'clamp(18px, 4vw, 36px)',
             fontWeight: '100',
             letterSpacing: '0.3em',
-            marginBottom: '20px'
+            marginBottom: '8px'
           }}>
             FESTIVAL
           </h1>
-          
+
           <h2 style={{
-            fontSize: 'clamp(40px, 8vw, 80px)',
+            fontSize: 'clamp(18px, 4vw, 36px)',
             fontWeight: '600',
             letterSpacing: '0.3em',
-            marginBottom: '30px'
+            marginBottom: '12px'
           }}>
             PICKUP
           </h2>
@@ -188,8 +188,8 @@ const FestivalPickupMinimal = () => {
             maxWidth: '600px',
             margin: '0 auto'
           }}>
-            Meet Koby at Kizomba festivals across Asia. 
-            Try on pieces, feel the fabric, and take home your perfect festival outfit.
+            Festival Ready Catalog features themed limited-edition and preordered items tied to festivals Kobby visits.
+            These collections are announced and posted months ahead of each festival's due date.
           </p>
         </motion.div>
       </section>
@@ -222,7 +222,7 @@ const FestivalPickupMinimal = () => {
 
       {/* Festival Grid Section - Matching Homepage */}
       <section style={{
-        padding: '80px 0',
+        padding: '32px 0',
         background: '#000'
       }}>
         <div style={{
@@ -237,20 +237,20 @@ const FestivalPickupMinimal = () => {
             viewport={{ once: true }}
             style={{
               textAlign: 'center',
-              marginBottom: '60px'
+              marginBottom: '32px'
             }}
           >
             <h3 style={{
-              fontSize: '14px',
+              fontSize: '12px',
               fontWeight: '300',
               letterSpacing: '0.3em',
-              marginBottom: '16px',
+              marginBottom: '10px',
               opacity: 0.7
             }}>
               2025 SEASON
             </h3>
             <h2 style={{
-              fontSize: '32px',
+              fontSize: '24px',
               fontWeight: '100',
               letterSpacing: '0.2em'
             }}>
@@ -263,7 +263,7 @@ const FestivalPickupMinimal = () => {
             display: 'grid',
             gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
             gap: '0',
-            marginBottom: isMobile ? '40px' : '80px',
+            marginBottom: isMobile ? '24px' : '32px',
             border: '1px solid rgba(255,255,255,0.2)'
           }}
           className="festival-grid">
@@ -307,7 +307,7 @@ const FestivalPickupMinimal = () => {
                 {/* Festival Info */}
                 <div style={{
                   position: 'relative',
-                  padding: '40px 30px',
+                  padding: '20px 16px',
                   textAlign: 'center',
                   zIndex: 1
                 }}>
@@ -385,44 +385,44 @@ const FestivalPickupMinimal = () => {
             style={{
               background: 'rgba(255,255,255,0.02)',
               border: '1px solid rgba(255,255,255,0.1)',
-              padding: '60px',
+              padding: isMobile ? '20px' : '24px',
               textAlign: 'center',
-              marginBottom: '80px'
+              marginBottom: '24px'
             }}
           >
             <Package style={{
-              width: '32px',
-              height: '32px',
-              margin: '0 auto 24px',
+              width: '24px',
+              height: '24px',
+              margin: '0 auto 16px',
               opacity: 0.6
             }} />
-            
+
             <h3 style={{
-              fontSize: '20px',
+              fontSize: '16px',
               fontWeight: '200',
               letterSpacing: '0.2em',
-              marginBottom: '20px'
+              marginBottom: '12px'
             }}>
               TRY-ON RESERVATION SERVICE
             </h3>
 
             <p style={{
-              fontSize: '13px',
+              fontSize: '12px',
               opacity: 0.6,
-              lineHeight: '1.8',
-              marginBottom: '30px',
+              lineHeight: '1.6',
+              marginBottom: '20px',
               maxWidth: '600px',
-              margin: '0 auto 30px'
+              margin: '0 auto 20px'
             }}>
-              Select up to 5 pieces from our collection that you'd like to try on at the festival. 
-              Koby will bring them specifically for you - no obligation to buy, just the opportunity 
+              Select up to 5 pieces from our collection that you'd like to try on at the festival.
+              Koby will bring them specifically for you - no obligation to buy, just the opportunity
               to feel the fabric and find your perfect fit.
             </p>
 
             <div style={{
               display: 'grid',
               gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-              gap: isMobile ? '20px' : '30px',
+              gap: isMobile ? '16px' : '20px',
               maxWidth: '700px',
               margin: '0 auto'
             }}>
@@ -433,20 +433,20 @@ const FestivalPickupMinimal = () => {
               ].map((step) => (
                 <div key={step.number} style={{ textAlign: 'center' }}>
                   <div style={{
-                    width: '40px',
-                    height: '40px',
+                    width: '32px',
+                    height: '32px',
                     border: '1px solid rgba(255,255,255,0.3)',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    margin: '0 auto 12px',
-                    fontSize: '14px'
+                    margin: '0 auto 10px',
+                    fontSize: '12px'
                   }}>
                     {step.number}
                   </div>
                   <p style={{
-                    fontSize: '11px',
+                    fontSize: '10px',
                     opacity: 0.6,
                     letterSpacing: '0.1em'
                   }}>
@@ -465,15 +465,15 @@ const FestivalPickupMinimal = () => {
             style={{
               background: 'rgba(255,255,255,0.02)',
               border: '1px solid rgba(255,255,255,0.1)',
-              padding: '60px',
+              padding: isMobile ? '20px' : '24px',
               textAlign: 'center'
             }}
           >
             <h3 style={{
-              fontSize: '20px',
+              fontSize: '16px',
               fontWeight: '200',
               letterSpacing: '0.2em',
-              marginBottom: '30px'
+              marginBottom: '20px'
             }}>
               HOW FESTIVAL PICKUP WORKS
             </h3>
@@ -481,8 +481,8 @@ const FestivalPickupMinimal = () => {
             <div style={{
               display: 'grid',
               gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)',
-              gap: isMobile ? '24px' : '40px',
-              marginBottom: '40px'
+              gap: isMobile ? '20px' : '24px',
+              marginBottom: '24px'
             }}>
               {[
                 { icon: Globe, title: 'BROWSE ONLINE', desc: 'Select pieces from our collection' },
@@ -494,23 +494,23 @@ const FestivalPickupMinimal = () => {
                 return (
                   <div key={index} style={{ textAlign: 'center' }}>
                     <Icon style={{
-                      width: '24px',
-                      height: '24px',
-                      margin: '0 auto 16px',
+                      width: '20px',
+                      height: '20px',
+                      margin: '0 auto 12px',
                       opacity: 0.6
                     }} />
                     <h4 style={{
-                      fontSize: '11px',
+                      fontSize: '10px',
                       letterSpacing: '0.15em',
-                      marginBottom: '8px',
+                      marginBottom: '6px',
                       opacity: 0.9
                     }}>
                       {step.title}
                     </h4>
                     <p style={{
-                      fontSize: '10px',
+                      fontSize: '9px',
                       opacity: 0.5,
-                      lineHeight: '1.6'
+                      lineHeight: '1.5'
                     }}>
                       {step.desc}
                     </p>
@@ -524,11 +524,11 @@ const FestivalPickupMinimal = () => {
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/collection')}
               style={{
-                padding: '16px 48px',
+                padding: '10px 32px',
                 background: 'transparent',
                 border: '1px solid rgba(255,255,255,0.5)',
                 color: '#fff',
-                fontSize: '11px',
+                fontSize: '10px',
                 letterSpacing: '0.25em',
                 cursor: 'pointer',
                 transition: 'all 0.3s'
@@ -552,15 +552,15 @@ const FestivalPickupMinimal = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             style={{
-              marginTop: '80px',
+              marginTop: '24px',
               textAlign: 'center'
             }}
           >
             <h3 style={{
-              fontSize: '24px',
+              fontSize: '18px',
               fontWeight: '100',
               letterSpacing: '0.2em',
-              marginBottom: '40px'
+              marginBottom: '24px'
             }}>
               WHY FESTIVAL PICKUP?
             </h3>
@@ -568,7 +568,7 @@ const FestivalPickupMinimal = () => {
             <div style={{
               display: 'grid',
               gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-              gap: isMobile ? '24px' : '40px'
+              gap: isMobile ? '16px' : '20px'
             }}>
               {[
                 {
@@ -597,7 +597,7 @@ const FestivalPickupMinimal = () => {
                 }
               ].map((benefit, index) => (
                 <div key={index} style={{
-                  padding: '30px',
+                  padding: '20px',
                   border: '1px solid rgba(255,255,255,0.1)',
                   transition: 'all 0.3s'
                 }}
@@ -611,17 +611,17 @@ const FestivalPickupMinimal = () => {
                 }}
                 >
                   <h4 style={{
-                    fontSize: '12px',
+                    fontSize: '10px',
                     letterSpacing: '0.15em',
-                    marginBottom: '12px',
+                    marginBottom: '8px',
                     opacity: 0.9
                   }}>
                     {benefit.title}
                   </h4>
                   <p style={{
-                    fontSize: '11px',
+                    fontSize: '9px',
                     opacity: 0.5,
-                    lineHeight: '1.6'
+                    lineHeight: '1.5'
                   }}>
                     {benefit.description}
                   </p>
@@ -634,7 +634,7 @@ const FestivalPickupMinimal = () => {
 
       {/* Contact Section */}
       <section style={{
-        padding: '80px 0',
+        padding: '24px 0',
         background: 'rgba(255,255,255,0.02)',
         borderTop: '1px solid rgba(255,255,255,0.1)'
       }}>
@@ -645,37 +645,37 @@ const FestivalPickupMinimal = () => {
           textAlign: 'center'
         }}>
           <h3 style={{
-            fontSize: '20px',
+            fontSize: '16px',
             fontWeight: '200',
             letterSpacing: '0.2em',
-            marginBottom: '30px'
+            marginBottom: '16px'
           }}>
             RESERVE YOUR PICKUP
           </h3>
-          
+
           <p style={{
-            fontSize: '13px',
+            fontSize: '12px',
             opacity: 0.6,
-            lineHeight: '1.8',
-            marginBottom: '40px'
+            lineHeight: '1.6',
+            marginBottom: '24px'
           }}>
-            Contact Koby directly to reserve your pieces for festival pickup. 
+            Contact Koby directly to reserve your pieces for festival pickup.
             WhatsApp or Instagram DM for fastest response.
           </p>
 
           <div style={{
             display: 'flex',
-            gap: '20px',
+            gap: '16px',
             justifyContent: 'center'
           }}>
             <button
               onClick={() => window.open('https://wa.me/66987654321', '_blank')}
               style={{
-                padding: '14px 32px',
+                padding: '10px 24px',
                 background: 'transparent',
                 border: '1px solid rgba(255,255,255,0.3)',
                 color: '#fff',
-                fontSize: '11px',
+                fontSize: '10px',
                 letterSpacing: '0.2em',
                 cursor: 'pointer',
                 transition: 'all 0.3s'
@@ -691,15 +691,15 @@ const FestivalPickupMinimal = () => {
             >
               WHATSAPP
             </button>
-            
+
             <button
               onClick={() => window.open('https://www.instagram.com/hardingkobby', '_blank')}
               style={{
-                padding: '14px 32px',
+                padding: '10px 24px',
                 background: '#fff',
                 border: 'none',
                 color: '#000',
-                fontSize: '11px',
+                fontSize: '10px',
                 letterSpacing: '0.2em',
                 cursor: 'pointer',
                 transition: 'all 0.3s'

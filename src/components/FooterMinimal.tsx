@@ -1,118 +1,153 @@
 import { useNavigate } from 'react-router-dom'
-import { Instagram, Mail, MapPin } from 'lucide-react'
+import { Instagram, Mail } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import NewsletterSignup from './NewsletterSignup'
 
 const FooterMinimal = () => {
   const navigate = useNavigate()
-
   const currentYear = new Date().getFullYear()
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth < 360)
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth
+      setIsMobile(width <= 768)
+      setIsSmallMobile(width < 360)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
     <footer style={{
       background: '#000',
       color: '#fff',
       borderTop: '1px solid rgba(255,255,255,0.1)',
-      marginTop: '80px',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
+      marginTop: '48px'
     }}>
-      {/* Main Footer Content */}
+      {/* Main Footer */}
       <div style={{
-        maxWidth: '1400px',
+        maxWidth: '1200px',
         margin: '0 auto',
-        padding: '60px 40px',
+        padding: isSmallMobile ? '24px 12px' : isMobile ? '32px 16px' : '48px 40px',
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '40px'
+        gridTemplateColumns: isSmallMobile ? '1fr' : isMobile ? '1fr 1fr' : 'repeat(4, 1fr)',
+        gap: isSmallMobile ? '20px' : isMobile ? '24px' : '32px'
       }}>
-        {/* Brand Column */}
-        <div>
+        {/* Brand */}
+        <div style={{ gridColumn: isSmallMobile ? 'auto' : isMobile ? 'span 2' : 'auto' }}>
           <h3 style={{
-            fontSize: '20px',
+            fontSize: '14px',
             fontWeight: '100',
-            letterSpacing: '0.4em',
-            marginBottom: '20px'
+            letterSpacing: '0.2em',
+            marginBottom: '12px'
           }}>
-            KOBBY
+            KHARDING
           </h3>
           <p style={{
             fontSize: '11px',
-            lineHeight: '1.8',
-            opacity: 0.6,
-            letterSpacing: '0.05em'
+            lineHeight: '1.7',
+            color: 'rgba(255,255,255,0.6)',
+            letterSpacing: '0.03em',
+            maxWidth: '240px'
           }}>
-            African heritage meets contemporary design. 
-            Festival fashion for the modern dancer.
+            African heritage fashion for dance festivals across Asia.
           </p>
-          
-          {/* Social Links */}
-          <div style={{
-            display: 'flex',
-            gap: '16px',
-            marginTop: '24px'
-          }}>
-            <a 
-              href="https://www.instagram.com/hardingkobby"
+
+          <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+            <a
+              href="https://www.instagram.com/Khardingclassics"
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                color: 'rgba(255,255,255,0.5)',
-                transition: 'color 0.3s'
+                color: 'rgba(255,255,255,0.6)',
+                transition: 'color 0.2s',
+                padding: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: '44px',
+                minHeight: '44px'
               }}
               onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
             >
-              <Instagram style={{ width: '16px', height: '16px' }} />
+              <Instagram size={20} />
             </a>
-            <a 
-              href="mailto:koby@kobysthreads.com"
+            <a
+              href="https://www.tiktok.com/@Khardingclassics"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
-                color: 'rgba(255,255,255,0.5)',
-                transition: 'color 0.3s'
+                color: 'rgba(255,255,255,0.6)',
+                transition: 'color 0.2s',
+                padding: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: '44px',
+                minHeight: '44px'
               }}
               onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
             >
-              <Mail style={{ width: '16px', height: '16px' }} />
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+              </svg>
+            </a>
+            <a
+              href="mailto:contact@khardingclassics.com"
+              style={{
+                color: 'rgba(255,255,255,0.6)',
+                transition: 'color 0.2s',
+                padding: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: '44px',
+                minHeight: '44px'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
+            >
+              <Mail size={20} />
             </a>
           </div>
         </div>
 
-        {/* Shop Column */}
+        {/* Shop */}
         <div>
           <h4 style={{
-            fontSize: '12px',
-            letterSpacing: '0.15em',
-            marginBottom: '20px',
-            opacity: 0.8,
-            fontWeight: '400'
+            fontSize: '10px',
+            letterSpacing: '0.2em',
+            marginBottom: '14px',
+            color: 'rgba(255,255,255,0.8)'
           }}>
             SHOP
           </h4>
-          <ul style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: 0
-          }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {[
-              { label: 'New Arrivals', path: '/collection' },
-              { label: 'Limited Edition', path: '/collection' },
-              { label: 'Festival Collection', path: '/collection' },
-              { label: 'All Products', path: '/collection' }
+              { label: 'Collection', path: '/collection' },
+              { label: 'Festival', path: '/festival' },
+              { label: 'Gift Cards', path: '/gift-cards' },
+              { label: 'About', path: '/about' }
             ].map((item) => (
-              <li key={item.label} style={{ marginBottom: '12px' }}>
+              <li key={item.label} style={{ marginBottom: '10px' }}>
                 <button
                   onClick={() => navigate(item.path)}
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: 'rgba(255,255,255,0.5)',
-                    fontSize: '12px',
+                    color: 'rgba(255,255,255,0.6)',
+                    fontSize: '11px',
                     letterSpacing: '0.05em',
                     cursor: 'pointer',
-                    transition: 'color 0.3s',
-                    padding: 0
+                    padding: 0,
+                    transition: 'color 0.2s'
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
                 >
                   {item.label}
                 </button>
@@ -121,88 +156,37 @@ const FooterMinimal = () => {
           </ul>
         </div>
 
-        {/* Festival Info Column */}
+        {/* Info */}
         <div>
           <h4 style={{
-            fontSize: '12px',
-            letterSpacing: '0.15em',
-            marginBottom: '20px',
-            opacity: 0.8,
-            fontWeight: '400'
-          }}>
-            FESTIVALS
-          </h4>
-          <ul style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: 0
-          }}>
-            {[
-              'Bangkok Kizomba',
-              'Singapore Urban Kiz',
-              'Bali Tarraxo Fest',
-              'Tokyo Kizomba Week'
-            ].map((festival) => (
-              <li key={festival} style={{ marginBottom: '12px' }}>
-                <button
-                  onClick={() => navigate('/pickup')}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    color: 'rgba(255,255,255,0.5)',
-                    fontSize: '12px',
-                    letterSpacing: '0.05em',
-                    cursor: 'pointer',
-                    transition: 'color 0.3s',
-                    padding: 0
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
-                >
-                  {festival}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Info Column */}
-        <div>
-          <h4 style={{
-            fontSize: '12px',
-            letterSpacing: '0.15em',
-            marginBottom: '20px',
-            opacity: 0.8,
-            fontWeight: '400'
+            fontSize: '10px',
+            letterSpacing: '0.2em',
+            marginBottom: '14px',
+            color: 'rgba(255,255,255,0.8)'
           }}>
             INFO
           </h4>
-          <ul style={{
-            listStyle: 'none',
-            padding: 0,
-            margin: 0
-          }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
             {[
-              { label: 'About Koby', path: '/' },
-              { label: 'Size Guide', path: '/collection' },
+              { label: 'Track Order', path: '/track-order' },
               { label: 'Shipping', path: '/delivery' },
               { label: 'Contact', path: '/contact' }
             ].map((item) => (
-              <li key={item.label} style={{ marginBottom: '12px' }}>
+              <li key={item.label} style={{ marginBottom: '10px' }}>
                 <button
                   onClick={() => navigate(item.path)}
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: 'rgba(255,255,255,0.5)',
-                    fontSize: '12px',
+                    color: 'rgba(255,255,255,0.6)',
+                    fontSize: '11px',
                     letterSpacing: '0.05em',
                     cursor: 'pointer',
-                    transition: 'color 0.3s',
-                    padding: 0
+                    padding: 0,
+                    transition: 'color 0.2s'
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+                  onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.6)'}
                 >
                   {item.label}
                 </button>
@@ -210,150 +194,42 @@ const FooterMinimal = () => {
             ))}
           </ul>
         </div>
-      </div>
 
-      {/* Newsletter Section */}
-      <div style={{
-        borderTop: '1px solid rgba(255,255,255,0.1)',
-        borderBottom: '1px solid rgba(255,255,255,0.1)'
-      }}>
-        <div style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          padding: '40px',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '40px',
-          alignItems: 'center'
-        }}>
-          <div>
-            <h4 style={{
-              fontSize: '13px',
-              letterSpacing: '0.2em',
-              marginBottom: '8px'
-            }}>
-              STAY IN THE LOOP
-            </h4>
-            <p style={{
-              fontSize: '11px',
-              opacity: 0.5,
-              letterSpacing: '0.05em'
-            }}>
-              Get exclusive access to new drops and festival updates
-            </p>
-          </div>
-          
-          <form 
-            onSubmit={(e) => {
-              e.preventDefault()
-              // Handle newsletter signup
-            }}
-            style={{
-              display: 'flex',
-              gap: '1px',
-              background: 'rgba(255,255,255,0.1)'
-            }}
-          >
-            <input
-              type="email"
-              placeholder="YOUR EMAIL"
-              style={{
-                flex: 1,
-                padding: '14px 20px',
-                background: '#000',
-                border: 'none',
-                color: '#fff',
-                fontSize: '11px',
-                letterSpacing: '0.1em',
-                outline: 'none'
-              }}
-            />
-            <button
-              type="submit"
-              style={{
-                padding: '14px 32px',
-                background: '#000',
-                border: 'none',
-                color: '#fff',
-                fontSize: '11px',
-                letterSpacing: '0.2em',
-                cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#000'}
-            >
-              SUBSCRIBE
-            </button>
-          </form>
+        {/* Newsletter */}
+        <div>
+          <h4 style={{
+            fontSize: '10px',
+            letterSpacing: '0.2em',
+            marginBottom: '14px',
+            color: 'rgba(255,255,255,0.8)'
+          }}>
+            STAY CONNECTED
+          </h4>
+          <NewsletterSignup inline isMobile={isMobile} />
         </div>
       </div>
 
       {/* Bottom Bar */}
       <div style={{
-        padding: '24px 40px',
+        padding: isMobile ? '16px' : '20px 40px',
         display: 'flex',
+        flexDirection: isMobile ? 'column' : 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        maxWidth: '1400px',
+        gap: '12px',
+        maxWidth: '1200px',
         margin: '0 auto',
-        fontSize: '10px',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        fontSize: '9px',
         letterSpacing: '0.1em',
-        opacity: 0.4
+        color: 'rgba(255,255,255,0.4)'
       }}>
-        <div>
-          © {currentYear} KOBBY CARDINGS. ALL RIGHTS RESERVED.
-        </div>
-        
-        <div style={{ display: 'flex', gap: '24px' }}>
-          <button
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'inherit',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'opacity 0.3s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-            onMouseLeave={(e) => e.currentTarget.style.opacity = '0.4'}
-          >
-            PRIVACY
-          </button>
-          <button
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'inherit',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'opacity 0.3s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-            onMouseLeave={(e) => e.currentTarget.style.opacity = '0.4'}
-          >
-            TERMS
-          </button>
+        <div>© {currentYear} KHARDING CLASSICS</div>
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <span style={{ cursor: 'pointer' }}>PRIVACY</span>
+          <span style={{ cursor: 'pointer' }}>TERMS</span>
         </div>
       </div>
-
-      {/* Mobile Responsive Styles */}
-      <style>{`
-        @media (max-width: 768px) {
-          footer > div:first-child {
-            grid-template-columns: 1fr !important;
-            gap: 40px !important;
-          }
-          footer > div:nth-child(2) > div {
-            grid-template-columns: 1fr !important;
-          }
-          footer > div:last-child {
-            flex-direction: column !important;
-            gap: 16px !important;
-            text-align: center !important;
-          }
-        }
-      `}</style>
     </footer>
   )
 }

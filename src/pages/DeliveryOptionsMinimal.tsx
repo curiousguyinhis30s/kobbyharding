@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { Truck, Package, MapPin, Clock, ChevronRight } from 'lucide-react'
+import { Truck, Package, MapPin, Clock, ChevronRight, ArrowLeft } from 'lucide-react'
 import useStore from '../stores/useStore'
 
 const DeliveryOptionsMinimal = () => {
@@ -11,484 +11,257 @@ const DeliveryOptionsMinimal = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
-  
+
   const subtotal = getCartTotal()
   const deliveryOptions = [
-    {
-      id: 'standard',
-      name: 'STANDARD DELIVERY',
-      price: subtotal > 200 ? 0 : 15,
-      time: '5-7 business days',
-      description: 'Tracked delivery to your address',
-      icon: Truck,
-      free: subtotal > 200
-    },
-    {
-      id: 'express',
-      name: 'EXPRESS DELIVERY',
-      price: 35,
-      time: '2-3 business days',
-      description: 'Priority tracked delivery',
-      icon: Package,
-      free: false
-    },
-    {
-      id: 'festival',
-      name: 'FESTIVAL PICKUP',
-      price: 0,
-      time: 'At festival venue',
-      description: 'Collect from Koby at the festival',
-      icon: MapPin,
-      free: true,
-      special: true
-    }
+    { id: 'standard', name: 'Standard', price: subtotal > 200 ? 0 : 15, time: '5-7 days', icon: Truck, free: subtotal > 200 },
+    { id: 'express', name: 'Express', price: 35, time: '2-3 days', icon: Package, free: false },
+    { id: 'festival', name: 'Festival Pickup', price: 0, time: 'At venue', icon: MapPin, free: true }
   ]
 
   const selectedDelivery = deliveryOptions.find(opt => opt.id === selectedOption)
   const deliveryPrice = selectedDelivery?.price || 0
   const total = subtotal + deliveryPrice
 
+  // Compact header breadcrumb
+  const steps = ['Cart', 'Delivery', 'Payment', 'Done']
+  const currentStep = 1
+
   return (
     <div style={{
       minHeight: '100vh',
       background: '#000',
       color: '#fff',
-      paddingTop: '64px'
+      padding: isMobile ? '16px' : '24px 40px'
     }}>
-      {/* Header */}
+      {/* Compact Header */}
       <div style={{
-        padding: '40px',
-        borderBottom: '1px solid rgba(255,255,255,0.1)',
-        textAlign: 'center'
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '20px',
+        paddingBottom: '16px',
+        borderBottom: '1px solid rgba(255,255,255,0.1)'
       }}>
-        <h1 style={{
-          fontSize: '24px',
-          fontWeight: '100',
-          letterSpacing: '0.4em',
-          marginBottom: '16px'
-        }}>
-          DELIVERY OPTIONS
-        </h1>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-          fontSize: '12px',
-          opacity: 0.5,
-          letterSpacing: '0.1em'
-        }}>
-          <span>CART</span>
-          <ChevronRight style={{ width: '12px', height: '12px' }} />
-          <span style={{ opacity: 1 }}>DELIVERY</span>
-          <ChevronRight style={{ width: '12px', height: '12px' }} />
-          <span>CHECKOUT</span>
-          <ChevronRight style={{ width: '12px', height: '12px' }} />
-          <span>CONFIRMATION</span>
+        <button
+          onClick={() => navigate('/cart')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            background: 'none',
+            border: 'none',
+            color: 'rgba(255,255,255,0.6)',
+            fontSize: '12px',
+            cursor: 'pointer'
+          }}
+        >
+          <ArrowLeft size={14} />
+          {!isMobile && 'Back'}
+        </button>
+
+        {/* Progress Steps */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {steps.map((step, i) => (
+            <div key={step} style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{
+                fontSize: '10px',
+                letterSpacing: '0.1em',
+                opacity: i <= currentStep ? 1 : 0.3,
+                fontWeight: i === currentStep ? '500' : '300'
+              }}>
+                {isMobile ? (i + 1) : step.toUpperCase()}
+              </span>
+              {i < steps.length - 1 && (
+                <ChevronRight size={10} style={{ margin: '0 4px', opacity: 0.3 }} />
+              )}
+            </div>
+          ))}
         </div>
+
+        <div style={{ width: '50px' }} />
       </div>
 
+      {/* Main Content - Horizontal Layout */}
       <div style={{
-        maxWidth: '1200px',
-        margin: '0 auto',
-        padding: '60px 40px',
         display: 'grid',
-        gridTemplateColumns: '2fr 1fr',
-        gap: '60px'
+        gridTemplateColumns: isMobile ? '1fr' : '1fr 320px',
+        gap: isMobile ? '20px' : '32px',
+        maxWidth: '900px',
+        margin: '0 auto'
       }}>
-        {/* Left: Delivery Options */}
+        {/* Delivery Options */}
         <div>
           <h2 style={{
-            fontSize: '14px',
-            letterSpacing: '0.2em',
-            marginBottom: '32px',
-            opacity: 0.8
+            fontSize: '11px',
+            letterSpacing: '0.15em',
+            marginBottom: '12px',
+            opacity: 0.6
           }}>
-            SELECT DELIVERY METHOD
+            DELIVERY METHOD
           </h2>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {deliveryOptions.map((option) => {
               const Icon = option.icon
               const isSelected = selectedOption === option.id
-              
+
               return (
                 <motion.div
                   key={option.id}
-                  whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
                   onClick={() => setSelectedOption(option.id as typeof selectedOption)}
                   style={{
-                    padding: '24px',
-                    border: `1px solid ${isSelected ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.1)'}`,
-                    background: isSelected ? 'rgba(255,255,255,0.02)' : 'transparent',
+                    padding: '12px 16px',
+                    border: `1px solid ${isSelected ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.1)'}`,
+                    background: isSelected ? 'rgba(255,255,255,0.03)' : 'transparent',
                     cursor: 'pointer',
-                    transition: 'all 0.3s',
-                    position: 'relative'
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
                   }}
                 >
-                  {option.special && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '12px',
-                      right: '12px',
-                      padding: '4px 12px',
-                      background: 'rgba(255,255,255,0.1)',
-                      fontSize: '10px',
-                      letterSpacing: '0.15em'
-                    }}>
-                      RECOMMENDED
+                  {/* Radio */}
+                  <div style={{
+                    width: '16px',
+                    height: '16px',
+                    border: `1px solid ${isSelected ? '#fff' : 'rgba(255,255,255,0.3)'}`,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}>
+                    {isSelected && <div style={{ width: '8px', height: '8px', background: '#fff', borderRadius: '50%' }} />}
+                  </div>
+
+                  <Icon size={16} style={{ opacity: 0.5, flexShrink: 0 }} />
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '12px', letterSpacing: '0.1em' }}>{option.name}</div>
+                    <div style={{ fontSize: '10px', opacity: 0.5, display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                      <Clock size={10} /> {option.time}
                     </div>
-                  )}
-                  
-                  <div style={{ display: 'flex', gap: '20px', alignItems: 'start' }}>
-                    {/* Radio button */}
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      border: `1px solid ${isSelected ? '#fff' : 'rgba(255,255,255,0.3)'}`,
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginTop: '2px',
-                      transition: 'all 0.3s'
-                    }}>
-                      {isSelected && (
-                        <div style={{
-                          width: '10px',
-                          height: '10px',
-                          background: '#fff',
-                          borderRadius: '50%'
-                        }} />
-                      )}
-                    </div>
-                    
-                    {/* Icon */}
-                    <Icon style={{ 
-                      width: '20px', 
-                      height: '20px',
-                      opacity: 0.6
-                    }} />
-                    
-                    {/* Content */}
-                    <div style={{ flex: 1 }}>
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'start',
-                        marginBottom: '8px'
-                      }}>
-                        <div>
-                          <h3 style={{
-                            fontSize: '13px',
-                            letterSpacing: '0.15em',
-                            marginBottom: '4px'
-                          }}>
-                            {option.name}
-                          </h3>
-                          <p style={{
-                            fontSize: '11px',
-                            opacity: 0.5,
-                            letterSpacing: '0.05em'
-                          }}>
-                            {option.description}
-                          </p>
-                        </div>
-                        
-                        <div style={{ textAlign: 'right' }}>
-                          {option.free ? (
-                            <div>
-                              <span style={{
-                                fontSize: '14px',
-                                fontWeight: '300'
-                              }}>
-                                FREE
-                              </span>
-                              {option.id === 'standard' && (
-                                <p style={{
-                                  fontSize: '10px',
-                                  opacity: 0.4,
-                                  marginTop: '4px'
-                                }}>
-                                  Order over $200
-                                </p>
-                              )}
-                            </div>
-                          ) : (
-                            <span style={{
-                              fontSize: '14px',
-                              fontWeight: '300'
-                            }}>
-                              ${option.price}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        fontSize: '11px',
-                        opacity: 0.6,
-                        marginTop: '8px'
-                      }}>
-                        <Clock style={{ width: '12px', height: '12px' }} />
-                        {option.time}
-                      </div>
-                      
-                      {option.id === 'festival' && (
-                        <div style={{
-                          marginTop: '16px',
-                          padding: '12px',
-                          background: 'rgba(255,255,255,0.03)',
-                          border: '1px solid rgba(255,255,255,0.1)',
-                          fontSize: '11px',
-                          lineHeight: '1.6',
-                          opacity: 0.7
-                        }}>
-                          Available at Bangkok Kizomba Festival (March 15-17)<br />
-                          Meet Koby personally and save on shipping
-                        </div>
-                      )}
-                    </div>
+                  </div>
+
+                  <div style={{ fontSize: '12px', fontWeight: '300', flexShrink: 0 }}>
+                    {option.free ? 'FREE' : `$${option.price}`}
                   </div>
                 </motion.div>
               )
             })}
           </div>
 
-          {/* Shipping Address (for non-festival options) */}
+          {/* Shipping Address - Compact */}
           {selectedOption !== 'festival' && (
-            <div style={{ marginTop: '48px' }}>
-              <h3 style={{
-                fontSize: '14px',
-                letterSpacing: '0.2em',
-                marginBottom: '24px',
-                opacity: 0.8
-              }}>
+            <div style={{ marginTop: '20px' }}>
+              <h3 style={{ fontSize: '11px', letterSpacing: '0.15em', marginBottom: '12px', opacity: 0.6 }}>
                 SHIPPING ADDRESS
               </h3>
-              
-              <div style={{
-                padding: '24px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                background: 'rgba(255,255,255,0.02)'
-              }}>
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '16px',
-                  marginBottom: '16px'
-                }}>
-                  <input
-                    type="text"
-                    placeholder="FIRST NAME"
-                    style={{
-                      padding: '12px',
-                      background: 'transparent',
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      color: '#fff',
-                      fontSize: '12px',
-                      letterSpacing: '0.05em',
-                      outline: 'none'
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="LAST NAME"
-                    style={{
-                      padding: '12px',
-                      background: 'transparent',
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      color: '#fff',
-                      fontSize: '12px',
-                      letterSpacing: '0.05em',
-                      outline: 'none'
-                    }}
-                  />
-                </div>
-                
-                <input
-                  type="text"
-                  placeholder="STREET ADDRESS"
-                  style={{
-                    width: '100%',
-                    padding: '12px',
-                    background: 'transparent',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    color: '#fff',
-                    fontSize: '12px',
-                    letterSpacing: '0.05em',
-                    outline: 'none',
-                    marginBottom: '16px'
-                  }}
-                />
-                
-                <div style={{
-                  display: 'grid',
-                  gridTemplateColumns: '2fr 1fr 1fr',
-                  gap: '16px'
-                }}>
-                  <input
-                    type="text"
-                    placeholder="CITY"
-                    style={{
-                      padding: '12px',
-                      background: 'transparent',
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      color: '#fff',
-                      fontSize: '12px',
-                      letterSpacing: '0.05em',
-                      outline: 'none'
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="STATE"
-                    style={{
-                      padding: '12px',
-                      background: 'transparent',
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      color: '#fff',
-                      fontSize: '12px',
-                      letterSpacing: '0.05em',
-                      outline: 'none'
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="ZIP"
-                    style={{
-                      padding: '12px',
-                      background: 'transparent',
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      color: '#fff',
-                      fontSize: '12px',
-                      letterSpacing: '0.05em',
-                      outline: 'none'
-                    }}
-                  />
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                <input type="text" placeholder="First name" style={inputStyle} />
+                <input type="text" placeholder="Last name" style={inputStyle} />
+                <input type="text" placeholder="Address" style={{ ...inputStyle, gridColumn: 'span 2' }} />
+                <input type="text" placeholder="City" style={inputStyle} />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                  <input type="text" placeholder="State" style={inputStyle} />
+                  <input type="text" placeholder="ZIP" style={inputStyle} />
                 </div>
               </div>
             </div>
           )}
+
+          {/* Festival Info - Compact */}
+          {selectedOption === 'festival' && (
+            <div style={{
+              marginTop: '12px',
+              padding: '12px',
+              background: 'rgba(255,255,255,0.02)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              fontSize: '11px',
+              opacity: 0.7,
+              lineHeight: 1.5
+            }}>
+              📍 Bangkok Kizomba Festival • March 15-17<br />
+              Meet Koby personally at the venue
+            </div>
+          )}
         </div>
 
-        {/* Right: Order Summary */}
+        {/* Order Summary - Compact Sidebar */}
         <div style={{
-          position: 'sticky',
-          top: '104px',
-          height: 'fit-content'
+          padding: '16px',
+          border: '1px solid rgba(255,255,255,0.1)',
+          background: 'rgba(255,255,255,0.01)',
+          height: 'fit-content',
+          position: isMobile ? 'relative' : 'sticky',
+          top: isMobile ? 'auto' : '80px'
         }}>
-          <div style={{
-            padding: '32px',
-            border: '1px solid rgba(255,255,255,0.1)',
-            background: 'rgba(255,255,255,0.01)'
-          }}>
-            <h3 style={{
-              fontSize: '14px',
-              letterSpacing: '0.2em',
-              marginBottom: '24px'
-            }}>
-              ORDER SUMMARY
-            </h3>
-            
-            <div style={{ marginBottom: '24px' }}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '12px',
-                fontSize: '12px',
-                opacity: 0.6
-              }}>
-                <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '12px',
-                fontSize: '12px',
-                opacity: 0.6
-              }}>
-                <span>Delivery</span>
-                <span>{deliveryPrice === 0 ? 'FREE' : `$${deliveryPrice.toFixed(2)}`}</span>
-              </div>
+          <h3 style={{ fontSize: '11px', letterSpacing: '0.15em', marginBottom: '16px', opacity: 0.6 }}>
+            SUMMARY
+          </h3>
+
+          <div style={{ fontSize: '12px', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', opacity: 0.6 }}>
+              <span>Subtotal</span>
+              <span>${subtotal.toFixed(2)}</span>
             </div>
-            
-            <div style={{
-              paddingTop: '24px',
-              borderTop: '1px solid rgba(255,255,255,0.1)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: '14px',
-              fontWeight: '300',
-              marginBottom: '32px'
-            }}>
-              <span>TOTAL</span>
-              <span>${total.toFixed(2)}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', opacity: 0.6 }}>
+              <span>Delivery</span>
+              <span>{deliveryPrice === 0 ? 'Free' : `$${deliveryPrice}`}</span>
             </div>
-            
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => navigate('/checkout')}
-              style={{
-                width: '100%',
-                padding: '16px',
-                background: '#fff',
-                color: '#000',
-                border: 'none',
-                fontSize: '12px',
-                letterSpacing: '0.25em',
-                cursor: 'pointer',
-                transition: 'all 0.3s',
-                marginBottom: '12px'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.9)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#fff'}
-            >
-              CONTINUE TO CHECKOUT
-            </motion.button>
-            
-            <button
-              onClick={() => navigate('/cart')}
-              style={{
-                width: '100%',
-                padding: '16px',
-                background: 'transparent',
-                color: 'rgba(255,255,255,0.6)',
-                border: '1px solid rgba(255,255,255,0.2)',
-                fontSize: '12px',
-                letterSpacing: '0.25em',
-                cursor: 'pointer',
-                transition: 'all 0.3s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
-                e.currentTarget.style.color = '#fff'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
-                e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
-              }}
-            >
-              BACK TO CART
-            </button>
           </div>
+
+          <div style={{
+            paddingTop: '12px',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            fontSize: '14px',
+            marginBottom: '16px'
+          }}>
+            <span>Total</span>
+            <span style={{ fontWeight: '400' }}>${total.toFixed(2)}</span>
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            onClick={() => navigate('/checkout')}
+            style={{
+              width: '100%',
+              padding: '12px',
+              background: '#fff',
+              color: '#000',
+              border: 'none',
+              fontSize: '11px',
+              letterSpacing: '0.15em',
+              cursor: 'pointer',
+              fontWeight: '500'
+            }}
+          >
+            CONTINUE
+          </motion.button>
         </div>
       </div>
     </div>
   )
+}
+
+const inputStyle: React.CSSProperties = {
+  padding: '10px 12px',
+  background: 'transparent',
+  border: '1px solid rgba(255,255,255,0.15)',
+  color: '#fff',
+  fontSize: '12px',
+  outline: 'none',
+  width: '100%',
+  boxSizing: 'border-box'
 }
 
 export default DeliveryOptionsMinimal

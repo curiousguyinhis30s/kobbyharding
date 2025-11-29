@@ -1,19 +1,32 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { 
-  ArrowLeft, Lock, CreditCard, Truck, Shield, User, UserX
+import {
+  ArrowLeft, Lock, CreditCard, Truck, Shield, User, UserX, Loader2
 } from 'lucide-react'
 import useStore from '../stores/useStore'
+import usePromoStore from '../stores/usePromoStore'
+import useNotificationStore from '../stores/useNotificationStore'
+import { useOrderStore } from '../stores/useOrderStore'
+import { calculateTax } from '../utils/taxCalculator'
+import Breadcrumb from '../components/Breadcrumb'
 
 const Checkout = () => {
   const navigate = useNavigate()
   const { cartItems, pieces, getCartTotal, clearCart } = useStore()
+  const { appliedPromo, calculateDiscount } = usePromoStore()
+  const { addNotification } = useNotificationStore()
+  const { createOrder } = useOrderStore()
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024)
-  
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768)
+  const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth < 360)
+
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024)
+      const width = window.innerWidth
+      setIsMobile(width < 1024)
+      setIsSmallScreen(width < 768)
+      setIsSmallMobile(width < 360)
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
@@ -41,42 +54,142 @@ const Checkout = () => {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isProcessing, setIsProcessing] = useState(false)
 
-  const cartPieces = cartItems.map(item => ({
-    ...item,
-    piece: pieces.find(p => p.id === item.pieceId)
-  })).filter(item => item.piece)
+  const cartPieces = cartItems
+    .map(item => ({
+      ...item,
+      piece: pieces.find(p => p.id === item.pieceId)
+    }))
+    .filter(item => item.piece != null)
 
   const countries = [
-    'United States', 'Canada', 'United Kingdom', 'Australia', 
-    'Germany', 'France', 'Japan', 'South Korea'
+    'United States', 'Canada', 'United Kingdom', 'Australia',
+    'Germany', 'France', 'Spain', 'Italy', 'Netherlands',
+    'Belgium', 'Austria', 'Portugal', 'Sweden', 'Denmark',
+    'Japan', 'South Korea', 'Singapore', 'Thailand', 'Switzerland',
+    'Norway', 'New Zealand'
   ]
+
+  // Calculate totals with promo and tax
+  const subtotal = getCartTotal()
+  const discount = calculateDiscount(subtotal)
+  const subtotalAfterDiscount = subtotal - discount
+  const taxInfo = calculateTax(subtotalAfterDiscount, formData.country || 'United States')
+  const total = subtotalAfterDiscount + taxInfo.taxAmount
+
+  // Luhn algorithm for credit card validation
+  const validateLuhn = (cardNumber: string): boolean => {
+    const digits = cardNumber.replace(/\D/g, '')
+    if (digits.length < 13 || digits.length > 19) return false
+
+    let sum = 0
+    let isEven = false
+
+    for (let i = digits.length - 1; i >= 0; i--) {
+      let digit = parseInt(digits[i], 10)
+
+      if (isEven) {
+        digit *= 2
+        if (digit > 9) {
+          digit -= 9
+        }
+      }
+
+      sum += digit
+      isEven = !isEven
+    }
+
+    return sum % 10 === 0
+  }
+
+  // Validate expiry date
+  const validateExpiryDate = (expiryDate: string): boolean => {
+    const parts = expiryDate.split('/')
+    if (parts.length !== 2) return false
+
+    const month = parseInt(parts[0], 10)
+    const year = parseInt(parts[1], 10)
+
+    if (isNaN(month) || isNaN(year)) return false
+    if (month < 1 || month > 12) return false
+
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear() % 100
+    const currentMonth = currentDate.getMonth() + 1
+
+    if (year < currentYear) return false
+    if (year === currentYear && month < currentMonth) return false
+
+    return true
+  }
+
+  // Validate postal code (basic validation)
+  const validatePostalCode = (postalCode: string, country: string): boolean => {
+    if (!postalCode || postalCode.trim().length === 0) return false
+
+    // Basic validation - just check it has some content
+    // In production, you'd want country-specific validation
+    const trimmed = postalCode.trim()
+    return trimmed.length >= 3 && trimmed.length <= 10
+  }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
-    
-    if (!formData.email || !formData.email.includes('@')) {
-      newErrors.email = 'Valid email required'
+
+    // Email validation
+    if (!formData.email || !formData.email.trim()) {
+      newErrors.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address'
     }
-    
+
     // Only validate password if creating account
     if (!isGuest && (!formData.password || formData.password.length < 8)) {
       newErrors.password = 'Password must be at least 8 characters'
     }
-    
-    if (!formData.firstName) newErrors.firstName = 'First name required'
-    if (!formData.lastName) newErrors.lastName = 'Last name required'
-    if (!formData.address) newErrors.address = 'Address required'
-    if (!formData.city) newErrors.city = 'City required'
-    if (!formData.country) newErrors.country = 'Country required'
-    if (!formData.postalCode) newErrors.postalCode = 'Postal code required'
-    if (!formData.cardNumber || formData.cardNumber.length < 16) {
-      newErrors.cardNumber = 'Valid card number required'
+
+    // Shipping validation
+    if (!formData.firstName || !formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required'
     }
+    if (!formData.lastName || !formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required'
+    }
+    if (!formData.address || !formData.address.trim()) {
+      newErrors.address = 'Address is required'
+    }
+    if (!formData.city || !formData.city.trim()) {
+      newErrors.city = 'City is required'
+    }
+    if (!formData.country) {
+      newErrors.country = 'Please select a country'
+    }
+
+    // Postal code validation
+    if (!validatePostalCode(formData.postalCode, formData.country)) {
+      newErrors.postalCode = 'Please enter a valid postal code'
+    }
+
+    // Card number validation with Luhn algorithm
+    if (!formData.cardNumber || formData.cardNumber.trim().length === 0) {
+      newErrors.cardNumber = 'Card number is required'
+    } else if (formData.cardNumber.replace(/\D/g, '').length < 13) {
+      newErrors.cardNumber = 'Card number must be at least 13 digits'
+    } else if (!validateLuhn(formData.cardNumber)) {
+      newErrors.cardNumber = 'Invalid card number'
+    }
+
+    // Expiry date validation
     if (!formData.expiryDate || !formData.expiryDate.includes('/')) {
-      newErrors.expiryDate = 'MM/YY format required'
+      newErrors.expiryDate = 'Expiry date required (MM/YY)'
+    } else if (!validateExpiryDate(formData.expiryDate)) {
+      newErrors.expiryDate = 'Card has expired or invalid date'
     }
-    if (!formData.cvc || formData.cvc.length < 3) {
-      newErrors.cvc = 'CVC required'
+
+    // CVC validation
+    if (!formData.cvc || formData.cvc.trim().length === 0) {
+      newErrors.cvc = 'CVC is required'
+    } else if (formData.cvc.length < 3 || formData.cvc.length > 4) {
+      newErrors.cvc = 'CVC must be 3 or 4 digits'
     }
 
     setErrors(newErrors)
@@ -85,28 +198,70 @@ const Checkout = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
 
     setIsProcessing(true)
-    
+
     // Simulate payment processing
     setTimeout(() => {
-      // Save order to localStorage
-      const order = {
-        id: Date.now().toString(),
+      // Create order with order store
+      const orderItems = cartPieces.map(item => ({
+        pieceId: item.pieceId,
+        pieceName: item.piece!.name,
+        size: item.size,
+        quantity: item.quantity,
+        price: item.piece!.price,
+        imageUrl: item.piece!.imageUrl || item.piece!.image || ''
+      }))
+
+      const newOrder = createOrder({
+        items: orderItems,
+        subtotal,
+        discount,
+        tax: taxInfo.taxAmount,
+        shipping: 0, // Free shipping for now
+        total,
+        status: 'pending',
+        customerEmail: formData.email,
+        customerName: `${formData.firstName} ${formData.lastName}`,
+        shippingAddress: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          address: formData.address,
+          city: formData.city,
+          country: formData.country,
+          postalCode: formData.postalCode
+        }
+      })
+
+      // Also save to admin orders for backwards compatibility
+      const adminOrder = {
+        id: newOrder.orderNumber,
         items: cartItems,
-        total: getCartTotal(),
+        subtotal,
+        discount,
+        tax: taxInfo.taxAmount,
+        total,
         customerInfo: formData,
+        promoCode: appliedPromo?.code || null,
         status: 'processing',
         createdAt: new Date().toISOString()
       }
-      
+
       const existingOrders = JSON.parse(localStorage.getItem('admin_orders') || '[]')
-      localStorage.setItem('admin_orders', JSON.stringify([order, ...existingOrders]))
-      
+      localStorage.setItem('admin_orders', JSON.stringify([adminOrder, ...existingOrders]))
+
+      // Send order confirmation email
+      addNotification({
+        type: 'order_confirmation',
+        recipient: formData.email,
+        subject: `Order Confirmation - ${newOrder.orderNumber}`,
+        body: `Hi ${formData.firstName},\n\nThank you for your order! We've received your order and it's being processed.\n\nOrder Number: ${newOrder.orderNumber}\nSubtotal: $${subtotal.toFixed(2)}${discount > 0 ? `\nDiscount: -$${discount.toFixed(2)}` : ''}\nTax (${taxInfo.displayName}): $${taxInfo.taxAmount.toFixed(2)}\nTotal: $${total.toFixed(2)}\n\nShipping to:\n${formData.firstName} ${formData.lastName}\n${formData.address}\n${formData.city}, ${formData.postalCode}\n${formData.country}\n\nYou'll receive a shipping confirmation once your order ships.\n\nTrack your order: /track-order\n\nBest regards,\nKhardingclassics Team`
+      })
+
       clearCart()
-      navigate('/thank-you')
+      navigate(`/thank-you?orderId=${newOrder.id}`)
     }, 2000)
   }
 
@@ -157,8 +312,8 @@ const Checkout = () => {
     marginBottom: '24px',
     padding: '20px',
     background: 'rgba(255, 255, 255, 0.03)',
-    border: 'none',
-    borderRadius: '8px'
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '0'
   }
 
   const buttonStyle = {
@@ -237,12 +392,28 @@ const Checkout = () => {
         </div>
       </header>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
+      {/* Breadcrumb */}
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '0 24px',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+      }}>
+        <Breadcrumb
+          items={[
+            { label: 'HOME', path: '/' },
+            { label: 'CART', path: '/cart' },
+            { label: 'CHECKOUT' }
+          ]}
+        />
+      </div>
+
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isSmallMobile ? '16px 12px' : isSmallScreen ? '24px 16px' : '32px 24px' }}>
         <form onSubmit={handleSubmit}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : '1fr 400px',
-            gap: '32px'
+            gridTemplateColumns: isMobile ? '1fr' : '1fr 360px',
+            gap: isSmallMobile ? '20px' : '32px'
           }}>
             {/* Left Column - Form */}
             <div>
@@ -254,11 +425,11 @@ const Checkout = () => {
                 style={sectionStyle}
               >
                 <h2 style={{
-                  fontSize: '14px',
+                  fontSize: '11px',
                   fontWeight: '300',
                   letterSpacing: '0.2em',
                   marginBottom: '20px',
-                  color: '#000000'
+                  color: 'rgba(255,255,255,0.8)'
                 }}>
                   CONTACT
                 </h2>
@@ -414,16 +585,16 @@ const Checkout = () => {
                 style={sectionStyle}
               >
                 <h2 style={{
-                  fontSize: '14px',
+                  fontSize: '11px',
                   fontWeight: '300',
                   letterSpacing: '0.2em',
                   marginBottom: '20px',
-                  color: '#000000'
+                  color: 'rgba(255,255,255,0.8)'
                 }}>
                   SHIPPING
                 </h2>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isSmallScreen ? '1fr' : '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                   <div>
                     <label style={labelStyle}>First Name</label>
                     <input
@@ -497,7 +668,7 @@ const Checkout = () => {
                   )}
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: isSmallScreen ? '1fr' : '2fr 1fr', gap: '16px' }}>
                   <div>
                     <label style={labelStyle}>Country</label>
                     <select
@@ -550,14 +721,29 @@ const Checkout = () => {
                 style={sectionStyle}
               >
                 <h2 style={{
-                  fontSize: '14px',
+                  fontSize: '11px',
                   fontWeight: '300',
                   letterSpacing: '0.2em',
                   marginBottom: '20px',
-                  color: '#000000'
+                  color: 'rgba(255,255,255,0.8)'
                 }}>
                   PAYMENT
                 </h2>
+
+                {/* Payment Simulation Warning */}
+                <div style={{
+                  marginBottom: '16px',
+                  padding: '12px',
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  border: '1px solid rgba(59, 130, 246, 0.3)',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  color: '#3b82f6'
+                }}>
+                  <p style={{ margin: '0' }}>
+                    Stripe integration pending. Payment processing is currently simulated for testing purposes.
+                  </p>
+                </div>
 
                 <div style={{ marginBottom: '16px' }}>
                   <label style={{ ...labelStyle, display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -655,11 +841,11 @@ const Checkout = () => {
                 }}
               >
                 <h2 style={{
-                  fontSize: '14px',
+                  fontSize: '11px',
                   fontWeight: '300',
                   letterSpacing: '0.2em',
                   marginBottom: '20px',
-                  color: '#000000'
+                  color: 'rgba(255,255,255,0.8)'
                 }}>
                   ORDER SUMMARY
                 </h2>
@@ -675,9 +861,9 @@ const Checkout = () => {
                         paddingBottom: '16px',
                         borderBottom: `1px solid ${'#e0e0e0'}`
                       }}>
-                        <img 
-                          src={piece.imageUrl} 
-                          alt={piece.name}
+                        <img
+                          src={piece?.imageUrl || '/placeholder.jpg'}
+                          alt={piece?.name || 'Product'}
                           style={{
                             width: '60px',
                             height: '80px',
@@ -687,13 +873,13 @@ const Checkout = () => {
                         />
                         <div style={{ flex: 1 }}>
                           <p style={{ fontSize: '13px', fontWeight: '500', color: '#000000' }}>
-                            {piece.name}
+                            {piece?.name || 'Unknown Product'}
                           </p>
                           <p style={{ fontSize: '12px', color: '#666666' }}>
                             Size: {size} | Qty: {quantity}
                           </p>
                           <p style={{ fontSize: '14px', color: '#000000', marginTop: '4px' }}>
-                            ${piece.price * quantity}
+                            ${(piece?.price || 0) * quantity}
                           </p>
                         </div>
                       </div>
@@ -710,8 +896,19 @@ const Checkout = () => {
                     fontSize: '14px'
                   }}>
                     <span style={{ color: '#666666' }}>Subtotal</span>
-                    <span style={{ color: '#000000' }}>${getCartTotal()}</span>
+                    <span style={{ color: '#000000' }}>${subtotal.toFixed(2)}</span>
                   </div>
+                  {discount > 0 && (
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '12px',
+                      fontSize: '14px'
+                    }}>
+                      <span style={{ color: '#10b981' }}>Discount ({appliedPromo?.code})</span>
+                      <span style={{ color: '#10b981' }}>-${discount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -727,8 +924,11 @@ const Checkout = () => {
                     marginBottom: '12px',
                     fontSize: '14px'
                   }}>
-                    <span style={{ color: '#666666' }}>Tax</span>
-                    <span style={{ color: '#000000' }}>${(getCartTotal() * 0.08).toFixed(2)}</span>
+                    <span style={{ color: '#666666' }}>
+                      {taxInfo.displayName}
+                      {taxInfo.taxRate > 0 && ` (${(taxInfo.taxRate * 100).toFixed(1)}%)`}
+                    </span>
+                    <span style={{ color: '#000000' }}>${taxInfo.taxAmount.toFixed(2)}</span>
                   </div>
                   <div style={{
                     display: 'flex',
@@ -740,7 +940,7 @@ const Checkout = () => {
                   }}>
                     <span style={{ color: '#000000' }}>Total</span>
                     <span style={{ color: '#000000' }}>
-                      ${(getCartTotal() * 1.08).toFixed(2)}
+                      ${total.toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -767,7 +967,10 @@ const Checkout = () => {
                   }}
                 >
                   {isProcessing ? (
-                    <>Processing...</>
+                    <>
+                      <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                      PROCESSING...
+                    </>
                   ) : (
                     <>
                       <Lock size={16} />
@@ -805,6 +1008,18 @@ const Checkout = () => {
           </div>
         </form>
       </div>
+
+      {/* Spinner animation */}
+      <style>{`
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+      `}</style>
     </div>
   )
 }

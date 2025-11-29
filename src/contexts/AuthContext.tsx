@@ -1,14 +1,15 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import { createContext, useState, useEffect, type ReactNode } from 'react'
+import { useUserStore, type StoredUser, type UserAddress, type UserOrder, type TryOnRequest } from '../stores/useUserStore'
 
-interface User {
+// Re-export types for backward compatibility
+export interface User {
   id: string
   email: string
   name: string
   role: 'admin' | 'user'
   orders: Order[]
   favorites: string[]
-  tryOnRequests: TryOnRequest[]
-  // Additional user details
+  tryOnRequests: TryOnRequestLegacy[]
   phone?: string
   address?: {
     street: string
@@ -20,15 +21,21 @@ interface User {
   lastLogin: string
 }
 
+interface OrderItem {
+  name: string
+  price: number
+  quantity: number
+}
+
 interface Order {
   id: string
   date: string
-  items: any[]
+  items: OrderItem[]
   total: number
   status: 'pending' | 'shipped' | 'delivered'
 }
 
-interface TryOnRequest {
+interface TryOnRequestLegacy {
   festivalId: string
   festivalName: string
   items: string[]
@@ -36,141 +43,93 @@ interface TryOnRequest {
   date: string
 }
 
-interface AuthContextType {
+export interface AuthContextType {
   user: User | null
   isAuthenticated: boolean
   login: (email: string, password: string) => Promise<boolean>
   logout: () => void
+  register: (email: string, password: string, name: string) => Promise<{ success: boolean; message: string }>
+  changePassword: (oldPassword: string, newPassword: string) => Promise<{ success: boolean; message: string }>
+  updateProfile: (updates: { name?: string; phone?: string; address?: UserAddress }) => Promise<boolean>
   addToFavorites: (productId: string) => void
   removeFromFavorites: (productId: string) => void
   addTryOnRequest: (festivalId: string, festivalName: string, items: string[]) => void
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) {
-    throw new Error('useAuth must be used within AuthProvider')
+// Convert StoredUser to legacy User format for backward compatibility
+const convertToLegacyUser = (storedUser: StoredUser): User => {
+  return {
+    id: storedUser.id,
+    email: storedUser.email,
+    name: storedUser.name,
+    role: storedUser.role,
+    orders: storedUser.orders.map(o => ({
+      ...o,
+      status: o.status === 'processing' || o.status === 'cancelled'
+        ? 'pending'
+        : o.status as 'pending' | 'shipped' | 'delivered'
+    })),
+    favorites: storedUser.favorites,
+    tryOnRequests: storedUser.tryOnRequests.map(t => ({
+      ...t,
+      status: t.status === 'cancelled'
+        ? 'pending'
+        : t.status as 'pending' | 'confirmed' | 'completed'
+    })),
+    phone: storedUser.phone,
+    address: storedUser.address,
+    joinDate: storedUser.joinDate,
+    lastLogin: storedUser.lastLogin
   }
-  return context
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
+  // Get functions from user store
+  const {
+    authenticate,
+    register: storeRegister,
+    changePassword: storeChangePassword,
+    updateProfile: storeUpdateProfile,
+    addFavorite,
+    removeFavorite,
+    addTryOnRequest: storeAddTryOnRequest,
+    getUserById
+  } = useUserStore()
+
   useEffect(() => {
     // Check localStorage for existing session
     const savedUser = localStorage.getItem('koby_user')
     if (savedUser) {
-      setUser(JSON.parse(savedUser))
-      setIsAuthenticated(true)
-    }
-  }, [])
-
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // Demo authentication - credentials from environment variables
-    const users = {
-      [import.meta.env.VITE_ADMIN_EMAIL || 'admin@kobysthreads.com']: {
-        password: import.meta.env.VITE_ADMIN_PASSWORD || 'admin123',
-        data: {
-          id: '1',
-          email: import.meta.env.VITE_ADMIN_EMAIL || 'admin@kobysthreads.com',
-          name: 'Admin User',
-          role: 'admin' as const,
-          orders: [],
-          favorites: [],
-          tryOnRequests: [],
-          joinDate: '2024-01-01',
-          lastLogin: new Date().toISOString()
+      try {
+        const userData = JSON.parse(savedUser)
+        // Verify user still exists in store
+        const storeUser = getUserById(userData.id)
+        if (storeUser && storeUser.isActive) {
+          setUser(convertToLegacyUser(storeUser))
+          setIsAuthenticated(true)
+        } else {
+          // User no longer exists or is inactive, clear session
+          localStorage.removeItem('koby_user')
         }
-      },
-      [import.meta.env.VITE_TEST_USER_EMAIL_1 || 'john@example.com']: {
-        password: import.meta.env.VITE_TEST_USER_PASSWORD_1 || 'user123',
-        data: {
-          id: '2',
-          email: import.meta.env.VITE_TEST_USER_EMAIL_1 || 'john@example.com',
-          name: 'John Doe',
-          role: 'user' as const,
-          orders: [
-            {
-              id: 'ORD001',
-              date: '2025-01-10',
-              items: [{ name: 'African Heritage Jacket', price: 299, quantity: 1 }],
-              total: 299,
-              status: 'delivered' as const
-            },
-            {
-              id: 'ORD002',
-              date: '2025-01-15',
-              items: [
-                { name: 'Urban Kiz Shirt', price: 89, quantity: 2 },
-                { name: 'Festival Pants', price: 129, quantity: 1 }
-              ],
-              total: 307,
-              status: 'shipped' as const
-            }
-          ],
-          favorites: ['piece-1', 'piece-3'],
-          tryOnRequests: [
-            {
-              festivalId: 'fest-1',
-              festivalName: 'Bangkok Kizomba Festival',
-              items: ['piece-2', 'piece-4'],
-              status: 'confirmed' as const,
-              date: '2025-01-20'
-            }
-          ],
-          phone: '+1 234 567 8900',
-          address: {
-            street: '123 Main Street',
-            city: 'New York',
-            country: 'USA',
-            postalCode: '10001'
-          },
-          joinDate: '2024-06-15',
-          lastLogin: new Date().toISOString()
-        }
-      },
-      [import.meta.env.VITE_TEST_USER_EMAIL_2 || 'sarah@example.com']: {
-        password: import.meta.env.VITE_TEST_USER_PASSWORD_2 || 'user456',
-        data: {
-          id: '3',
-          email: import.meta.env.VITE_TEST_USER_EMAIL_2 || 'sarah@example.com',
-          name: 'Sarah Johnson',
-          role: 'user' as const,
-          orders: [
-            {
-              id: 'ORD003',
-              date: '2025-01-08',
-              items: [{ name: 'Tarraxo Collection Dress', price: 189, quantity: 1 }],
-              total: 189,
-              status: 'delivered' as const
-            }
-          ],
-          favorites: ['piece-2'],
-          tryOnRequests: [],
-          phone: '+44 20 7946 0958',
-          address: {
-            street: '45 Oxford Street',
-            city: 'London',
-            country: 'UK',
-            postalCode: 'W1D 1BZ'
-          },
-          joinDate: '2024-09-20',
-          lastLogin: new Date().toISOString()
-        }
+      } catch {
+        localStorage.removeItem('koby_user')
       }
     }
+  }, [getUserById])
 
-    // Check credentials
-    const userAccount = users[email as unknown as keyof typeof users]
-    if (userAccount && userAccount.password === password) {
-      const userData = { ...userAccount.data, lastLogin: new Date().toISOString() }
-      setUser(userData)
+  const login = async (email: string, password: string): Promise<boolean> => {
+    const authenticatedUser = await authenticate(email, password)
+
+    if (authenticatedUser) {
+      const legacyUser = convertToLegacyUser(authenticatedUser)
+      setUser(legacyUser)
       setIsAuthenticated(true)
-      localStorage.setItem('koby_user', JSON.stringify(userData))
+      localStorage.setItem('koby_user', JSON.stringify(legacyUser))
       return true
     }
 
@@ -183,44 +142,93 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('koby_user')
   }
 
+  const register = async (email: string, password: string, name: string): Promise<{ success: boolean; message: string }> => {
+    const result = await storeRegister(email, password, name)
+
+    if (result.success && result.user) {
+      // Auto-login after registration
+      const legacyUser = convertToLegacyUser(result.user)
+      setUser(legacyUser)
+      setIsAuthenticated(true)
+      localStorage.setItem('koby_user', JSON.stringify(legacyUser))
+    }
+
+    return { success: result.success, message: result.message }
+  }
+
+  const changePassword = async (oldPassword: string, newPassword: string): Promise<{ success: boolean; message: string }> => {
+    if (!user) {
+      return { success: false, message: 'Not authenticated' }
+    }
+
+    return storeChangePassword(user.id, oldPassword, newPassword)
+  }
+
+  const updateProfile = async (updates: { name?: string; phone?: string; address?: UserAddress }): Promise<boolean> => {
+    if (!user) return false
+
+    const success = storeUpdateProfile(user.id, updates)
+
+    if (success) {
+      // Refresh user data
+      const updatedStoreUser = getUserById(user.id)
+      if (updatedStoreUser) {
+        const legacyUser = convertToLegacyUser(updatedStoreUser)
+        setUser(legacyUser)
+        localStorage.setItem('koby_user', JSON.stringify(legacyUser))
+      }
+    }
+
+    return success
+  }
+
   const addToFavorites = (productId: string) => {
     if (user) {
-      const updatedUser = {
-        ...user,
-        favorites: [...user.favorites, productId]
+      const success = addFavorite(user.id, productId)
+      if (success) {
+        const updatedUser = {
+          ...user,
+          favorites: [...user.favorites, productId]
+        }
+        setUser(updatedUser)
+        localStorage.setItem('koby_user', JSON.stringify(updatedUser))
       }
-      setUser(updatedUser)
-      localStorage.setItem('koby_user', JSON.stringify(updatedUser))
     }
   }
 
   const removeFromFavorites = (productId: string) => {
     if (user) {
-      const updatedUser = {
-        ...user,
-        favorites: user.favorites.filter(id => id !== productId)
+      const success = removeFavorite(user.id, productId)
+      if (success) {
+        const updatedUser = {
+          ...user,
+          favorites: user.favorites.filter(id => id !== productId)
+        }
+        setUser(updatedUser)
+        localStorage.setItem('koby_user', JSON.stringify(updatedUser))
       }
-      setUser(updatedUser)
-      localStorage.setItem('koby_user', JSON.stringify(updatedUser))
     }
   }
 
   const addTryOnRequest = (festivalId: string, festivalName: string, items: string[]) => {
     if (user) {
-      const newRequest: TryOnRequest = {
-        festivalId,
-        festivalName,
-        items,
-        status: 'pending',
-        date: new Date().toISOString()
+      const success = storeAddTryOnRequest(user.id, { festivalId, festivalName, items })
+      if (success) {
+        const newRequest: TryOnRequestLegacy = {
+          festivalId,
+          festivalName,
+          items,
+          status: 'pending',
+          date: new Date().toISOString()
+        }
+
+        const updatedUser = {
+          ...user,
+          tryOnRequests: [...user.tryOnRequests, newRequest]
+        }
+        setUser(updatedUser)
+        localStorage.setItem('koby_user', JSON.stringify(updatedUser))
       }
-      
-      const updatedUser = {
-        ...user,
-        tryOnRequests: [...user.tryOnRequests, newRequest]
-      }
-      setUser(updatedUser)
-      localStorage.setItem('koby_user', JSON.stringify(updatedUser))
     }
   }
 
@@ -230,6 +238,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAuthenticated,
       login,
       logout,
+      register,
+      changePassword,
+      updateProfile,
       addToFavorites,
       removeFromFavorites,
       addTryOnRequest
@@ -238,5 +249,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   )
 }
+
+// Re-export useAuth hook for backward compatibility
+export { useAuth } from './useAuthHook'
 
 export default AuthContext

@@ -1,19 +1,32 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, X, Plus, Minus, ShoppingBag, Truck, Shield, Package } from 'lucide-react'
+import { ArrowLeft, X, Plus, Minus, ShoppingBag, Truck, Shield, Package, Tag, Gift } from 'lucide-react'
 import useStore from '../stores/useStore'
+import usePromoStore from '../stores/usePromoStore'
+import { useGiftCardStore } from '../stores/useGiftCardStore'
 import { useToast } from '../components/Toast'
+import Breadcrumb from '../components/Breadcrumb'
+import RecentlyViewed from '../components/RecentlyViewed'
 
 const Cart = () => {
   const navigate = useNavigate()
   const { cartItems, pieces, updateQuantity, removeFromCart, getCartTotal } = useStore()
+  const { appliedPromo, validateCode, applyCode, removePromo, calculateDiscount } = usePromoStore()
+  const { appliedGiftCard, applyGiftCard, removeAppliedGiftCard } = useGiftCardStore()
   const { addToast } = useToast()
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [isTablet, setIsTablet] = useState(window.innerWidth > 768 && window.innerWidth <= 1024)
+  const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth < 360)
+  const [promoInput, setPromoInput] = useState('')
+  const [giftCardInput, setGiftCardInput] = useState('')
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768)
+      const width = window.innerWidth
+      setIsMobile(width <= 768)
+      setIsTablet(width > 768 && width <= 1024)
+      setIsSmallMobile(width < 360)
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
@@ -23,12 +36,56 @@ const Cart = () => {
     ...item,
     piece: pieces.find(p => p.id === item.pieceId)
   })).filter(item => item.piece)
-  
+
   // Free shipping calculation
   const freeShippingThreshold = 200
-  const currentTotal = getCartTotal()
-  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - currentTotal)
-  const shippingProgress = Math.min(100, (currentTotal / freeShippingThreshold) * 100)
+  const subtotal = getCartTotal()
+  const discount = calculateDiscount(subtotal)
+  const giftCardDiscount = appliedGiftCard ? Math.min(appliedGiftCard.balance, subtotal - discount) : 0
+  const currentTotal = Math.max(0, subtotal - discount - giftCardDiscount)
+  const remainingForFreeShipping = Math.max(0, freeShippingThreshold - (subtotal - discount))
+  const shippingProgress = Math.min(100, ((subtotal - discount) / freeShippingThreshold) * 100)
+
+  const handleApplyPromo = () => {
+    if (!promoInput.trim()) {
+      addToast('error', 'Please enter a promo code')
+      return
+    }
+
+    const validation = validateCode(promoInput, subtotal)
+    if (validation.valid && validation.promo) {
+      applyCode(promoInput)
+      addToast('success', validation.message)
+      setPromoInput('')
+    } else {
+      addToast('error', validation.message)
+    }
+  }
+
+  const handleRemovePromo = () => {
+    removePromo()
+    addToast('success', 'Promo code removed')
+  }
+
+  const handleApplyGiftCard = () => {
+    if (!giftCardInput.trim()) {
+      addToast('error', 'Please enter a gift card code')
+      return
+    }
+
+    const result = applyGiftCard(giftCardInput.toUpperCase())
+    if (result.success) {
+      addToast('success', result.message)
+      setGiftCardInput('')
+    } else {
+      addToast('error', result.message)
+    }
+  }
+
+  const handleRemoveGiftCard = () => {
+    removeAppliedGiftCard()
+    addToast('success', 'Gift card removed')
+  }
 
   // Styles
   const containerStyle = {
@@ -62,16 +119,18 @@ const Cart = () => {
   }
 
   const quantityButtonStyle = {
-    width: '32px',
-    height: '32px',
+    minWidth: '44px',
+    minHeight: '44px',
+    width: '44px',
+    height: '44px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     border: `1px solid rgba(255, 255, 255, 0.2)`,
     background: 'transparent',
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: 'rgba(255, 255, 255, 0.7)',
     cursor: 'pointer',
-    borderRadius: '4px',
+    borderRadius: '0',
     transition: 'all 0.3s'
   }
 
@@ -147,6 +206,23 @@ const Cart = () => {
           </div>
         </div>
       </header>
+
+      {/* Breadcrumb */}
+      {!isMobile && (
+        <div style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 24px',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        }}>
+          <Breadcrumb
+            items={[
+              { label: 'HOME', path: '/' },
+              { label: 'CART' }
+            ]}
+          />
+        </div>
+      )}
 
       {/* Free Shipping Progress Bar */}
       {cartItems.length > 0 && (
@@ -235,59 +311,64 @@ const Cart = () => {
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '24px 16px' : '40px 24px' }}>
         {cartItems.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            style={{ textAlign: 'center', padding: isMobile ? '40px 20px' : '80px 20px' }}
-          >
-            <ShoppingBag style={{ width: isMobile ? '48px' : '64px', height: isMobile ? '48px' : '64px', margin: '0 auto 24px', color: 'rgba(255, 255, 255, 0.6)' }} />
-            <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: isMobile ? '14px' : '18px', fontWeight: '300' }}>
-              Your bag is currently empty
-            </p>
-            <button
-              onClick={() => navigate('/collection')}
-              style={{
-                padding: isMobile ? '12px 24px' : '14px 32px',
-                background: '#ffffff',
-                color: '#000000',
-                border: 'none',
-                fontSize: isMobile ? '11px' : '13px',
-                fontWeight: '300',
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                cursor: 'pointer',
-                borderRadius: '6px',
-                transition: 'all 0.3s'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.05)'
-                e.currentTarget.style.boxShadow = '0 10px 30px rgba(249, 115, 22, 0.3)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)'
-                e.currentTarget.style.boxShadow = 'none'
-              }}
+          <>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              style={{ textAlign: 'center', padding: isMobile ? '40px 20px' : '80px 20px' }}
             >
-              BROWSE COLLECTION
-            </button>
-          </motion.div>
+              <ShoppingBag style={{ width: isMobile ? '48px' : '64px', height: isMobile ? '48px' : '64px', margin: '0 auto 24px', color: 'rgba(255, 255, 255, 0.6)' }} />
+              <p style={{ color: 'rgba(255, 255, 255, 0.6)', marginBottom: '32px', fontSize: isMobile ? '14px' : '18px', fontWeight: '300' }}>
+                Your bag is currently empty
+              </p>
+              <button
+                onClick={() => navigate('/collection')}
+                style={{
+                  padding: isMobile ? '12px 24px' : '14px 32px',
+                  background: '#ffffff',
+                  color: '#000000',
+                  border: 'none',
+                  fontSize: isMobile ? '11px' : '13px',
+                  fontWeight: '300',
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  cursor: 'pointer',
+                  borderRadius: '6px',
+                  transition: 'all 0.3s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.05)'
+                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(249, 115, 22, 0.3)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)'
+                  e.currentTarget.style.boxShadow = 'none'
+                }}
+              >
+                BROWSE COLLECTION
+              </button>
+            </motion.div>
+
+            {/* Show Recently Viewed when cart is empty */}
+            <RecentlyViewed isMobile={isMobile} maxItems={6} showClearButton={false} />
+          </>
         ) : (
           <div style={{
             display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : '1fr 380px',
-            gap: isMobile ? '24px' : '32px'
+            gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr 320px' : '1fr 380px',
+            gap: isSmallMobile ? '16px' : isMobile ? '24px' : '32px'
           }}>
             {/* Cart Items */}
             <div>
               <h2 style={{
-                fontSize: '14px',
+                fontSize: '11px',
                 fontWeight: '300',
                 letterSpacing: '0.2em',
-                color: 'rgba(255, 255, 255, 0.6)',
-                marginBottom: '24px',
+                color: 'rgba(255, 255, 255, 0.7)',
+                marginBottom: '20px',
                 textTransform: 'uppercase'
               }}>
-                Shopping Cart ({cartItems.length})
+                ITEMS ({cartItems.length})
               </h2>
               
               {cartPieces.map(({ piece, size, quantity, pieceId }, index) => (
@@ -311,11 +392,12 @@ const Cart = () => {
                       <img
                         src={piece.imageUrl}
                         alt={piece.name}
+                        loading="lazy"
                         style={{
                           width: isMobile ? '100%' : '100px',
                           height: isMobile ? 'auto' : '133px',
                           objectFit: 'cover',
-                          borderRadius: '4px'
+                          borderRadius: '0'
                         }}
                       />
                       <div style={{ flex: 1 }}>
@@ -419,7 +501,229 @@ const Cart = () => {
                 }}>
                   Order Summary
                 </h2>
-                
+
+                {/* Promo Code Input */}
+                <div style={{ marginBottom: isMobile ? '16px' : '20px' }}>
+                  {!appliedPromo ? (
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <div style={{ flex: 1, position: 'relative' as const }}>
+                        <Tag style={{
+                          position: 'absolute',
+                          left: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          width: '14px',
+                          height: '14px',
+                          color: 'rgba(255, 255, 255, 0.4)'
+                        }} />
+                        <input
+                          type="text"
+                          value={promoInput}
+                          onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
+                          onKeyPress={(e) => e.key === 'Enter' && handleApplyPromo()}
+                          placeholder="PROMO CODE"
+                          style={{
+                            width: '100%',
+                            padding: isMobile ? '10px 12px 10px 36px' : '12px 12px 12px 40px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            borderRadius: '0',
+                            color: '#ffffff',
+                            fontSize: isMobile ? '11px' : '13px',
+                            fontFamily: 'inherit',
+                            letterSpacing: '0.1em',
+                            outline: 'none',
+                            transition: 'all 0.3s'
+                          }}
+                          onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)'}
+                          onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'}
+                        />
+                      </div>
+                      <button
+                        onClick={handleApplyPromo}
+                        style={{
+                          padding: isMobile ? '10px 16px' : '12px 20px',
+                          background: 'transparent',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
+                          color: '#ffffff',
+                          fontSize: isMobile ? '10px' : '11px',
+                          fontWeight: '300',
+                          letterSpacing: '0.15em',
+                          textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          borderRadius: '0',
+                          transition: 'all 0.3s',
+                          whiteSpace: 'nowrap'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = '#ffffff'
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+                          e.currentTarget.style.background = 'transparent'
+                        }}
+                      >
+                        APPLY
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{
+                      padding: isMobile ? '10px 12px' : '12px 16px',
+                      background: 'rgba(16, 185, 129, 0.1)',
+                      border: '1px solid rgba(16, 185, 129, 0.3)',
+                      borderRadius: '0',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Tag style={{ width: '14px', height: '14px', color: '#10b981' }} />
+                        <span style={{
+                          fontSize: isMobile ? '11px' : '13px',
+                          color: '#10b981',
+                          fontWeight: '300',
+                          letterSpacing: '0.1em'
+                        }}>
+                          {appliedPromo.code}
+                        </span>
+                      </div>
+                      <button
+                        onClick={handleRemovePromo}
+                        style={{
+                          padding: '4px 8px',
+                          background: 'transparent',
+                          border: 'none',
+                          color: 'rgba(255, 255, 255, 0.6)',
+                          fontSize: isMobile ? '10px' : '11px',
+                          cursor: 'pointer',
+                          transition: 'color 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'}
+                      >
+                        <X style={{ width: '14px', height: '14px' }} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* Gift Card Input */}
+                <div style={{ marginBottom: isMobile ? '16px' : '20px' }}>
+                  {!appliedGiftCard ? (
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <div style={{ flex: 1, position: 'relative' as const }}>
+                        <Gift style={{
+                          position: 'absolute',
+                          left: '12px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          width: '14px',
+                          height: '14px',
+                          color: 'rgba(255, 255, 255, 0.4)'
+                        }} />
+                        <input
+                          type="text"
+                          value={giftCardInput}
+                          onChange={(e) => setGiftCardInput(e.target.value.toUpperCase())}
+                          onKeyPress={(e) => e.key === 'Enter' && handleApplyGiftCard()}
+                          placeholder="GIFT CARD CODE"
+                          style={{
+                            width: '100%',
+                            padding: isMobile ? '10px 12px 10px 36px' : '12px 12px 12px 40px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                            borderRadius: '0',
+                            color: '#ffffff',
+                            fontSize: isMobile ? '11px' : '13px',
+                            fontFamily: 'inherit',
+                            letterSpacing: '0.1em',
+                            outline: 'none',
+                            transition: 'all 0.3s'
+                          }}
+                          onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)'}
+                          onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'}
+                        />
+                      </div>
+                      <button
+                        onClick={handleApplyGiftCard}
+                        style={{
+                          padding: isMobile ? '10px 16px' : '12px 20px',
+                          background: 'transparent',
+                          border: '1px solid rgba(255, 255, 255, 0.3)',
+                          color: '#ffffff',
+                          fontSize: isMobile ? '10px' : '11px',
+                          fontWeight: '300',
+                          letterSpacing: '0.15em',
+                          textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          borderRadius: '0',
+                          transition: 'all 0.3s',
+                          whiteSpace: 'nowrap'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = '#ffffff'
+                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+                          e.currentTarget.style.background = 'transparent'
+                        }}
+                      >
+                        APPLY
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{
+                      padding: isMobile ? '10px 12px' : '12px 16px',
+                      background: 'rgba(249, 115, 22, 0.1)',
+                      border: '1px solid rgba(249, 115, 22, 0.3)',
+                      borderRadius: '0',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Gift style={{ width: '14px', height: '14px', color: '#f97316' }} />
+                        <div>
+                          <span style={{
+                            fontSize: isMobile ? '11px' : '13px',
+                            color: '#f97316',
+                            fontWeight: '300',
+                            letterSpacing: '0.1em',
+                            display: 'block'
+                          }}>
+                            {appliedGiftCard.code}
+                          </span>
+                          <span style={{
+                            fontSize: isMobile ? '9px' : '10px',
+                            color: 'rgba(249, 115, 22, 0.7)',
+                            letterSpacing: '0.05em'
+                          }}>
+                            Balance: ${appliedGiftCard.balance.toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleRemoveGiftCard}
+                        style={{
+                          padding: '4px 8px',
+                          background: 'transparent',
+                          border: 'none',
+                          color: 'rgba(255, 255, 255, 0.6)',
+                          fontSize: isMobile ? '10px' : '11px',
+                          cursor: 'pointer',
+                          transition: 'color 0.3s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'}
+                      >
+                        <X style={{ width: '14px', height: '14px' }} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <div style={{ paddingBottom: isMobile ? '16px' : '20px', borderBottom: `1px solid ${'rgba(255, 255, 255, 0.1)'}` }}>
                   <div style={{
                     display: 'flex',
@@ -428,8 +732,30 @@ const Cart = () => {
                     fontSize: isMobile ? '12px' : '14px'
                   }}>
                     <span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Subtotal</span>
-                    <span style={{ color: '#ffffff' }}>${getCartTotal()}</span>
+                    <span style={{ color: '#ffffff' }}>${subtotal.toFixed(2)}</span>
                   </div>
+                  {discount > 0 && (
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '12px',
+                      fontSize: isMobile ? '12px' : '14px'
+                    }}>
+                      <span style={{ color: '#10b981' }}>Discount ({appliedPromo?.code})</span>
+                      <span style={{ color: '#10b981' }}>-${discount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  {giftCardDiscount > 0 && (
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      marginBottom: '12px',
+                      fontSize: isMobile ? '12px' : '14px'
+                    }}>
+                      <span style={{ color: '#f97316' }}>Gift Card ({appliedGiftCard?.code})</span>
+                      <span style={{ color: '#f97316' }}>-${giftCardDiscount.toFixed(2)}</span>
+                    </div>
+                  )}
                   <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -457,7 +783,7 @@ const Cart = () => {
                   fontWeight: '300'
                 }}>
                   <span style={{ color: '#ffffff' }}>Total</span>
-                  <span style={{ color: '#ffffff' }}>${getCartTotal()}</span>
+                  <span style={{ color: '#ffffff' }}>${currentTotal.toFixed(2)}</span>
                 </div>
                 
                 <button

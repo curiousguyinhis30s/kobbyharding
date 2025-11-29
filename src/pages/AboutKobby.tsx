@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { Award, Globe, Users, Heart, Sparkles, Music, BookOpen, MessageCircle, Star, MapPin, Calendar } from 'lucide-react'
+import SEO from '../components/SEO'
+import { PAGE_SEO } from '../constants/seo'
 
 const AboutKobby = () => {
   const navigate = useNavigate()
@@ -31,17 +33,27 @@ const AboutKobby = () => {
     { year: '2009', event: 'Started Afro dance journey in Ghana', icon: Music },
     { year: '2014', event: 'Began teaching dance internationally', icon: Globe },
     { year: '2018', event: 'TED Talk on cultural expression through dance', icon: MessageCircle },
-    { year: '2020', event: 'Launched KOBBY HARDING fashion brand', icon: Sparkles },
-    { year: '2024', event: 'Expanded to sustainable African fashion', icon: Heart }
+    { year: '2020', event: 'Post-COVID: Conceived Ghanaline concept', icon: BookOpen },
+    { year: '2021', event: 'Launched Khardingclassics - Unity through fashion', icon: Sparkles },
+    { year: '2024', event: 'Expanding globally with love and positivity', icon: Heart }
   ]
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#ffffff',
-      color: '#000000'
-    }}>
-      {/* Hero Section with Kobby's Photo */}
+    <>
+      <SEO
+        title={PAGE_SEO.about.title}
+        description={PAGE_SEO.about.description}
+        keywords={PAGE_SEO.about.keywords}
+        image={PAGE_SEO.about.image}
+        url="/about"
+        type="article"
+      />
+      <div style={{
+        minHeight: '100vh',
+        background: '#ffffff',
+        color: '#000000'
+      }}>
+        {/* Hero Section with Kobby's Photo */}
       <section style={{
         position: 'relative',
         minHeight: '100vh',
@@ -82,7 +94,7 @@ const AboutKobby = () => {
               color: '#666666',
               fontWeight: '300'
             }}>
-              Visionary fashion designer, cultural ambassador, and movement artist bridging African heritage with contemporary style.
+              Spreading love and positivity across the globe through fashion that celebrates unity, self-expression, and creativity.
             </p>
 
             <div style={{
@@ -229,14 +241,14 @@ const AboutKobby = () => {
                   color: '#000000',
                   marginBottom: '16px'
                 }}>
-                  HERITAGE
+                  THE ORIGIN
                 </h3>
                 <p style={{
                   fontSize: '15px',
                   lineHeight: '1.8',
                   color: '#666666'
                 }}>
-                  Born in Ghana, Kobby's deep connection to African culture shapes every design. Each piece tells a story of tradition reimagined for the modern world.
+                  Born after the COVID-19 lockdown, Khardingclassics evolved from the Ghanaline concept. Kobby realized he didn't want to limit creativity to one culture - he saw a future where humanity stands as one.
                 </p>
               </div>
 
@@ -247,14 +259,14 @@ const AboutKobby = () => {
                   color: '#000000',
                   marginBottom: '16px'
                 }}>
-                  CRAFTSMANSHIP
+                  THE VISION
                 </h3>
                 <p style={{
                   fontSize: '15px',
                   lineHeight: '1.8',
                   color: '#666666'
                 }}>
-                  Working with local artisans across Africa, we preserve traditional techniques while creating contemporary pieces that honor our heritage.
+                  Using fashion to spread positivity and love, Khardingclassics blends African heritage with Western and Asian influences, where love and unity transcend borders.
                 </p>
               </div>
 
@@ -265,14 +277,14 @@ const AboutKobby = () => {
                   color: '#000000',
                   marginBottom: '16px'
                 }}>
-                  SUSTAINABILITY
+                  THE INSPIRATION
                 </h3>
                 <p style={{
                   fontSize: '15px',
                   lineHeight: '1.8',
                   color: '#666666'
                 }}>
-                  Every KOBBY HARDING piece is ethically made using sustainable materials, supporting local communities and protecting our environment.
+                  Kobby's mother, who made her own clothing and home designs with limited resources, taught him that creativity isn't about wealth—it's about passion, purpose, and positive impact.
                 </p>
               </div>
             </div>
@@ -291,7 +303,7 @@ const AboutKobby = () => {
                 marginBottom: '20px',
                 color: '#000000'
               }}>
-                "Fashion is my canvas for cultural expression. Each design bridges the gap between where we come from and where we're going."
+                "Creativity isn't about wealth—it's about passion, purpose, and how what we create can positively impact others. I saw a future where humanity stands as one, where love and unity transcend borders."
               </p>
               <p style={{
                 fontSize: '14px',
@@ -585,7 +597,8 @@ const AboutKobby = () => {
           SHOP NOW
         </button>
       </section>
-    </div>
+      </div>
+    </>
   )
 }
 

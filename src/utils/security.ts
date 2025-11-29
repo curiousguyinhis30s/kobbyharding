@@ -101,18 +101,18 @@ export const apiRateLimiter = new RateLimiter(100, 60000) // 100 requests per mi
 /**
  * Validates and sanitizes product quantities
  */
-export const validateQuantity = (quantity: any): number => {
-  const num = parseInt(quantity, 10)
-  
+export const validateQuantity = (quantity: unknown): number => {
+  const num = parseInt(String(quantity), 10)
+
   if (isNaN(num) || num < 1) {
     return 1
   }
-  
+
   if (num > 10) {
     console.warn('[Security] Quantity limit exceeded, capping at 10')
     return 10
   }
-  
+
   return num
 }
 
@@ -129,7 +129,7 @@ export const validateProductId = (id: string): boolean => {
  * Secure session storage with encryption simulation
  */
 export const secureStorage = {
-  setItem: (key: string, value: any): void => {
+  setItem: (key: string, value: unknown): void => {
     try {
       const encoded = btoa(JSON.stringify(value))
       localStorage.setItem(key, encoded)
@@ -137,12 +137,12 @@ export const secureStorage = {
       console.error('[Security] Failed to store secure data:', error)
     }
   },
-  
-  getItem: (key: string): any => {
+
+  getItem: <T = unknown>(key: string): T | null => {
     try {
       const encoded = localStorage.getItem(key)
       if (!encoded) return null
-      return JSON.parse(atob(encoded))
+      return JSON.parse(atob(encoded)) as T
     } catch (error) {
       console.error('[Security] Failed to retrieve secure data:', error)
       return null
@@ -210,19 +210,19 @@ export const validateFestivalSelection = (
 export const sanitizeReview = (review: {
   rating: number
   comment: string
-}): { isValid: boolean; sanitized?: any; error?: string } => {
+}): { isValid: boolean; sanitized?: { rating: number; comment: string }; error?: string } => {
   if (!review.rating || review.rating < 1 || review.rating > 5) {
     return { isValid: false, error: 'Invalid rating' }
   }
-  
+
   if (!review.comment || review.comment.trim().length < 10) {
     return { isValid: false, error: 'Review must be at least 10 characters' }
   }
-  
+
   if (review.comment.length > 1000) {
     return { isValid: false, error: 'Review must be less than 1000 characters' }
   }
-  
+
   return {
     isValid: true,
     sanitized: {
@@ -237,7 +237,7 @@ export const sanitizeReview = (review: {
  */
 export const logSecurityEvent = (
   event: string,
-  details: any,
+  details: Record<string, unknown>,
   severity: 'info' | 'warning' | 'error' = 'info'
 ): void => {
   const timestamp = new Date().toISOString()
@@ -249,15 +249,14 @@ export const logSecurityEvent = (
     userAgent: navigator.userAgent,
     url: window.location.href
   }
-  
+
   // In production, this would send to a security monitoring service
   if (severity === 'error') {
     console.error('[Security Event]', logEntry)
   } else if (severity === 'warning') {
     console.warn('[Security Event]', logEntry)
-  } else {
-    console.log('[Security Event]', logEntry)
   }
+  // Info-level events are tracked internally without logging
 }
 
 export default {

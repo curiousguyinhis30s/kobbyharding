@@ -44,20 +44,12 @@ interface HealthMetric {
   incidents: number
 }
 
-// interface HeatmapData {
-//   page: string
-//   clicks: Array<{ x: number; y: number; count: number }>
-//   scrollDepth: number
-//   avgTimeOnPage: number
-// }
-
 const AnalyticsDashboard = () => {
-  
+
   const [timeRange, setTimeRange] = useState('24h')
   const [visitors, setVisitors] = useState<Visitor[]>([])
   const [pageViews, setPageViews] = useState<PageView[]>([])
   const [healthMetrics, setHealthMetrics] = useState<HealthMetric[]>([])
-  // const [selectedMetric, setSelectedMetric] = useState('visitors')
   const [isLive, setIsLive] = useState(true)
   const [selectedPage, setSelectedPage] = useState('/collection')
 
@@ -213,7 +205,7 @@ const AnalyticsDashboard = () => {
   }
 
   const getActiveVisitors = () => visitors.filter(v => v.isActive).length
-  // const getTotalVisitors = () => visitors.length
+
   const getAvgDuration = () => {
     const total = visitors.reduce((acc, v) => acc + v.duration, 0)
     return Math.round(total / visitors.length)
@@ -221,7 +213,6 @@ const AnalyticsDashboard = () => {
   const getBounceRate = () => 25.4
   const getConversionRate = () => 3.2
 
-  // Country distribution for geographic insights
   const getCountryDistribution = () => {
     const distribution: { [key: string]: number } = {}
     visitors.forEach(v => {
@@ -231,18 +222,6 @@ const AnalyticsDashboard = () => {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
   }
-
-  // Generate heatmap data
-  // const generateHeatmapData = (): HeatmapData => ({
-  //   page: selectedPage,
-  //   clicks: Array.from({ length: 50 }, () => ({
-  //     x: Math.random() * 100,
-  //     y: Math.random() * 100,
-  //     count: Math.floor(Math.random() * 100)
-  //   })),
-  //   scrollDepth: 68,
-  //   avgTimeOnPage: 145
-  // })
 
   // Styles
   const containerStyle = {

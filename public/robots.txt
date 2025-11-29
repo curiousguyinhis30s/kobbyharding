@@ -1,0 +1,18 @@
+# Kharding Classics - Robots.txt
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Disallow admin and checkout pages from search engines
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /checkout
+Disallow: /thank-you
+Disallow: /account
+
+# Sitemap location
+Sitemap: https://khardingclassics.com/sitemap.xml
+
+# Crawl delay (optional - helps prevent server overload)
+Crawl-delay: 1

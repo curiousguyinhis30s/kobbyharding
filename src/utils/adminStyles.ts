@@ -8,21 +8,21 @@ export const adminPageStyles = {
   },
 
   header: {
-    padding: '40px',
+    padding: '24px 40px',
     borderBottom: '1px solid #e5e7eb',
     background: '#ffffff'
   },
 
   title: {
-    fontSize: '32px',
+    fontSize: '20px',
     fontWeight: '100',
     letterSpacing: '0.2em',
-    marginBottom: '8px',
+    marginBottom: '6px',
     color: '#111827'
   },
 
   subtitle: {
-    fontSize: '12px',
+    fontSize: '11px',
     color: '#6b7280',
     letterSpacing: '0.1em'
   },

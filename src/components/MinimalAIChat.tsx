@@ -1,382 +1,340 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  MessageCircle, X, Send, Music, Pause, Play, 
-  Instagram, Twitter, Globe, ChevronUp, Sparkles,
-  Heart, ShoppingBag, Volume2, VolumeX, Mic
-} from 'lucide-react'
+import { Sparkles, X } from 'lucide-react'
+import { useChatbotStore } from '../stores/useChatbotStore'
 import useStore from '../stores/useStore'
 import { useNavigate } from 'react-router-dom'
+import Fuse from 'fuse.js'
+import ChatMessage from './ChatMessage'
+import ChatInput from './ChatInput'
+import QuickReplies from './QuickReplies'
+import TypingIndicator from './TypingIndicator'
+import { sanitizeText } from '../utils/sanitize'
 
-interface Message {
+interface DisplayMessage {
   id: string
   text: string
-  sender: 'user' | 'ai'
+  sender: 'user' | 'assistant'
   timestamp: Date
+  confidence?: number
+  matchType?: 'faq' | 'product' | 'rule' | 'fallback'
 }
-
-// Koby's curated Afrobeat playlist
-const kobyPlaylist = [
-  { title: "Essence", artist: "Wizkid ft. Tems", url: "/music/essence.mp3" },
-  { title: "Last Last", artist: "Burna Boy", url: "/music/lastlast.mp3" },
-  { title: "Peru", artist: "Fireboy DML", url: "/music/peru.mp3" },
-  { title: "Sungba", artist: "Asake", url: "/music/sungba.mp3" },
-  { title: "Calm Down", artist: "Rema", url: "/music/calmdown.mp3" }
-]
 
 const MinimalAIChat = () => {
   const navigate = useNavigate()
-  const { pieces, cartItems } = useStore()
-  const audioRef = useRef<HTMLAudioElement>(null)
+  const { pieces } = useStore()
+  const {
+    faqs, conversationStarters, settings,
+    searchFaqs, addMessage, currentSession, startSession, initializeFuse
+  } = useChatbotStore()
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  
+  const inputRef = useRef<HTMLInputElement>(null)
+
   const [isOpen, setIsOpen] = useState(false)
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<DisplayMessage[]>([])
   const [inputValue, setInputValue] = useState('')
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentTrack, setCurrentTrack] = useState(0)
-  const [volume, setVolume] = useState(0.7)
-  const [showVolume, setShowVolume] = useState(false)
-  
-  // Quick action buttons
-  const quickActions = [
-    { icon: ShoppingBag, label: 'Shop', action: () => navigate('/collection') },
-    { icon: Heart, label: 'Festival', action: () => navigate('/festival-pickup') },
-    { icon: Instagram, label: 'Instagram', action: () => window.open('https://www.instagram.com/hardingkobby/?hl=en', '_blank') },
-    { icon: Music, label: 'Vibes', action: () => toggleMusic() }
-  ]
-  
-  const toggleMusic = () => {
-    if (!audioRef.current) return
-    
-    if (isPlaying) {
-      audioRef.current.pause()
-    } else {
-      audioRef.current.play()
+  const [isTyping, setIsTyping] = useState(false)
+
+  // Initialize Fuse.js for product search
+  const productFuse = useRef<Fuse<typeof pieces[0]> | null>(null)
+
+  useEffect(() => {
+    initializeFuse()
+    productFuse.current = new Fuse(pieces, {
+      keys: [
+        { name: 'name', weight: 0.3 },
+        { name: 'story', weight: 0.2 },
+        { name: 'vibe', weight: 0.2 },
+        { name: 'fabricOrigin', weight: 0.2 },
+        { name: 'denimType', weight: 0.1 }
+      ],
+      threshold: 0.4,
+      includeScore: true
+    })
+  }, [pieces, initializeFuse])
+
+  // Show greeting when chat opens
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      startSession()
+      setTimeout(() => {
+        const greetingMessage: DisplayMessage = {
+          id: `greeting-${Date.now()}`,
+          text: settings.greeting,
+          sender: 'assistant',
+          timestamp: new Date(),
+          matchType: 'rule'
+        }
+        setMessages([greetingMessage])
+        addMessage('assistant', settings.greeting, { type: 'rule', confidence: 1 })
+      }, 300)
     }
-    setIsPlaying(!isPlaying)
-  }
-  
-  const nextTrack = () => {
-    setCurrentTrack((prev) => (prev + 1) % kobyPlaylist.length)
-  }
-  
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value)
-    setVolume(newVolume)
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume
-    }
-  }
-  
-  const processMessage = async (text: string) => {
-    const lowerText = text.toLowerCase()
-    
-    // Quick responses based on keywords
-    if (lowerText.includes('size')) {
-      return "I recommend checking our size guide! Most pieces run true to vintage sizing (slightly smaller than modern). What's your usual size?"
-    }
-    if (lowerText.includes('kizomba') || lowerText.includes('urban') || lowerText.includes('tarraxo')) {
-      return "🎵 Koby loves Kizomba festivals! We'll be at Bangkok Kizomba (March), Singapore Urban Kiz (April), Bali Tarraxo Fest (May), Tokyo Kizomba Week (June), Seoul Urban Fest (July), and Hong Kong Kiz (August). Perfect pieces for dancing all night!"
-    }
-    if (lowerText.includes('festival')) {
-      return "🎪 We specialize in Kizomba & Urban Kizomba festivals across Asia! Bangkok (March), Singapore (April), Bali (May), Tokyo (June), Seoul (July), Hong Kong (August). Which one are you attending?"
-    }
-    if (lowerText.includes('koby')) {
-      return "Koby is currently in Bangkok creating new pieces and preparing for the Kizomba festival season! Follow @hardingkobby on Instagram for updates. 🌍"
-    }
-    if (lowerText.includes('price') || lowerText.includes('cost')) {
-      return `Our handcrafted pieces range from $${Math.min(...pieces.map(p => p.price))} to $${Math.max(...pieces.map(p => p.price))}. Each one is unique and worth the investment!`
-    }
-    if (lowerText.includes('dance') || lowerText.includes('dancing')) {
-      return "Our pieces are designed for movement! Perfect for Kizomba, Urban Kiz, and Tarraxo dancing. The fabrics breathe and flow with your body. 💃"
-    }
-    
-    return "Let me help you find your perfect piece! What vibe are you looking for today?"
-  }
-  
-  const handleSend = async () => {
-    if (!inputValue.trim()) return
-    
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      text: inputValue,
-      sender: 'user',
-      timestamp: new Date()
-    }
-    
-    setMessages(prev => [...prev, userMessage])
-    setInputValue('')
-    
-    // Get AI response
-    setTimeout(async () => {
-      const response = await processMessage(inputValue)
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: response,
-        sender: 'ai',
-        timestamp: new Date()
-      }
-      setMessages(prev => [...prev, aiMessage])
-    }, 800)
-  }
-  
+  }, [isOpen])
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
-  
+
   useEffect(() => {
-    // Auto-play next track when current ends
-    if (audioRef.current) {
-      audioRef.current.addEventListener('ended', nextTrack)
-      return () => audioRef.current?.removeEventListener('ended', nextTrack)
+    if (isOpen) {
+      setTimeout(() => inputRef.current?.focus(), 100)
     }
-  }, [currentTrack])
-  
+  }, [isOpen])
+
+  // Intelligent response engine - memoized
+  const processMessage = useCallback(async (text: string): Promise<{ response: string; confidence: number; type: 'faq' | 'product' | 'rule' | 'fallback' }> => {
+    const lowerText = text.toLowerCase().trim()
+
+    // 1. Check for navigation intents (rule-based)
+    if (lowerText.includes('shop') || lowerText.includes('browse') || lowerText.includes('collection')) {
+      return {
+        response: "I'd love to help you explore our collection! Click here to browse all pieces, or tell me what style you're looking for.",
+        confidence: 0.95,
+        type: 'rule'
+      }
+    }
+
+    if (lowerText.includes('cart') || lowerText.includes('checkout')) {
+      return {
+        response: "Ready to complete your order? Your cart is waiting! Let me know if you need any help with the checkout process.",
+        confidence: 0.95,
+        type: 'rule'
+      }
+    }
+
+    if (lowerText.includes('contact') || lowerText.includes('email') || lowerText.includes('speak') || lowerText.includes('human') || lowerText.includes('person')) {
+      return {
+        response: settings.handoffMessage,
+        confidence: 1,
+        type: 'rule'
+      }
+    }
+
+    // 2. Search FAQs using Fuse.js
+    const faqResults = searchFaqs(text)
+    if (faqResults.length > 0 && faqResults[0].score > 0.6) {
+      const bestMatch = faqResults[0]
+      return {
+        response: bestMatch.faq.answer,
+        confidence: bestMatch.score,
+        type: 'faq'
+      }
+    }
+
+    // 3. Check for product-related queries
+    const productKeywords = ['piece', 'outfit', 'wear', 'style', 'denim', 'fabric', 'jacket', 'shirt', 'pants', 'look']
+    const isProductQuery = productKeywords.some(kw => lowerText.includes(kw))
+
+    if (isProductQuery && productFuse.current) {
+      const productResults = productFuse.current.search(text)
+      if (productResults.length > 0) {
+        const topProducts = productResults.slice(0, 3)
+        const productNames = topProducts.map(r => r.item.name).join(', ')
+        const priceRange = `$${Math.min(...topProducts.map(r => r.item.price))} - $${Math.max(...topProducts.map(r => r.item.price))}`
+
+        let response = `Based on what you're looking for, I'd recommend checking out: ${productNames}. `
+
+        if (settings.includeProductPrices) {
+          response += `Price range: ${priceRange}. `
+        }
+
+        response += "Would you like me to tell you more about any of these?"
+
+        return {
+          response,
+          confidence: 1 - (productResults[0].score || 0),
+          type: 'product'
+        }
+      }
+    }
+
+    // 4. Check for price queries
+    if (lowerText.includes('price') || lowerText.includes('cost') || lowerText.includes('expensive') || lowerText.includes('cheap') || lowerText.includes('affordable')) {
+      const minPrice = Math.min(...pieces.map(p => p.price))
+      const maxPrice = Math.max(...pieces.map(p => p.price))
+      const avgPrice = Math.round(pieces.reduce((sum, p) => sum + p.price, 0) / pieces.length)
+
+      return {
+        response: `Our handcrafted pieces range from $${minPrice} to $${maxPrice}, with an average around $${avgPrice}. Each piece is unique - the African fabrics alone travel thousands of miles to reach you. Would you like to see pieces in a specific price range?`,
+        confidence: 0.9,
+        type: 'rule'
+      }
+    }
+
+    // 5. Check for availability/stock queries
+    if (lowerText.includes('available') || lowerText.includes('in stock') || lowerText.includes('sold out')) {
+      const availableCount = pieces.filter(p => p.available).length
+      return {
+        response: `We currently have ${availableCount} pieces available in our collection. Many are one-of-a-kind, so once they're gone, they're gone! Browse the collection to see what's currently available.`,
+        confidence: 0.85,
+        type: 'rule'
+      }
+    }
+
+    // 6. Lower threshold FAQ search for partial matches
+    if (faqResults.length > 0 && faqResults[0].score > 0.4) {
+      const bestMatch = faqResults[0]
+      return {
+        response: bestMatch.faq.answer,
+        confidence: bestMatch.score,
+        type: 'faq'
+      }
+    }
+
+    // 7. Fallback response
+    return {
+      response: settings.fallbackMessage,
+      confidence: 0,
+      type: 'fallback'
+    }
+  }, [searchFaqs, pieces, productFuse, settings])
+
+  const handleSend = useCallback(async () => {
+    if (!inputValue.trim()) return
+
+    // Sanitize user input to prevent XSS
+    const sanitizedInput = sanitizeText(inputValue.trim())
+
+    const userMessage: DisplayMessage = {
+      id: `user-${Date.now()}`,
+      text: sanitizedInput,
+      sender: 'user',
+      timestamp: new Date()
+    }
+
+    setMessages(prev => [...prev, userMessage])
+    addMessage('user', sanitizedInput)
+    setInputValue('')
+    setIsTyping(true)
+
+    // Get intelligent response (using sanitized input)
+    const { response, confidence, type } = await processMessage(sanitizedInput)
+
+    // Add natural delay based on settings
+    setTimeout(() => {
+      const assistantMessage: DisplayMessage = {
+        id: `assistant-${Date.now()}`,
+        text: response,
+        sender: 'assistant',
+        timestamp: new Date(),
+        confidence,
+        matchType: type
+      }
+      setMessages(prev => [...prev, assistantMessage])
+      addMessage('assistant', response, { type, confidence })
+      setIsTyping(false)
+    }, settings.responseDelay)
+  }, [inputValue, addMessage, processMessage, settings.responseDelay])
+
+  const handleStarterClick = useCallback((text: string) => {
+    setInputValue(text)
+    setTimeout(() => handleSend(), 100)
+  }, [handleSend])
+
+  const enabledStarters = useMemo(() =>
+    conversationStarters.filter(s => s.enabled).slice(0, 4),
+    [conversationStarters]
+  )
+
   return (
     <>
-      {/* Hidden audio element */}
-      <audio 
-        ref={audioRef}
-        src={kobyPlaylist[currentTrack].url}
-        onError={() => console.log('Audio not available - using placeholder')}
-      />
-      
-      {/* Minimal floating widget */}
+      {/* Floating button */}
       <AnimatePresence>
         {!isOpen && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
+          <motion.button
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsOpen(true)}
             style={{
               position: 'fixed',
               bottom: '24px',
               right: '24px',
-              zIndex: 50
+              width: '52px',
+              height: '52px',
+              background: '#000',
+              border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: '0',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 1000,
+              boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
             }}
           >
-            {/* Main button */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsOpen(true)}
-              style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '50%',
-                background: `linear-gradient(135deg, ${'#000000'}, ${'#333333'})`,
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 4px 20px rgba(249, 115, 22, 0.4)'
-              }}
-            >
-              <MessageCircle style={{ color: 'white', width: '24px', height: '24px' }} />
-            </motion.button>
-            
-            {/* Quick action buttons (hidden until hover) */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileHover={{ opacity: 1 }}
-              style={{
-                position: 'absolute',
-                bottom: '70px',
-                right: '0',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px'
-              }}
-            >
-              {quickActions.map((action, idx) => (
-                <motion.button
-                  key={idx}
-                  initial={{ x: 20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: idx * 0.1 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={action.action}
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    background: '#ffffff',
-                    backdropFilter: 'blur(10px)',
-                    border: `1px solid ${'#e0e0e0'}`,
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                  title={action.label}
-                >
-                  <action.icon style={{ color: '#000000', width: '18px', height: '18px' }} />
-                </motion.button>
-              ))}
-            </motion.div>
-          </motion.div>
+            <Sparkles size={20} color="#fff" />
+          </motion.button>
         )}
       </AnimatePresence>
-      
-      {/* Compact chat window */}
+
+      {/* Chat window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
             style={{
               position: 'fixed',
               bottom: '24px',
               right: '24px',
-              width: isExpanded ? '380px' : '320px',
-              height: isExpanded ? '500px' : '400px',
-              background: '#ffffff',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '20px',
-              border: `1px solid ${'#e0e0e0'}`,
+              width: '340px',
+              height: '480px',
+              background: '#0a0a0a',
+              border: '1px solid rgba(255,255,255,0.15)',
+              borderRadius: '0',
               display: 'flex',
               flexDirection: 'column',
               overflow: 'hidden',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-              zIndex: 100,
-              transition: 'all 0.3s ease'
+              zIndex: 1000,
+              boxShadow: '0 20px 60px rgba(0,0,0,0.5)'
             }}
           >
-            {/* Compact header */}
+            {/* Header */}
             <div style={{
-              padding: '12px 16px',
-              borderBottom: `1px solid ${'#e0e0e0'}`,
+              padding: '14px 16px',
+              borderBottom: '1px solid rgba(255,255,255,0.1)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              background: '#ffffff'
+              justifyContent: 'space-between'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Sparkles style={{ color: '#000000', width: '18px', height: '18px' }} />
-                <span style={{ color: '#000000', fontSize: '14px', fontWeight: '600' }}>
-                  Koby's Assistant
-                </span>
-              </div>
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                {/* Music controls */}
-                <button
-                  onClick={toggleMusic}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    color: '#666666',
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}
-                  title={isPlaying ? kobyPlaylist[currentTrack].title : 'Play Koby\'s Playlist'}
-                >
-                  {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-                </button>
-                
-                {/* Volume control */}
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={() => setShowVolume(!showVolume)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      padding: '4px',
-                      color: '#666666'
-                    }}
-                  >
-                    {volume > 0 ? <Volume2 size={16} /> : <VolumeX size={16} />}
-                  </button>
-                  
-                  {showVolume && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '100%',
-                      right: 0,
-                      background: '#ffffff',
-                      border: `1px solid ${'#e0e0e0'}`,
-                      borderRadius: '8px',
-                      padding: '8px',
-                      marginTop: '4px'
-                    }}>
-                      <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.1"
-                        value={volume}
-                        onChange={handleVolumeChange}
-                        style={{
-                          width: '80px',
-                          height: '4px',
-                          cursor: 'pointer'
-                        }}
-                      />
-                    </div>
-                  )}
+              <div>
+                <div style={{
+                  fontSize: '11px',
+                  fontWeight: '400',
+                  letterSpacing: '0.15em',
+                  color: '#fff'
+                }}>
+                  KHARDING ASSISTANT
                 </div>
-                
-                {/* Expand/collapse */}
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    color: '#666666'
-                  }}
-                >
-                  <ChevronUp 
-                    size={16} 
-                    style={{ 
-                      transform: isExpanded ? 'rotate(0deg)' : 'rotate(180deg)',
-                      transition: 'transform 0.3s'
-                    }}
-                  />
-                </button>
-                
-                {/* Close */}
-                <button
-                  onClick={() => setIsOpen(false)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: '4px',
-                    color: '#666666'
-                  }}
-                >
-                  <X size={16} />
-                </button>
+                <div style={{
+                  fontSize: '9px',
+                  color: 'rgba(255,255,255,0.5)',
+                  marginTop: '2px',
+                  letterSpacing: '0.05em'
+                }}>
+                  Trained on our collection & policies
+                </div>
               </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'rgba(255,255,255,0.6)',
+                  cursor: 'pointer',
+                  padding: '4px'
+                }}
+              >
+                <X size={18} />
+              </button>
             </div>
-            
-            {/* Currently playing (if music is on) */}
-            {isPlaying && (
-              <div style={{
-                padding: '8px 16px',
-                background: `linear-gradient(90deg, ${'#000000'}20, transparent)`,
-                borderBottom: `1px solid ${'#e0e0e0'}`,
-                fontSize: '12px',
-                color: '#666666',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}>
-                <Music size={12} />
-                <span>{kobyPlaylist[currentTrack].title} - {kobyPlaylist[currentTrack].artist}</span>
-              </div>
-            )}
-            
+
             {/* Messages area */}
             <div style={{
               flex: 1,
@@ -386,138 +344,58 @@ const MinimalAIChat = () => {
               flexDirection: 'column',
               gap: '12px'
             }}>
-              {messages.length === 0 ? (
-                <div style={{ textAlign: 'center', color: '#666666', fontSize: '13px', marginTop: '20px' }}>
-                  <p>👋 Ask me anything about Koby's pieces!</p>
-                  <div style={{ marginTop: '16px', display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-                    {['Size guide', 'Festival dates', 'About Koby', 'Best sellers'].map(q => (
-                      <button
-                        key={q}
-                        onClick={() => setInputValue(q)}
-                        style={{
-                          padding: '4px 12px',
-                          borderRadius: '12px',
-                          background: '#ffffff',
-                          border: `1px solid ${'#e0e0e0'}`,
-                          color: '#000000',
-                          fontSize: '11px',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        {q}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                messages.map(message => (
-                  <motion.div
-                    key={message.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{
-                      alignSelf: message.sender === 'user' ? 'flex-end' : 'flex-start',
-                      maxWidth: '80%'
-                    }}
-                  >
-                    <div style={{
-                      padding: '8px 12px',
-                      borderRadius: '12px',
-                      background: message.sender === 'user' 
-                        ? `linear-gradient(135deg, ${'#000000'}, ${'#333333'})`
-                        : '#ffffff',
-                      color: message.sender === 'user' ? 'white' : '#000000',
-                      fontSize: '13px'
-                    }}>
-                      {message.text}
-                    </div>
-                  </motion.div>
-                ))
+              {messages.map(message => (
+                <ChatMessage key={message.id} message={message} />
+              ))}
+
+              {/* Typing indicator */}
+              {isTyping && <TypingIndicator />}
+
+              {/* Conversation starters (show when no messages yet) */}
+              {messages.length <= 1 && enabledStarters.length > 0 && (
+                <QuickReplies
+                  starters={enabledStarters}
+                  onStarterClick={handleStarterClick}
+                />
               )}
+
               <div ref={messagesEndRef} />
             </div>
-            
-            {/* Compact input area */}
+
+            {/* Input area */}
+            <ChatInput
+              inputValue={inputValue}
+              inputRef={inputRef}
+              isTyping={isTyping}
+              onInputChange={setInputValue}
+              onSend={handleSend}
+            />
+
+            {/* Footer */}
             <div style={{
-              padding: '12px',
-              borderTop: `1px solid ${'#e0e0e0'}`,
-              display: 'flex',
-              gap: '8px',
-              background: '#ffffff'
-            }}>
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Type your message..."
-                style={{
-                  flex: 1,
-                  padding: '8px 12px',
-                  borderRadius: '20px',
-                  background: '#ffffff',
-                  border: `1px solid ${'#e0e0e0'}`,
-                  color: '#000000',
-                  fontSize: '13px',
-                  outline: 'none'
-                }}
-              />
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleSend}
-                disabled={!inputValue.trim()}
-                style={{
-                  padding: '8px',
-                  borderRadius: '50%',
-                  background: inputValue.trim() 
-                    ? `linear-gradient(135deg, ${'#000000'}, ${'#333333'})`
-                    : '#ffffff',
-                  border: 'none',
-                  cursor: inputValue.trim() ? 'pointer' : 'not-allowed',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <Send size={16} style={{ color: inputValue.trim() ? 'white' : '#666666' }} />
-              </motion.button>
-            </div>
-            
-            {/* Social media bar */}
-            <div style={{
-              padding: '8px',
-              borderTop: `1px solid ${'#e0e0e0'}`,
+              padding: '8px 12px',
+              borderTop: '1px solid rgba(255,255,255,0.05)',
               display: 'flex',
               justifyContent: 'center',
               gap: '16px',
-              background: '#ffffff'
+              fontSize: '9px',
+              color: 'rgba(255,255,255,0.4)'
             }}>
-              <a 
-                href="https://www.instagram.com/hardingkobby/?hl=en" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{ color: '#666666' }}
+              <span>{faqs.filter(f => f.enabled).length} FAQs loaded</span>
+              <span>|</span>
+              <button
+                onClick={() => navigate('/collection')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'rgba(255,255,255,0.5)',
+                  cursor: 'pointer',
+                  fontSize: '9px',
+                  letterSpacing: '0.05em'
+                }}
               >
-                <Instagram size={16} />
-              </a>
-              <a 
-                href="https://twitter.com/hardingkobby" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{ color: '#666666' }}
-              >
-                <Twitter size={16} />
-              </a>
-              <a 
-                href="https://kobysthreads.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{ color: '#666666' }}
-              >
-                <Globe size={16} />
-              </a>
+                BROWSE COLLECTION
+              </button>
             </div>
           </motion.div>
         )}

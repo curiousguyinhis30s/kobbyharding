@@ -1,17 +1,27 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { Instagram, Mail, MapPin, Phone, Send } from 'lucide-react'
+import { Instagram, Mail, MapPin, Phone, Send, Loader2 } from 'lucide-react'
+import useContactStore from '../stores/useContactStore'
+import useNotificationStore from '../stores/useNotificationStore'
+import SEO from '../components/SEO'
+import { PAGE_SEO } from '../constants/seo'
 
 const ContactMinimal = () => {
   const navigate = useNavigate()
+  const { addSubmission } = useContactStore()
+  const { addNotification } = useNotificationStore()
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: ''
   })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [submissionId, setSubmissionId] = useState('')
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
   useEffect(() => {
@@ -22,31 +32,109 @@ const ContactMinimal = () => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+
+    // Validate name
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required'
+    }
+
+    // Validate email
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address'
+    }
+
+    // Validate subject
+    if (!formData.subject) {
+      newErrors.subject = 'Please select a subject'
+    }
+
+    // Validate message
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required'
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters'
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission
+
+    if (!validateForm()) {
+      return
+    }
+
+    setIsSubmitting(true)
+
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 1500))
+
+    // Add submission to store
+    const id = addSubmission({
+      name: formData.name,
+      email: formData.email,
+      subject: formData.subject,
+      message: formData.message
+    })
+
+    // Create email notification
+    addNotification({
+      type: 'contact_reply',
+      recipient: formData.email,
+      subject: 'We received your message - Khardingclassics',
+      body: `Hi ${formData.name},\n\nThank you for reaching out to Khardingclassics. We've received your message regarding "${formData.subject}" and will get back to you within 24-48 hours.\n\nYour submission ID: ${id}\n\nBest regards,\nKhardingclassics Team`
+    })
+
+    setSubmissionId(id)
     setSubmitted(true)
+    setIsSubmitting(false)
+
+    // Reset form after 5 seconds
     setTimeout(() => {
       setSubmitted(false)
+      setSubmissionId('')
       setFormData({ name: '', email: '', subject: '', message: '' })
-    }, 3000)
+    }, 5000)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     })
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      })
+    }
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#000',
-      color: '#fff',
-      paddingTop: '64px'
-    }}>
-      {/* Hero Section */}
+    <>
+      <SEO
+        title={PAGE_SEO.contact.title}
+        description={PAGE_SEO.contact.description}
+        keywords={PAGE_SEO.contact.keywords}
+        image={PAGE_SEO.contact.image}
+        url="/contact"
+        type="website"
+      />
+      <div style={{
+        minHeight: '100vh',
+        background: '#000',
+        color: '#fff',
+        paddingTop: '64px'
+      }}>
+        {/* Hero Section */}
       <div style={{
         position: 'relative',
         height: '40vh',
@@ -89,7 +177,7 @@ const ContactMinimal = () => {
             letterSpacing: '0.2em',
             opacity: 0.7
           }}>
-            GET IN TOUCH WITH KOBBY HARDING
+            GET IN TOUCH WITH KHARDINGCLASSICS
           </p>
         </motion.div>
       </div>
@@ -98,10 +186,10 @@ const ContactMinimal = () => {
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
-        padding: isMobile ? '40px 20px' : '80px 40px',
+        padding: isMobile ? '24px 20px' : '40px 32px',
         display: 'grid',
         gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-        gap: isMobile ? '40px' : '80px'
+        gap: isMobile ? '32px' : '40px'
       }}>
         {/* Left: Contact Form */}
         <motion.div
@@ -134,7 +222,7 @@ const ContactMinimal = () => {
                   marginBottom: '8px',
                   opacity: 0.7
                 }}>
-                  NAME
+                  NAME <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <input
                   type="text"
@@ -146,15 +234,25 @@ const ContactMinimal = () => {
                     width: '100%',
                     padding: '12px',
                     background: 'transparent',
-                    border: '1px solid rgba(255,255,255,0.2)',
+                    border: `1px solid ${errors.name ? '#ef4444' : 'rgba(255,255,255,0.2)'}`,
                     color: '#fff',
                     fontSize: '13px',
                     outline: 'none',
                     transition: 'border 0.3s'
                   }}
-                  onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'}
-                  onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'}
+                  onFocus={(e) => e.currentTarget.style.borderColor = errors.name ? '#ef4444' : 'rgba(255,255,255,0.5)'}
+                  onBlur={(e) => e.currentTarget.style.borderColor = errors.name ? '#ef4444' : 'rgba(255,255,255,0.2)'}
                 />
+                {errors.name && (
+                  <p style={{
+                    color: '#ef4444',
+                    fontSize: '10px',
+                    marginTop: '4px',
+                    letterSpacing: '0.05em'
+                  }}>
+                    {errors.name}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -165,7 +263,7 @@ const ContactMinimal = () => {
                   marginBottom: '8px',
                   opacity: 0.7
                 }}>
-                  EMAIL
+                  EMAIL <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 <input
                   type="email"
@@ -177,15 +275,25 @@ const ContactMinimal = () => {
                     width: '100%',
                     padding: '12px',
                     background: 'transparent',
-                    border: '1px solid rgba(255,255,255,0.2)',
+                    border: `1px solid ${errors.email ? '#ef4444' : 'rgba(255,255,255,0.2)'}`,
                     color: '#fff',
                     fontSize: '13px',
                     outline: 'none',
                     transition: 'border 0.3s'
                   }}
-                  onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'}
-                  onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'}
+                  onFocus={(e) => e.currentTarget.style.borderColor = errors.email ? '#ef4444' : 'rgba(255,255,255,0.5)'}
+                  onBlur={(e) => e.currentTarget.style.borderColor = errors.email ? '#ef4444' : 'rgba(255,255,255,0.2)'}
                 />
+                {errors.email && (
+                  <p style={{
+                    color: '#ef4444',
+                    fontSize: '10px',
+                    marginTop: '4px',
+                    letterSpacing: '0.05em'
+                  }}>
+                    {errors.email}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -198,7 +306,7 @@ const ContactMinimal = () => {
                 marginBottom: '8px',
                 opacity: 0.7
               }}>
-                SUBJECT
+                SUBJECT <span style={{ color: '#ef4444' }}>*</span>
               </label>
               <select
                 name="subject"
@@ -209,15 +317,15 @@ const ContactMinimal = () => {
                   width: '100%',
                   padding: '12px',
                   background: 'transparent',
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  border: `1px solid ${errors.subject ? '#ef4444' : 'rgba(255,255,255,0.2)'}`,
                   color: '#fff',
                   fontSize: '13px',
                   outline: 'none',
                   transition: 'border 0.3s',
                   cursor: 'pointer'
                 }}
-                onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'}
-                onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'}
+                onFocus={(e) => e.currentTarget.style.borderColor = errors.subject ? '#ef4444' : 'rgba(255,255,255,0.5)'}
+                onBlur={(e) => e.currentTarget.style.borderColor = errors.subject ? '#ef4444' : 'rgba(255,255,255,0.2)'}
               >
                 <option value="" style={{ background: '#000' }}>Select a subject</option>
                 <option value="order" style={{ background: '#000' }}>Order Inquiry</option>
@@ -226,6 +334,16 @@ const ContactMinimal = () => {
                 <option value="collaboration" style={{ background: '#000' }}>Collaboration</option>
                 <option value="other" style={{ background: '#000' }}>Other</option>
               </select>
+              {errors.subject && (
+                <p style={{
+                  color: '#ef4444',
+                  fontSize: '10px',
+                  marginTop: '4px',
+                  letterSpacing: '0.05em'
+                }}>
+                  {errors.subject}
+                </p>
+              )}
             </div>
 
             {/* Message */}
@@ -237,36 +355,47 @@ const ContactMinimal = () => {
                 marginBottom: '8px',
                 opacity: 0.7
               }}>
-                MESSAGE
+                MESSAGE <span style={{ color: '#ef4444' }}>*</span>
               </label>
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
                 required
-                rows={6}
+                rows={4}
                 style={{
                   width: '100%',
                   padding: '12px',
                   background: 'transparent',
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  border: `1px solid ${errors.message ? '#ef4444' : 'rgba(255,255,255,0.2)'}`,
                   color: '#fff',
                   fontSize: '13px',
                   outline: 'none',
                   transition: 'border 0.3s',
                   resize: 'vertical',
-                  minHeight: '120px'
+                  minHeight: '100px'
                 }}
-                onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'}
-                onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'}
+                onFocus={(e) => e.currentTarget.style.borderColor = errors.message ? '#ef4444' : 'rgba(255,255,255,0.5)'}
+                onBlur={(e) => e.currentTarget.style.borderColor = errors.message ? '#ef4444' : 'rgba(255,255,255,0.2)'}
               />
+              {errors.message && (
+                <p style={{
+                  color: '#ef4444',
+                  fontSize: '10px',
+                  marginTop: '4px',
+                  letterSpacing: '0.05em'
+                }}>
+                  {errors.message}
+                </p>
+              )}
             </div>
 
             {/* Submit Button */}
             <motion.button
               type="submit"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              disabled={isSubmitting}
+              whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+              whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               style={{
                 width: '100%',
                 padding: '16px',
@@ -275,29 +404,75 @@ const ContactMinimal = () => {
                 color: submitted ? '#10b981' : '#fff',
                 fontSize: '12px',
                 letterSpacing: '0.25em',
-                cursor: 'pointer',
+                cursor: isSubmitting ? 'not-allowed' : 'pointer',
                 transition: 'all 0.3s',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '12px'
+                gap: '12px',
+                opacity: isSubmitting ? 0.7 : 1
               }}
               onMouseEnter={(e) => {
-                if (!submitted) {
+                if (!submitted && !isSubmitting) {
                   e.currentTarget.style.borderColor = '#fff'
                   e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
                 }
               }}
               onMouseLeave={(e) => {
-                if (!submitted) {
+                if (!submitted && !isSubmitting) {
                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
                   e.currentTarget.style.background = 'transparent'
                 }
               }}
             >
-              <Send style={{ width: '14px', height: '14px' }} />
-              {submitted ? 'MESSAGE SENT' : 'SEND MESSAGE'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 style={{ width: '14px', height: '14px', animation: 'spin 1s linear infinite' }} />
+                  SENDING...
+                </>
+              ) : submitted ? (
+                <>
+                  <Send style={{ width: '14px', height: '14px' }} />
+                  MESSAGE SENT
+                </>
+              ) : (
+                <>
+                  <Send style={{ width: '14px', height: '14px' }} />
+                  SEND MESSAGE
+                </>
+              )}
             </motion.button>
+
+            {/* Success Message */}
+            {submitted && submissionId && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{
+                  marginTop: '16px',
+                  padding: '12px',
+                  background: 'rgba(16, 185, 129, 0.1)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  borderRadius: '4px'
+                }}
+              >
+                <p style={{
+                  fontSize: '12px',
+                  color: '#10b981',
+                  letterSpacing: '0.05em',
+                  marginBottom: '4px'
+                }}>
+                  Thank you! Your message has been received.
+                </p>
+                <p style={{
+                  fontSize: '11px',
+                  color: 'rgba(16, 185, 129, 0.8)',
+                  letterSpacing: '0.05em'
+                }}>
+                  Reference ID: <strong>{submissionId}</strong>
+                </p>
+              </motion.div>
+            )}
           </form>
         </motion.div>
 
@@ -334,8 +509,8 @@ const ContactMinimal = () => {
                 }}>
                   EMAIL
                 </p>
-                <a 
-                  href="mailto:koby@kobysthreads.com"
+                <a
+                  href="mailto:contact@khardingclassics.com"
                   style={{
                     fontSize: '13px',
                     color: '#fff',
@@ -343,7 +518,7 @@ const ContactMinimal = () => {
                     letterSpacing: '0.05em'
                   }}
                 >
-                  koby@kobysthreads.com
+                  contact@khardingclassics.com
                 </a>
               </div>
             </div>
@@ -364,8 +539,8 @@ const ContactMinimal = () => {
                 }}>
                   INSTAGRAM
                 </p>
-                <a 
-                  href="https://www.instagram.com/hardingkobby"
+                <a
+                  href="https://www.instagram.com/Khardingclassics"
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
@@ -375,7 +550,7 @@ const ContactMinimal = () => {
                     letterSpacing: '0.05em'
                   }}
                 >
-                  @hardingkobby
+                  @Khardingclassics
                 </a>
               </div>
             </div>
@@ -436,9 +611,9 @@ const ContactMinimal = () => {
 
           {/* Festival Schedule */}
           <div style={{
-            padding: isMobile ? '20px' : '32px',
+            padding: isMobile ? '16px' : '20px',
             border: '1px solid rgba(255,255,255,0.1)',
-            marginBottom: isMobile ? '24px' : '32px'
+            marginBottom: isMobile ? '20px' : '24px'
           }}>
             <h3 style={{
               fontSize: '12px',
@@ -540,6 +715,15 @@ const ContactMinimal = () => {
 
       {/* Mobile Responsive Styles */}
       <style>{`
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
         @media (max-width: 768px) {
           .contact-grid {
             grid-template-columns: 1fr !important;
@@ -547,7 +731,8 @@ const ContactMinimal = () => {
           }
         }
       `}</style>
-    </div>
+      </div>
+    </>
   )
 }
 

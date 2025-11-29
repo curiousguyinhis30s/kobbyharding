@@ -279,19 +279,27 @@ const SystemDocumentation = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white pt-16">
       {/* Header */}
       <div className="border-b border-white/10 sticky top-0 bg-black/95 backdrop-blur-xl z-50">
-        <div className="max-w-[1400px] mx-auto px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-light tracking-[0.2em]">SYSTEM DOCUMENTATION</h1>
-              <p className="text-sm text-white/60 mt-2">Complete technical reference for Kobby Harding platform</p>
+        <div className="max-w-[1400px] mx-auto px-8 py-4">
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => window.history.back()}
+                  className="text-white/60 hover:text-white transition text-sm tracking-wider"
+                >
+                  ← BACK TO ADMIN
+                </button>
+                <div className="h-4 w-px bg-white/20" />
+                <h1 className="text-sm font-light tracking-[0.2em]">SYSTEM DOCUMENTATION</h1>
+              </div>
             </div>
             <div className="flex gap-2">
               <button
                 onClick={() => setActiveTab('components')}
-                className={`px-6 py-3 text-sm tracking-wider transition ${
+                className={`px-4 py-2 text-xs tracking-wider transition ${
                   activeTab === 'components'
                     ? 'bg-white text-black'
                     : 'bg-white/5 hover:bg-white/10'
@@ -301,7 +309,7 @@ const SystemDocumentation = () => {
               </button>
               <button
                 onClick={() => setActiveTab('security')}
-                className={`px-6 py-3 text-sm tracking-wider transition ${
+                className={`px-4 py-2 text-xs tracking-wider transition ${
                   activeTab === 'security'
                     ? 'bg-white text-black'
                     : 'bg-white/5 hover:bg-white/10'
@@ -311,7 +319,7 @@ const SystemDocumentation = () => {
               </button>
               <button
                 onClick={() => setActiveTab('design')}
-                className={`px-6 py-3 text-sm tracking-wider transition ${
+                className={`px-4 py-2 text-xs tracking-wider transition ${
                   activeTab === 'design'
                     ? 'bg-white text-black'
                     : 'bg-white/5 hover:bg-white/10'
@@ -321,7 +329,7 @@ const SystemDocumentation = () => {
               </button>
               <button
                 onClick={() => setActiveTab('api')}
-                className={`px-6 py-3 text-sm tracking-wider transition ${
+                className={`px-4 py-2 text-xs tracking-wider transition ${
                   activeTab === 'api'
                     ? 'bg-white text-black'
                     : 'bg-white/5 hover:bg-white/10'

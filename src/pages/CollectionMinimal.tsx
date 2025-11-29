@@ -7,6 +7,7 @@ import { mockPieces } from '../data/mockData'
 import { useToast } from '../components/Toast'
 import { ProductCardSkeleton } from '../components/SkeletonLoader'
 import { EmptySearch } from '../components/EmptyStates'
+import RecentlyViewed from '../components/RecentlyViewed'
 
 const CollectionMinimal = () => {
   const navigate = useNavigate()
@@ -23,25 +24,27 @@ const CollectionMinimal = () => {
 
   const categories = [
     { id: 'all', label: 'ALL' },
-    { id: 'jackets', label: 'JACKETS' },
-    { id: 'shirts', label: 'SHIRTS' },
-    { id: 'pants', label: 'PANTS' },
-    { id: 'limited', label: 'LIMITED' }
+    { id: 'khlassic-suits', label: 'KHLASSIC SUITS' },
+    { id: 't-shirts', label: 'T-SHIRTS' },
+    { id: 'kh-tailored', label: 'KH TAILORED' },
+    { id: 'kh-specials', label: 'KH-SPECIALS' },
+    { id: 'denims', label: 'DENIMS' },
+    { id: 'limited', label: 'LIMITED EDITION' }
   ]
 
   // Filter and sort pieces
   let filteredPieces = pieces
-  
+
   if (searchQuery) {
-    filteredPieces = filteredPieces.filter(p => 
+    filteredPieces = filteredPieces.filter(p =>
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.vibe.toLowerCase().includes(searchQuery.toLowerCase())
     )
   }
 
   if (category !== 'all') {
-    filteredPieces = filteredPieces.filter((_, index) => 
-      category === 'limited' ? index < 3 : index % 2 === 0
+    filteredPieces = filteredPieces.filter(p =>
+      p.category === category
     )
   }
   
@@ -315,9 +318,13 @@ const CollectionMinimal = () => {
             {filteredPieces.map((piece, index) => (
             <motion.div
               key={piece.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: index * 0.02 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: index * 0.02,
+                duration: 0.4,
+                ease: 'easeOut'
+              }}
               style={{ 
                 position: 'relative',
                 background: '#000',
@@ -336,16 +343,18 @@ const CollectionMinimal = () => {
                 overflow: 'hidden',
                 position: 'relative'
               }}>
-                <img 
-                  src={piece.imageUrl} 
+                <img
+                  src={piece.imageUrl}
                   alt={piece.name}
+                  loading="lazy"
                   style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
                     transition: 'all 0.5s ease',
                     transform: hoveredItem === piece.id ? 'scale(1.05)' : 'scale(1)',
-                    filter: hoveredItem === piece.id ? 'brightness(0.8)' : 'brightness(1)'
+                    filter: hoveredItem === piece.id ? 'brightness(0.8)' : 'brightness(1)',
+                    aspectRatio: gridView === 'large' ? '3/4' : '1/1'
                   }}
                 />
                 
@@ -446,6 +455,9 @@ const CollectionMinimal = () => {
           </div>
         )}
       </div>
+
+      {/* Recently Viewed Section */}
+      <RecentlyViewed isMobile={isMobile} maxItems={6} />
     </div>
   )
 }

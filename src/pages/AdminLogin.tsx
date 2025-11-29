@@ -1,22 +1,27 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { User, Lock, Info } from 'lucide-react'
+import { User, Lock, Mail, Info, ArrowLeft, UserPlus, Eye, EyeOff } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../components/Toast'
 
+type AuthMode = 'login' | 'register'
+
 const AdminLogin = () => {
   const navigate = useNavigate()
-  const { login } = useAuth()
+  const { login, register } = useAuth()
   const { addToast } = useToast()
+  const [mode, setMode] = useState<AuthMode>('login')
+  const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [showCredentials, setShowCredentials] = useState(true)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
@@ -24,10 +29,8 @@ const AdminLogin = () => {
     try {
       const success = await login(formData.email, formData.password)
       if (success) {
-        // Get the user data after login
         const userData = JSON.parse(localStorage.getItem('koby_user') || '{}')
         addToast('success', `Welcome back, ${userData.name || 'User'}!`)
-        // Redirect based on user role
         if (userData.role === 'admin') {
           navigate('/admin')
         } else {
@@ -46,14 +49,51 @@ const AdminLogin = () => {
     setLoading(false)
   }
 
-  const testCredentials = [
-    { email: 'admin@kobysthreads.com', password: 'admin123', role: 'Admin' },
-    { email: 'john@example.com', password: 'user123', role: 'Normal User' },
-    { email: 'sarah@example.com', password: 'user456', role: 'Normal User' }
-  ]
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
 
-  const handleQuickLogin = (email: string, password: string) => {
-    setFormData({ email, password })
+    // Validation
+    if (!formData.name || !formData.email || !formData.password) {
+      setError('Please fill in all fields')
+      return
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters')
+      return
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const result = await register(formData.email, formData.password, formData.name)
+
+      if (result.success) {
+        addToast('success', 'Account created successfully! Welcome to Khardingclassics.')
+        navigate('/account')
+      } else {
+        setError(result.message)
+        addToast('error', result.message)
+      }
+    } catch (error) {
+      setError('An error occurred during registration')
+      addToast('error', 'An error occurred. Please try again.')
+      console.error('Registration error:', error)
+    }
+
+    setLoading(false)
+  }
+
+  const switchMode = () => {
+    setMode(mode === 'login' ? 'register' : 'login')
+    setError('')
+    setFormData({ name: '', email: '', password: '', confirmPassword: '' })
   }
 
   return (
@@ -91,7 +131,7 @@ const AdminLogin = () => {
             color: '#fff',
             background: 'rgba(255, 255, 255, 0.05)'
           }}>
-            K
+            KH
           </div>
           <h1 style={{
             fontSize: '18px',
@@ -100,19 +140,71 @@ const AdminLogin = () => {
             color: '#fff',
             margin: '0 0 8px 0'
           }}>
-            KOBBY HARDING
+            KHARDINGCLASSICS
           </h1>
           <p style={{
             fontSize: '11px',
             color: 'rgba(255, 255, 255, 0.4)',
             letterSpacing: '0.15em'
           }}>
-            SIGN IN
+            {mode === 'login' ? 'SIGN IN' : 'CREATE ACCOUNT'}
           </p>
         </div>
 
-        {/* Login Form */}
-        <form onSubmit={handleSubmit}>
+        {/* Form */}
+        <form onSubmit={mode === 'login' ? handleLogin : handleRegister}>
+          {/* Name Field (Register only) */}
+          {mode === 'register' && (
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '10px',
+                letterSpacing: '0.2em',
+                color: 'rgba(255, 255, 255, 0.5)',
+                marginBottom: '8px'
+              }}>
+                FULL NAME
+              </label>
+              <div style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                background: 'transparent',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                transition: 'border-color 0.3s'
+              }}>
+                <User size={16} style={{
+                  position: 'absolute',
+                  left: '12px',
+                  color: 'rgba(255, 255, 255, 0.4)'
+                }} />
+                <input
+                  type="text"
+                  placeholder="Your full name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '12px 12px 12px 40px',
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#fff',
+                    fontSize: '13px',
+                    outline: 'none'
+                  }}
+                  onFocus={(e) => {
+                    const parent = e.currentTarget.parentElement
+                    if (parent) parent.style.borderColor = 'rgba(255, 255, 255, 0.5)'
+                  }}
+                  onBlur={(e) => {
+                    const parent = e.currentTarget.parentElement
+                    if (parent) parent.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+                  }}
+                />
+              </div>
+            </div>
+          )}
+
           {/* Email Field */}
           <div style={{ marginBottom: '20px' }}>
             <label style={{
@@ -122,7 +214,7 @@ const AdminLogin = () => {
               color: 'rgba(255, 255, 255, 0.5)',
               marginBottom: '8px'
             }}>
-              EMAIL / USERNAME
+              EMAIL
             </label>
             <div style={{
               position: 'relative',
@@ -132,14 +224,14 @@ const AdminLogin = () => {
               border: '1px solid rgba(255, 255, 255, 0.2)',
               transition: 'border-color 0.3s'
             }}>
-              <User size={16} style={{
+              <Mail size={16} style={{
                 position: 'absolute',
                 left: '12px',
                 color: 'rgba(255, 255, 255, 0.4)'
               }} />
               <input
-                type="text"
-                placeholder="Try: admin@kobysthreads.com"
+                type="email"
+                placeholder="Enter your email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 style={{
@@ -164,7 +256,7 @@ const AdminLogin = () => {
           </div>
 
           {/* Password Field */}
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: mode === 'register' ? '20px' : '24px' }}>
             <label style={{
               display: 'block',
               fontSize: '10px',
@@ -188,13 +280,13 @@ const AdminLogin = () => {
                 color: 'rgba(255, 255, 255, 0.4)'
               }} />
               <input
-                type="password"
-                placeholder="Try: admin123"
+                type={showPassword ? 'text' : 'password'}
+                placeholder={mode === 'register' ? 'Min 6 characters' : 'Enter your password'}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 style={{
                   width: '100%',
-                  padding: '12px 12px 12px 40px',
+                  padding: '12px 40px 12px 40px',
                   background: 'transparent',
                   border: 'none',
                   color: '#fff',
@@ -210,8 +302,80 @@ const AdminLogin = () => {
                   if (parent) parent.style.borderColor = 'rgba(255, 255, 255, 0.2)'
                 }}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '12px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '0',
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                {showPassword ? (
+                  <EyeOff size={16} color="rgba(255, 255, 255, 0.4)" />
+                ) : (
+                  <Eye size={16} color="rgba(255, 255, 255, 0.4)" />
+                )}
+              </button>
             </div>
           </div>
+
+          {/* Confirm Password Field (Register only) */}
+          {mode === 'register' && (
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '10px',
+                letterSpacing: '0.2em',
+                color: 'rgba(255, 255, 255, 0.5)',
+                marginBottom: '8px'
+              }}>
+                CONFIRM PASSWORD
+              </label>
+              <div style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                background: 'transparent',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                transition: 'border-color 0.3s'
+              }}>
+                <Lock size={16} style={{
+                  position: 'absolute',
+                  left: '12px',
+                  color: 'rgba(255, 255, 255, 0.4)'
+                }} />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '12px 12px 12px 40px',
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#fff',
+                    fontSize: '13px',
+                    outline: 'none'
+                  }}
+                  onFocus={(e) => {
+                    const parent = e.currentTarget.parentElement
+                    if (parent) parent.style.borderColor = 'rgba(255, 255, 255, 0.5)'
+                  }}
+                  onBlur={(e) => {
+                    const parent = e.currentTarget.parentElement
+                    if (parent) parent.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+                  }}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Error Message */}
           {error && (
@@ -243,7 +407,11 @@ const AdminLogin = () => {
               letterSpacing: '0.15em',
               cursor: loading ? 'not-allowed' : 'pointer',
               transition: 'all 0.3s',
-              opacity: loading ? 0.6 : 1
+              opacity: loading ? 0.6 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
             }}
             onMouseEnter={(e) => {
               if (!loading) {
@@ -256,89 +424,52 @@ const AdminLogin = () => {
               }
             }}
           >
-            {loading ? 'SIGNING IN...' : 'SIGN IN'}
+            {mode === 'register' && <UserPlus size={16} />}
+            {loading
+              ? (mode === 'login' ? 'SIGNING IN...' : 'CREATING ACCOUNT...')
+              : (mode === 'login' ? 'SIGN IN' : 'CREATE ACCOUNT')
+            }
           </button>
         </form>
 
-        {/* Test Credentials */}
-        {showCredentials && (
-          <div style={{
-            marginTop: '32px',
-            padding: '16px',
-            background: 'transparent',
-            border: '1px solid rgba(255, 255, 255, 0.1)'
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              marginBottom: '12px',
-              color: 'rgba(255, 255, 255, 0.5)',
-              fontSize: '10px',
-              letterSpacing: '0.15em'
-            }}>
-              <Info size={12} />
-              TEST ACCOUNTS
-            </div>
-            <div style={{ fontSize: '12px' }}>
-              {testCredentials.map((cred, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => handleQuickLogin(cred.email, cred.password)}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    marginBottom: index < testCredentials.length - 1 ? '8px' : '0',
-                    background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    color: '#fff',
-                    fontSize: '11px',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'transparent'
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)'
-                  }}
-                >
-                  <div>
-                    <div style={{ marginBottom: '4px', color: '#fff' }}>{cred.email}</div>
-                    <div style={{ opacity: 0.5, fontSize: '10px' }}>Password: {cred.password}</div>
-                  </div>
-                  <span style={{
-                    padding: '2px 8px',
-                    background: cred.role === 'Admin' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(59, 130, 246, 0.2)',
-                    border: `1px solid ${cred.role === 'Admin' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(59, 130, 246, 0.3)'}`,
-                    fontSize: '9px',
-                    letterSpacing: '0.1em',
-                    color: cred.role === 'Admin' ? '#ef4444' : '#60a5fa'
-                  }}>
-                    {cred.role.toUpperCase()}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Don't have an account */}
+        {/* Switch Mode */}
         <div style={{
           marginTop: '24px',
-          textAlign: 'center',
-          fontSize: '11px',
-          color: 'rgba(255, 255, 255, 0.4)',
-          letterSpacing: '0.05em'
+          textAlign: 'center'
         }}>
-          Don't have an account?
+          <p style={{
+            fontSize: '12px',
+            color: 'rgba(255, 255, 255, 0.5)',
+            marginBottom: '12px'
+          }}>
+            {mode === 'login'
+              ? "Don't have an account?"
+              : "Already have an account?"
+            }
+          </p>
+          <button
+            onClick={switchMode}
+            style={{
+              padding: '10px 24px',
+              background: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              color: '#fff',
+              fontSize: '11px',
+              letterSpacing: '0.15em',
+              cursor: 'pointer',
+              transition: 'all 0.3s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'
+              e.currentTarget.style.background = 'transparent'
+            }}
+          >
+            {mode === 'login' ? 'CREATE ACCOUNT' : 'SIGN IN'}
+          </button>
         </div>
 
         {/* Back to Site */}
@@ -355,12 +486,16 @@ const AdminLogin = () => {
               fontSize: '11px',
               letterSpacing: '0.15em',
               cursor: 'pointer',
-              transition: 'color 0.3s'
+              transition: 'color 0.3s',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
             onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
             onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255, 255, 255, 0.4)'}
           >
-            ← BACK TO SITE
+            <ArrowLeft size={14} />
+            BACK TO SITE
           </button>
         </div>
       </div>

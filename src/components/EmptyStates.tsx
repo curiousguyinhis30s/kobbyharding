@@ -126,11 +126,13 @@ export const EmptyCart = ({ onContinueShopping }: { onContinueShopping: () => vo
   />
 )
 
-export const EmptySearch = ({ query }: { query: string }) => (
+export const EmptySearch = ({ query, onClearFilters }: { query: string; onClearFilters?: () => void }) => (
   <EmptyState
     icon="search"
     title="NO RESULTS FOUND"
     message={`We couldn't find any pieces matching "${query}". Try adjusting your search or browse our full collection.`}
+    actionLabel={onClearFilters ? "CLEAR ALL FILTERS" : undefined}
+    onAction={onClearFilters}
   />
 )
 

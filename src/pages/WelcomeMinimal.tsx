@@ -1,744 +1,445 @@
 import { useEffect, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import useStore from '../stores/useStore'
-import { mockPieces } from '../data/mockData'
-import {
-  ArrowRight, ChevronDown
-} from 'lucide-react'
+import { useProductStore } from '../stores/useProductStore'
+import { ArrowRight } from 'lucide-react'
+import SEO from '../components/SEO'
+import { PAGE_SEO } from '../constants/seo'
+import NewsletterSignup from '../components/NewsletterSignup'
+import RecentlyViewed from '../components/RecentlyViewed'
 
 const WelcomeMinimal = () => {
   const navigate = useNavigate()
-  const { setPieces, addToCart } = useStore()
-  const { scrollY } = useScroll()
-  const [currentSection, setCurrentSection] = useState(0)
+  const { setPieces } = useStore()
+  const { products, initialized, initializeFromMockData } = useProductStore()
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
-  // Parallax effects
-  const section1Y = useTransform(scrollY, [0, 1000], [0, -200])
-  const section2Y = useTransform(scrollY, [500, 1500], [100, -100])
-  const section3Y = useTransform(scrollY, [1000, 2000], [100, -100])
-  const textOpacity = useTransform(scrollY, [0, 200], [1, 0])
-  
   useEffect(() => {
-    setPieces(mockPieces)
-  }, [setPieces])
+    if (!initialized) {
+      initializeFromMockData()
+    }
+  }, [initialized, initializeFromMockData])
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY
-      const windowHeight = window.innerHeight
-      const newSection = Math.floor(scrollPosition / windowHeight)
-      setCurrentSection(newSection)
+    if (products.length > 0) {
+      setPieces(products)
     }
+  }, [products, setPieces])
 
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-
-    window.addEventListener('scroll', handleScroll)
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768)
     window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', handleResize)
-    }
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Section backgrounds with different outfit images
-  const sections = [
-    {
-      id: 'hero',
-      bg: '/kobby-assets/models/IMG_3479.JPG',
-      title: 'KHARDING',
-      subtitle: 'CLASSICS',
-      description: 'African heritage. Modern expression.',
-      cta: 'Enter Collection',
-      action: () => navigate('/collection')
-    },
-    {
-      id: 'story',
-      bg: '/kobby-assets/models/IMG_3495.JPG',
-      title: 'THE',
-      subtitle: 'STORY',
-      description: 'Each thread carries history. Each piece tells tomorrow.',
-      cta: 'Discover Journey',
-      action: () => navigate('/collection')
-    },
-    {
-      id: 'festival',
-      bg: '/kobby-assets/models/IMG_3523.JPG',
-      title: 'FESTIVAL',
-      subtitle: 'READY',
-      description: 'From Bangkok to Black Rock. Ready for your adventure.',
-      cta: 'Shop Festival',
-      action: () => navigate('/festival-pickup')
-    }
-  ]
-
   return (
-    <div style={{
-      position: 'relative',
-      backgroundColor: '#000',
-      color: '#fff',
-      overflow: 'hidden'
-    }}>
-      {/* Hero Section with Koby's image */}
-      <section style={{ 
+    <>
+      <SEO
+        title={PAGE_SEO.home.title}
+        description={PAGE_SEO.home.description}
+        keywords={PAGE_SEO.home.keywords}
+        image={PAGE_SEO.home.image}
+        url="/"
+        type="website"
+        noTemplate
+      />
+      <div style={{ background: '#000', color: '#fff', minHeight: '100vh' }}>
+        {/* Hero - Compact */}
+      <section style={{
         position: 'relative',
-        height: '100vh',
+        height: isMobile ? '85vh' : '90vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden'
       }}>
-        <motion.div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            y: section1Y
-          }}
-        >
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `url(${sections[0].bg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.4)'
-          }} />
-        </motion.div>
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'url(/kobby-assets/models/IMG_3479.JPG)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'brightness(0.35)'
+        }} />
 
-        <motion.div
-          style={{
-            position: 'relative',
-            zIndex: 1,
-            textAlign: 'center',
-            opacity: textOpacity
-          }}
-        >
+        <div style={{
+          position: 'relative',
+          zIndex: 1,
+          textAlign: 'center',
+          padding: '0 20px'
+        }}>
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
             style={{
-              fontSize: 'clamp(60px, 12vw, 180px)',
+              fontSize: isMobile ? '32px' : '56px',
               fontWeight: '100',
-              letterSpacing: '0.05em',
-              lineHeight: '0.9',
-              margin: '0 0 20px 0'
+              letterSpacing: '0.15em',
+              margin: 0
             }}
           >
-            {sections[0].title}
+            KHARDING
           </motion.h1>
-          
           <motion.h2
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 1 }}
+            transition={{ delay: 0.35, duration: 0.8 }}
             style={{
-              fontSize: 'clamp(60px, 12vw, 180px)',
-              fontWeight: '600',
-              letterSpacing: '0.05em',
-              lineHeight: '0.9',
-              margin: '0 0 40px 0'
+              fontSize: isMobile ? '32px' : '56px',
+              fontWeight: '500',
+              letterSpacing: '0.15em',
+              margin: '0 0 16px 0'
             }}
           >
-            {sections[0].subtitle}
+            CLASSICS
           </motion.h2>
-
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.7, duration: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
             style={{
-              fontSize: '14px',
+              fontSize: '12px',
               letterSpacing: '0.2em',
-              opacity: 0.7,
-              marginBottom: '60px'
+              color: 'rgba(255,255,255,0.7)',
+              marginBottom: '32px'
             }}
           >
-            {sections[0].description}
+            AFRICAN HERITAGE. MODERN EXPRESSION.
           </motion.p>
-
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.9, duration: 1 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={sections[0].action}
+            transition={{ delay: 0.65, duration: 0.8 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/collection')}
             style={{
-              padding: '16px 48px',
+              padding: '14px 40px',
               background: 'transparent',
-              border: '1px solid rgba(255,255,255,0.3)',
+              border: '1px solid rgba(255,255,255,0.4)',
               color: '#fff',
-              fontSize: '13px',
+              fontSize: '11px',
               letterSpacing: '0.2em',
               cursor: 'pointer',
-              transition: 'all 0.3s',
-              backdropFilter: 'blur(10px)'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.8)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent'
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px'
             }}
           >
-            {sections[0].cta}
-            <ArrowRight size={14} style={{ display: 'inline', marginLeft: '12px' }} />
+            ENTER COLLECTION
+            <ArrowRight size={14} />
           </motion.button>
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          style={{
-            position: 'absolute',
-            bottom: '40px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            opacity: 0.5
-          }}
-        >
-          <ChevronDown size={24} />
-        </motion.div>
+        </div>
       </section>
 
-      {/* Koby's Story Section */}
-      <section style={{ 
-        position: 'relative',
-        minHeight: '100vh',
-        background: '#000',
-        padding: '100px 0'
+      {/* Story - Compact Grid */}
+      <section style={{
+        padding: isMobile ? '48px 16px' : '64px 40px',
+        maxWidth: '1100px',
+        margin: '0 auto'
       }}>
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
-          style={{
-            maxWidth: '1200px',
-            margin: '0 auto',
-            padding: isMobile ? '0 20px' : '0 40px'
-          }}
-        >
-          {/* Section Title */}
-          <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-            <h2 style={{
-              fontSize: 'clamp(40px, 8vw, 100px)',
-              fontWeight: '100',
-              letterSpacing: '0.1em',
-              marginBottom: '20px'
-            }}>
-              THE STORY OF
-            </h2>
-            <h3 style={{
-              fontSize: 'clamp(40px, 8vw, 100px)',
-              fontWeight: '600',
-              letterSpacing: '0.1em',
-              marginBottom: '40px'
-            }}>
-              KHARDING CLASSICS
-            </h3>
-          </div>
-
-          {/* Story Grid */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: isMobile ? '40px' : '60px',
-            marginBottom: isMobile ? '40px' : '80px'
-          }}>
-            {/* Chapter 1: Origins */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-            >
-              <div style={{
-                width: '100%',
-                height: isMobile ? '300px' : '400px',
-                backgroundImage: 'url(/kobby-assets/models/IMG_3481.JPG)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                marginBottom: isMobile ? '20px' : '30px'
-              }} />
-              <h4 style={{
-                fontSize: '11px',
-                letterSpacing: '0.3em',
-                marginBottom: '15px',
-                opacity: 0.5
-              }}>
-                CHAPTER ONE
-              </h4>
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '300',
-                letterSpacing: '0.05em',
-                marginBottom: '20px'
-              }}>
-                African Roots
-              </h3>
-              <p style={{
-                fontSize: '14px',
-                lineHeight: '1.8',
-                opacity: 0.7,
-                letterSpacing: '0.02em'
-              }}>
-                Born in Ghana, raised by tradition. Koby learned the art of storytelling through fabric from his grandmother, 
-                who taught him that every thread carries the weight of history and the promise of tomorrow.
-              </p>
-            </motion.div>
-
-            {/* Chapter 2: Journey */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-            >
-              <div style={{
-                width: '100%',
-                height: isMobile ? '300px' : '400px',
-                backgroundImage: 'url(/kobby-assets/models/IMG_3591.JPG)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                marginBottom: isMobile ? '20px' : '30px'
-              }} />
-              <h4 style={{
-                fontSize: '11px',
-                letterSpacing: '0.3em',
-                marginBottom: '15px',
-                opacity: 0.5
-              }}>
-                CHAPTER TWO
-              </h4>
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '300',
-                letterSpacing: '0.05em',
-                marginBottom: '20px'
-              }}>
-                The Journey East
-              </h3>
-              <p style={{
-                fontSize: '14px',
-                lineHeight: '1.8',
-                opacity: 0.7,
-                letterSpacing: '0.02em'
-              }}>
-                From Accra to Bangkok, following the rhythm of Kizomba festivals. Each city adding a new layer to his vision - 
-                creating pieces that move with dancers, breathe with the music, and tell stories without words.
-              </p>
-            </motion.div>
-
-            {/* Chapter 3: Philosophy */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-            >
-              <div style={{
-                width: '100%',
-                height: isMobile ? '300px' : '400px',
-                backgroundImage: 'url(/kobby-assets/models/IMG_3622.JPG)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                marginBottom: isMobile ? '20px' : '30px'
-              }} />
-              <h4 style={{
-                fontSize: '11px',
-                letterSpacing: '0.3em',
-                marginBottom: '15px',
-                opacity: 0.5
-              }}>
-                CHAPTER THREE
-              </h4>
-              <h3 style={{
-                fontSize: '24px',
-                fontWeight: '300',
-                letterSpacing: '0.05em',
-                marginBottom: '20px'
-              }}>
-                Dance & Design
-              </h3>
-              <p style={{
-                fontSize: '14px',
-                lineHeight: '1.8',
-                opacity: 0.7,
-                letterSpacing: '0.02em'
-              }}>
-                Every piece is tested on the dance floor. If it doesn't flow with Kizomba, if it restricts the Tarraxo, 
-                if it can't survive an Urban Kiz session - it doesn't leave the studio. Fashion that dances.
-              </p>
-            </motion.div>
-          </div>
-
-          {/* Quote */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            style={{
-              textAlign: 'center',
-              padding: isMobile ? '40px 0' : '60px 0',
-              borderTop: '1px solid rgba(255,255,255,0.1)',
-              borderBottom: '1px solid rgba(255,255,255,0.1)',
-              margin: isMobile ? '40px 0' : '80px 0'
-            }}
-          >
-            <blockquote style={{
-              fontSize: isMobile ? '18px' : '24px',
-              fontWeight: '100',
-              fontStyle: 'italic',
-              letterSpacing: '0.05em',
-              lineHeight: '1.8',
-              maxWidth: '800px',
-              margin: '0 auto',
-              opacity: 0.9
-            }}>
-              "I don't just make clothes. I create companions for your journey - 
-              pieces that understand movement, celebrate heritage, and speak the universal language of dance."
-            </blockquote>
-            <cite style={{
-              display: 'block',
-              marginTop: '30px',
-              fontSize: '13px',
-              letterSpacing: '0.2em',
-              opacity: 0.5
-            }}>
-              — KHARDING CLASSICS
-            </cite>
-          </motion.div>
-
-          {/* Current Location */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            style={{
-              textAlign: 'center',
-              padding: isMobile ? '24px' : '40px',
-              background: 'rgba(255,255,255,0.02)',
-              borderRadius: '0',
-              border: '1px solid rgba(255,255,255,0.1)'
-            }}
-          >
-            <h4 style={{
-              fontSize: '11px',
-              letterSpacing: '0.3em',
-              marginBottom: '20px',
-              opacity: 0.5
-            }}>
-              CURRENTLY CREATING IN
-            </h4>
-            <h3 style={{
-              fontSize: '32px',
-              fontWeight: '300',
-              letterSpacing: '0.1em',
-              marginBottom: '10px'
-            }}>
-              Bangkok, Thailand
-            </h3>
-            <p style={{
-              fontSize: '14px',
-              opacity: 0.7,
-              letterSpacing: '0.05em'
-            }}>
-              Preparing for the 2025 Kizomba festival season across Asia
-            </p>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Festival Section */}
-      <section style={{ 
-        position: 'relative',
-        height: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden'
-      }}>
-        <motion.div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            y: section3Y
-          }}
-        >
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: `url(${sections[2].bg})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            filter: 'brightness(0.3) saturate(1.5)'
-          }} />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
-          style={{
-            position: 'relative',
-            zIndex: 1,
-            textAlign: 'center',
-            maxWidth: '800px',
-            padding: isMobile ? '0 20px' : '0 40px'
-          }}
-        >
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? '32px' : '40px' }}>
           <h2 style={{
-            fontSize: 'clamp(40px, 8vw, 120px)',
-            fontWeight: '100',
-            letterSpacing: '0.1em',
-            marginBottom: '20px'
+            fontSize: isMobile ? '10px' : '11px',
+            letterSpacing: '0.25em',
+            color: 'rgba(255,255,255,0.5)',
+            marginBottom: '8px'
           }}>
-            {sections[2].title}
+            THE STORY OF
           </h2>
-          
           <h3 style={{
-            fontSize: 'clamp(40px, 8vw, 120px)',
-            fontWeight: '600',
-            letterSpacing: '0.1em',
-            marginBottom: '40px'
+            fontSize: isMobile ? '20px' : '24px',
+            fontWeight: '300',
+            letterSpacing: '0.1em'
           }}>
-            {sections[2].subtitle}
+            KHARDING CLASSICS
+          </h3>
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+          gap: isMobile ? '24px' : '20px',
+          marginBottom: isMobile ? '32px' : '48px'
+        }}>
+          {[
+            {
+              img: '/kobby-assets/models/IMG_3481.JPG',
+              label: 'ORIGINS',
+              title: 'African Roots',
+              text: 'Born in Ghana, raised by tradition. Every thread carries history.'
+            },
+            {
+              img: '/kobby-assets/models/IMG_3591.JPG',
+              label: 'JOURNEY',
+              title: 'The Path East',
+              text: 'From Accra to Bangkok, following the rhythm of Kizomba.'
+            },
+            {
+              img: '/kobby-assets/models/IMG_3622.JPG',
+              label: 'CRAFT',
+              title: 'Dance & Design',
+              text: 'Every piece tested on the dance floor. Fashion that moves.'
+            }
+          ].map((item, i) => (
+            <motion.div
+              key={item.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+            >
+              <div style={{
+                width: '100%',
+                height: isMobile ? '200px' : '240px',
+                backgroundImage: `url(${item.img})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                marginBottom: '16px'
+              }} />
+              <div style={{
+                fontSize: '9px',
+                letterSpacing: '0.25em',
+                color: 'rgba(255,255,255,0.5)',
+                marginBottom: '8px'
+              }}>
+                {item.label}
+              </div>
+              <h4 style={{
+                fontSize: '16px',
+                fontWeight: '300',
+                letterSpacing: '0.05em',
+                marginBottom: '8px'
+              }}>
+                {item.title}
+              </h4>
+              <p style={{
+                fontSize: '12px',
+                lineHeight: '1.7',
+                color: 'rgba(255,255,255,0.7)'
+              }}>
+                {item.text}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Quote - Compact */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          style={{
+            textAlign: 'center',
+            padding: isMobile ? '24px 0' : '32px 0',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
+            borderBottom: '1px solid rgba(255,255,255,0.1)'
+          }}
+        >
+          <blockquote style={{
+            fontSize: isMobile ? '14px' : '16px',
+            fontWeight: '300',
+            fontStyle: 'italic',
+            letterSpacing: '0.03em',
+            lineHeight: '1.8',
+            maxWidth: '600px',
+            margin: '0 auto',
+            color: 'rgba(255,255,255,0.85)'
+          }}>
+            "I create companions for your journey - pieces that understand movement
+            and speak the universal language of dance."
+          </blockquote>
+          <cite style={{
+            display: 'block',
+            marginTop: '16px',
+            fontSize: '10px',
+            letterSpacing: '0.2em',
+            color: 'rgba(255,255,255,0.5)'
+          }}>
+            — KOBY HARDING
+          </cite>
+        </motion.div>
+      </section>
+
+      {/* Festival Section - Compact */}
+      <section style={{
+        position: 'relative',
+        padding: isMobile ? '48px 16px' : '64px 40px',
+        background: 'linear-gradient(to bottom, #000, #0a0a0a)'
+      }}>
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'url(/kobby-assets/models/IMG_3523.JPG)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.15
+        }} />
+
+        <div style={{
+          position: 'relative',
+          maxWidth: '900px',
+          margin: '0 auto',
+          textAlign: 'center'
+        }}>
+          <h2 style={{
+            fontSize: isMobile ? '10px' : '11px',
+            letterSpacing: '0.25em',
+            color: 'rgba(255,255,255,0.5)',
+            marginBottom: '8px'
+          }}>
+            2025 SEASON
+          </h2>
+          <h3 style={{
+            fontSize: isMobile ? '24px' : '32px',
+            fontWeight: '300',
+            letterSpacing: '0.1em',
+            marginBottom: '24px'
+          }}>
+            Festival Ready
           </h3>
 
-          <p style={{
-            fontSize: '16px',
-            lineHeight: '1.8',
-            opacity: 0.8,
-            marginBottom: '80px',
-            letterSpacing: '0.05em'
-          }}>
-            {sections[2].description}
-          </p>
-
-          {/* Kizomba & Urban Kizomba Festival dates in Asia - Seamless Grid */}
-          <div className="festival-grid" style={{
+          <div style={{
             display: 'grid',
-            gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-            gap: '0',
-            marginBottom: isMobile ? '40px' : '60px',
-            maxWidth: '900px',
-            margin: isMobile ? '0 auto 40px' : '0 auto 60px',
-            border: '1px solid rgba(255,255,255,0.2)'
+            gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)',
+            border: '1px solid rgba(255,255,255,0.15)',
+            marginBottom: '32px'
           }}>
             {[
-              { name: 'BANGKOK KIZOMBA', date: 'MAR 15-17', location: 'Thailand' },
-              { name: 'SINGAPORE URBAN KIZ', date: 'APR 5-7', location: 'Singapore' },
-              { name: 'BALI TARRAXO FEST', date: 'MAY 10-12', location: 'Indonesia' },
-              { name: 'TOKYO KIZOMBA WEEK', date: 'JUN 21-23', location: 'Japan' },
-              { name: 'SEOUL URBAN FEST', date: 'JUL 12-14', location: 'South Korea' },
-              { name: 'HONG KONG KIZ', date: 'AUG 9-11', location: 'Hong Kong' }
-            ].map((fest, index) => (
-              <div key={fest.name} style={{
-                padding: isMobile ? '20px 16px' : '30px 20px',
-                borderRight: isMobile ? 'none' : (index % 3 !== 2 ? '1px solid rgba(255,255,255,0.2)' : 'none'),
-                borderBottom: isMobile ? (index < 5 ? '1px solid rgba(255,255,255,0.2)' : 'none') : (index < 3 ? '1px solid rgba(255,255,255,0.2)' : 'none'),
-                backdropFilter: 'blur(10px)',
-                transition: 'all 0.3s',
-                cursor: 'pointer',
-                background: 'transparent'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
-                e.currentTarget.style.transform = 'scale(1.02)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-                e.currentTarget.style.transform = 'scale(1)'
-              }}>
+              { name: 'Bangkok Kizomba', date: 'MAR 15-17', loc: 'Thailand' },
+              { name: 'Singapore Urban', date: 'APR 5-7', loc: 'Singapore' },
+              { name: 'Bali Tarraxo', date: 'MAY 10-12', loc: 'Indonesia' },
+              { name: 'Tokyo Kizomba', date: 'JUN 21-23', loc: 'Japan' },
+              { name: 'Seoul Urban', date: 'JUL 12-14', loc: 'Korea' },
+              { name: 'Hong Kong Kiz', date: 'AUG 9-11', loc: 'Hong Kong' }
+            ].map((fest, i, arr) => (
+              <div
+                key={fest.name}
+                style={{
+                  padding: isMobile ? '16px 12px' : '20px',
+                  borderRight: (isMobile ? i % 2 === 0 : i % 3 !== 2) ? '1px solid rgba(255,255,255,0.15)' : 'none',
+                  borderBottom: (isMobile ? i < arr.length - 2 : i < 3) ? '1px solid rgba(255,255,255,0.15)' : 'none'
+                }}
+              >
                 <div style={{
-                  fontSize: isMobile ? '10px' : '11px',
-                  letterSpacing: '0.2em',
-                  marginBottom: isMobile ? '8px' : '12px',
-                  opacity: 0.7,
-                  textAlign: 'center'
+                  fontSize: isMobile ? '9px' : '10px',
+                  letterSpacing: '0.15em',
+                  color: 'rgba(255,255,255,0.6)',
+                  marginBottom: '6px'
                 }}>
-                  {fest.name}
+                  {fest.name.toUpperCase()}
                 </div>
                 <div style={{
-                  fontSize: isMobile ? '12px' : '14px',
+                  fontSize: isMobile ? '11px' : '13px',
                   letterSpacing: '0.1em',
-                  marginBottom: isMobile ? '6px' : '8px',
-                  textAlign: 'center',
-                  fontWeight: '300'
+                  marginBottom: '4px',
+                  color: 'rgba(255,255,255,0.9)'
                 }}>
                   {fest.date}
                 </div>
                 <div style={{
-                  fontSize: isMobile ? '9px' : '10px',
-                  letterSpacing: '0.15em',
-                  opacity: 0.5,
-                  textAlign: 'center'
+                  fontSize: '9px',
+                  letterSpacing: '0.1em',
+                  color: 'rgba(255,255,255,0.4)'
                 }}>
-                  {fest.location}
+                  {fest.loc}
                 </div>
               </div>
             ))}
           </div>
-          
-          {/* Mobile responsive seamless grid */}
-          <style>{`
-            @media (max-width: 768px) {
-              .festival-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-              }
-              .festival-grid > div:nth-child(odd) {
-                border-right: 1px solid rgba(255,255,255,0.2) !important;
-              }
-              .festival-grid > div:nth-child(even) {
-                border-right: none !important;
-              }
-              .festival-grid > div:nth-last-child(-n+2) {
-                border-bottom: none !important;
-              }
-            }
-            @media (max-width: 480px) {
-              .festival-grid {
-                grid-template-columns: 1fr !important;
-              }
-              .festival-grid > div {
-                border-right: none !important;
-                border-bottom: 1px solid rgba(255,255,255,0.2) !important;
-              }
-              .festival-grid > div:last-child {
-                border-bottom: none !important;
-              }
-            }
-          `}</style>
 
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={sections[2].action}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/festival')}
             style={{
-              padding: isMobile ? '12px 32px' : '16px 48px',
-              background: 'transparent',
-              border: '1px solid rgba(255,255,255,0.5)',
+              padding: '12px 32px',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.3)',
               color: '#fff',
-              fontSize: isMobile ? '11px' : '13px',
-              letterSpacing: '0.2em',
-              cursor: 'pointer',
-              transition: 'all 0.3s'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
-              e.currentTarget.style.borderColor = '#fff'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent'
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+              fontSize: '11px',
+              letterSpacing: '0.15em',
+              cursor: 'pointer'
             }}
           >
-            {sections[2].cta}
+            RESERVE TRY-ON
           </motion.button>
+        </div>
+      </section>
+
+      {/* Recently Viewed Section - Show only if user has viewed items */}
+      <RecentlyViewed isMobile={isMobile} maxItems={6} showClearButton={false} />
+
+      {/* Newsletter Section */}
+      <section style={{
+        padding: isMobile ? '48px 16px' : '64px 40px',
+        textAlign: 'center',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        background: 'linear-gradient(to bottom, #000, #0a0a0a)'
+      }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          style={{ maxWidth: '600px', margin: '0 auto' }}
+        >
+          <h2 style={{
+            fontSize: isMobile ? '10px' : '11px',
+            letterSpacing: '0.25em',
+            color: 'rgba(255,255,255,0.5)',
+            marginBottom: '12px'
+          }}>
+            EXCLUSIVE ACCESS
+          </h2>
+          <h3 style={{
+            fontSize: isMobile ? '24px' : '32px',
+            fontWeight: '300',
+            letterSpacing: '0.1em',
+            marginBottom: '16px'
+          }}>
+            Join Our Journey
+          </h3>
+          <p style={{
+            fontSize: '13px',
+            lineHeight: '1.8',
+            color: 'rgba(255,255,255,0.7)',
+            marginBottom: '32px',
+            letterSpacing: '0.03em'
+          }}>
+            Be the first to know about new pieces, festival announcements, and exclusive collections.
+          </p>
+          <NewsletterSignup isMobile={isMobile} />
         </motion.div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer style={{
-        padding: isMobile ? '40px 20px' : '60px 40px',
-        borderTop: '1px solid rgba(255,255,255,0.1)',
-        display: 'flex',
-        flexDirection: isMobile ? 'column' : 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: isMobile ? '20px' : '0',
-        background: '#000'
+      {/* Location Badge - Compact */}
+      <section style={{
+        padding: isMobile ? '32px 16px' : '40px',
+        textAlign: 'center',
+        borderTop: '1px solid rgba(255,255,255,0.08)'
       }}>
-        <div>
-          <p style={{
-            fontSize: '12px',
-            letterSpacing: '0.1em',
-            opacity: 0.5,
-            margin: 0
-          }}>
-            © 2025 KHARDING CLASSICS
-          </p>
-        </div>
-        
         <div style={{
-          display: 'flex',
-          gap: '40px'
+          fontSize: '9px',
+          letterSpacing: '0.25em',
+          color: 'rgba(255,255,255,0.4)',
+          marginBottom: '8px'
         }}>
-          <a
-            href="https://www.instagram.com/hardingkobby/?hl=en"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              color: '#fff',
-              fontSize: '12px',
-              letterSpacing: '0.1em',
-              textDecoration: 'none',
-              opacity: 0.5,
-              transition: 'opacity 0.3s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-            onMouseLeave={(e) => e.currentTarget.style.opacity = '0.5'}
-          >
-            INSTAGRAM
-          </a>
-          <a
-            href="/contact"
-            style={{
-              color: '#fff',
-              fontSize: '12px',
-              letterSpacing: '0.1em',
-              textDecoration: 'none',
-              opacity: 0.5,
-              transition: 'opacity 0.3s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-            onMouseLeave={(e) => e.currentTarget.style.opacity = '0.5'}
-          >
-            CONTACT
-          </a>
+          CURRENTLY CREATING IN
         </div>
-      </footer>
-
-      {/* Section indicators */}
-      {!isMobile && (
         <div style={{
-          position: 'fixed',
-          right: '40px',
-          top: '50%',
-          transform: 'translateY(-50%)',
-          zIndex: 100
+          fontSize: isMobile ? '18px' : '22px',
+          fontWeight: '300',
+          letterSpacing: '0.1em',
+          color: 'rgba(255,255,255,0.9)'
         }}>
-        {sections.map((_, idx) => (
-          <div
-            key={idx}
-            onClick={() => window.scrollTo({ 
-              top: idx * window.innerHeight, 
-              behavior: 'smooth' 
-            })}
-            style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              background: currentSection === idx ? '#fff' : 'transparent',
-              border: '1px solid rgba(255,255,255,0.3)',
-              margin: '16px 0',
-              cursor: 'pointer',
-              transition: 'all 0.3s'
-            }}
-          />
-        ))}
+          Bangkok, Thailand
         </div>
-      )}
-    </div>
+      </section>
+      </div>
+    </>
   )
 }
 

@@ -1,10 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingBag, Ruler, Package } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingBag, Ruler, Package, Bell } from 'lucide-react'
 import useStore from '../stores/useStore'
 import { mockPieces } from '../data/mockData'
 import { useToast } from '../components/Toast'
+import ProductReviews from '../components/ProductReviews'
+import SizeGuide from '../components/SizeGuide'
+import Breadcrumb from '../components/Breadcrumb'
+import SEO from '../components/SEO'
+import { generateProductSEO } from '../constants/seo'
+import NotifyMeModal from '../components/NotifyMeModal'
+import ShareButtons from '../components/ShareButtons'
+import { useWaitlistStore } from '../stores/useWaitlistStore'
 
 const PieceMinimal = () => {
   const { id } = useParams()
@@ -16,7 +24,9 @@ const PieceMinimal = () => {
   const [quantity, setQuantity] = useState(1)
   const [addedToCart, setAddedToCart] = useState(false)
   const [showSizeGuide, setShowSizeGuide] = useState(false)
+  const [showNotifyModal, setShowNotifyModal] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const { isEmailOnWaitlist } = useWaitlistStore()
 
   // Initialize pieces if empty
   useEffect(() => {
@@ -39,6 +49,11 @@ const PieceMinimal = () => {
   const recentlyViewedPieces = pieces.filter(p =>
     recentlyViewed.includes(p.id) && p.id !== id
   ).slice(0, 4)
+
+  // Get related products (same category, excluding current piece)
+  const relatedProducts = piece
+    ? pieces.filter(p => p.category === piece.category && p.id !== piece.id).slice(0, 4)
+    : []
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -121,28 +136,39 @@ const PieceMinimal = () => {
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 
-  const sizeChart = {
-    'XS': { chest: '32-34', waist: '24-26', hips: '34-36' },
-    'S': { chest: '34-36', waist: '26-28', hips: '36-38' },
-    'M': { chest: '36-38', waist: '28-30', hips: '38-40' },
-    'L': { chest: '38-40', waist: '30-32', hips: '40-42' },
-    'XL': { chest: '40-42', waist: '32-34', hips: '42-44' },
-    'XXL': { chest: '42-44', waist: '34-36', hips: '44-46' }
-  }
+  // Generate product-specific SEO
+  const productSEO = piece ? generateProductSEO(piece) : null
 
   return (
-    <div style={{ 
-      minHeight: '100vh',
-      background: '#000',
-      color: '#fff',
-      paddingTop: '64px'
-    }}>
-      {/* Back Navigation */}
-      <div style={{ 
-        padding: '20px 40px',
+    <>
+      {piece && productSEO && (
+        <SEO
+          title={productSEO.title}
+          description={productSEO.description}
+          keywords={productSEO.keywords}
+          image={productSEO.image}
+          url={`/piece/${piece.id}`}
+          type="product"
+          product={{
+            price: productSEO.product.price,
+            currency: productSEO.product.currency,
+            availability: piece.available ? 'in stock' : 'out of stock',
+            category: productSEO.product.category,
+          }}
+        />
+      )}
+      <div style={{
+        minHeight: '100vh',
+        background: '#000',
+        color: '#fff',
+        paddingTop: '64px'
+      }}>
+        {/* Back Navigation */}
+      <div style={{
+        padding: isMobile ? '16px' : '20px 40px',
         borderBottom: '1px solid rgba(255,255,255,0.1)'
       }}>
-        <button 
+        <button
           onClick={() => navigate('/collection')}
           style={{
             display: 'flex',
@@ -193,6 +219,7 @@ const PieceMinimal = () => {
               <img
                 src={images[currentImageIndex]}
                 alt={piece.name}
+                loading="lazy"
                 style={{
                   width: '100%',
                   height: 'auto',
@@ -272,36 +299,36 @@ const PieceMinimal = () => {
 
         {/* Right: Product Details */}
         <div style={{
-          padding: isMobile ? '24px 20px' : '60px',
+          padding: isMobile ? '16px' : '20px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: isMobile ? 'flex-start' : 'center'
         }}>
           {/* Product Info */}
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '16px' }}>
             <h1 style={{
-              fontSize: '22px',
+              fontSize: '18px',
               fontWeight: '100',
               letterSpacing: '0.2em',
-              marginBottom: '10px'
+              marginBottom: '8px'
             }}>
               {piece.name.toUpperCase()}
             </h1>
 
             <p style={{
-              fontSize: '12px',
-              opacity: 0.6,
+              fontSize: '11px',
+              color: 'rgba(255,255,255,0.7)',
               letterSpacing: '0.1em',
-              marginBottom: '16px'
+              marginBottom: '12px'
             }}>
               {piece.vibe}
             </p>
 
             <div style={{
-              fontSize: '18px',
+              fontSize: '16px',
               fontWeight: '200',
               letterSpacing: '0.05em',
-              marginBottom: '20px'
+              marginBottom: '16px'
             }}>
               ${piece.price}
             </div>
@@ -322,7 +349,7 @@ const PieceMinimal = () => {
           </div>
 
           {/* Size Selection */}
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '16px' }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -332,7 +359,7 @@ const PieceMinimal = () => {
               <label style={{
                 fontSize: '11px',
                 letterSpacing: '0.2em',
-                opacity: 0.7
+                color: 'rgba(255,255,255,0.8)'
               }}>
                 SELECT SIZE
               </label>
@@ -361,32 +388,33 @@ const PieceMinimal = () => {
             <div style={{
               display: 'grid',
               gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
-              gap: '1px',
-              background: 'rgba(255,255,255,0.1)'
+              gap: '8px'
             }}>
               {sizes.map(size => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
                   style={{
-                    padding: '12px',
+                    padding: '12px 8px',
                     fontSize: '11px',
                     fontWeight: '300',
                     letterSpacing: '0.1em',
-                    border: 'none',
-                    background: selectedSize === size ? 'rgba(255,255,255,0.1)' : '#000',
-                    color: selectedSize === size ? '#fff' : 'rgba(255,255,255,0.5)',
+                    border: selectedSize === size ? '2px solid #fff' : '1px solid rgba(255,255,255,0.2)',
+                    background: selectedSize === size ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    color: selectedSize === size ? '#fff' : 'rgba(255,255,255,0.6)',
                     cursor: 'pointer',
                     transition: 'all 0.3s'
                   }}
                   onMouseEnter={(e) => {
                     if (selectedSize !== size) {
+                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
                       e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedSize !== size) {
-                      e.currentTarget.style.background = '#000'
+                      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                      e.currentTarget.style.background = 'transparent'
                     }
                   }}
                 >
@@ -396,183 +424,217 @@ const PieceMinimal = () => {
             </div>
           </div>
 
-          {/* Size Guide */}
-          <AnimatePresence>
-            {showSizeGuide && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                style={{
-                  marginBottom: '32px',
-                  overflow: 'hidden'
-                }}
-              >
-                <div style={{
-                  padding: '20px',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  fontSize: '11px',
-                  letterSpacing: '0.1em'
-                }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead>
-                      <tr>
-                        <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>SIZE</th>
-                        <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>CHEST</th>
-                        <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>WAIST</th>
-                        <th style={{ padding: '8px', textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>HIPS</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Object.entries(sizeChart).map(([size, measurements]) => (
-                        <tr key={size}>
-                          <td style={{ padding: '8px', opacity: 0.8 }}>{size}</td>
-                          <td style={{ padding: '8px', opacity: 0.6 }}>{measurements.chest}"</td>
-                          <td style={{ padding: '8px', opacity: 0.6 }}>{measurements.waist}"</td>
-                          <td style={{ padding: '8px', opacity: 0.6 }}>{measurements.hips}"</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Size Guide Modal */}
+          <SizeGuide
+            isOpen={showSizeGuide}
+            onClose={() => setShowSizeGuide(false)}
+            isMobile={isMobile}
+          />
+
+          {/* Notify Me Modal */}
+          <NotifyMeModal
+            isOpen={showNotifyModal}
+            onClose={() => setShowNotifyModal(false)}
+            productId={piece.id}
+            productName={piece.name}
+            isMobile={isMobile}
+          />
 
           {/* Quantity */}
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '16px' }}>
             <label style={{
               fontSize: '11px',
               letterSpacing: '0.2em',
-              opacity: 0.7,
+              color: 'rgba(255,255,255,0.8)',
               display: 'block',
               marginBottom: '12px'
             }}>
               QUANTITY
             </label>
             
-            <div style={{ 
+            <div style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '1px',
-              background: 'rgba(255,255,255,0.1)',
+              gap: '8px',
               width: 'fit-content'
             }}>
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
                 style={{
                   padding: '12px 20px',
-                  background: '#000',
-                  border: 'none',
+                  background: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.2)',
                   color: 'rgba(255,255,255,0.6)',
                   fontSize: '16px',
                   cursor: 'pointer',
-                  transition: 'all 0.3s'
+                  transition: 'all 0.3s',
+                  minWidth: '44px',
+                  minHeight: '44px'
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = '#000'}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent'
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                }}
               >
                 −
               </button>
-              
+
               <div style={{
-                padding: '12px 32px',
-                background: '#000',
+                padding: '12px 24px',
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.2)',
                 fontSize: '14px',
                 minWidth: '80px',
                 textAlign: 'center'
               }}>
                 {quantity}
               </div>
-              
+
               <button
                 onClick={() => setQuantity(Math.min(10, quantity + 1))}
                 style={{
                   padding: '12px 20px',
-                  background: '#000',
-                  border: 'none',
+                  background: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.2)',
                   color: 'rgba(255,255,255,0.6)',
                   fontSize: '16px',
                   cursor: 'pointer',
-                  transition: 'all 0.3s'
+                  transition: 'all 0.3s',
+                  minWidth: '44px',
+                  minHeight: '44px'
                 }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = '#000'}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent'
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                }}
               >
                 +
               </button>
             </div>
           </div>
 
-          {/* Add to Cart Button */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={handleAddToBag}
-            style={{
-              width: '100%',
-              padding: '14px',
-              fontSize: '11px',
-              fontWeight: '300',
-              letterSpacing: '0.25em',
-              textTransform: 'uppercase',
-              background: addedToCart ? 'transparent' : 'transparent',
-              color: '#fff',
-              border: addedToCart ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.3)',
-              cursor: 'pointer',
-              transition: 'all 0.3s',
-              marginBottom: '12px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px'
-            }}
-            onMouseEnter={(e) => {
-              if (!addedToCart) {
+          {/* Add to Cart Button or Notify Me Button */}
+          {piece.available ? (
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={handleAddToBag}
+              style={{
+                width: '100%',
+                padding: '14px',
+                fontSize: '11px',
+                fontWeight: '300',
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
+                background: addedToCart ? 'transparent' : 'transparent',
+                color: '#fff',
+                border: addedToCart ? '2px solid #10b981' : '1px solid rgba(255,255,255,0.5)',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px'
+              }}
+              onMouseEnter={(e) => {
+                if (!addedToCart) {
+                  e.currentTarget.style.borderColor = '#fff'
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!addedToCart) {
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+                  e.currentTarget.style.background = 'transparent'
+                }
+              }}
+            >
+              <ShoppingBag style={{ width: '16px', height: '16px' }} />
+              {addedToCart ? 'ADDED TO BAG' : 'ADD TO BAG'}
+            </motion.button>
+          ) : (
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={() => setShowNotifyModal(true)}
+              style={{
+                width: '100%',
+                padding: '14px',
+                fontSize: '11px',
+                fontWeight: '300',
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
+                background: 'transparent',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.5)',
+                cursor: 'pointer',
+                transition: 'all 0.3s',
+                marginBottom: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '10px'
+              }}
+              onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = '#fff'
                 e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!addedToCart) {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
                 e.currentTarget.style.background = 'transparent'
-              }
-            }}
-          >
-            <ShoppingBag style={{ width: '16px', height: '16px' }} />
-            {addedToCart ? 'ADDED TO BAG' : 'ADD TO BAG'}
-          </motion.button>
+              }}
+            >
+              <Bell style={{ width: '16px', height: '16px' }} />
+              NOTIFY WHEN AVAILABLE
+            </motion.button>
+          )}
 
           {/* Quick Checkout */}
-          <button
-            onClick={() => {
-              handleAddToBag()
-              setTimeout(() => navigate('/cart'), 500)
-            }}
-            style={{
-              width: '100%',
-              padding: '14px',
-              fontSize: '11px',
-              fontWeight: '300',
-              letterSpacing: '0.25em',
-              textTransform: 'uppercase',
-              background: '#fff',
-              color: '#000',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'all 0.3s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.9)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = '#fff'}
-          >
-            BUY NOW
-          </button>
+          {piece.available && (
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              onClick={() => {
+                handleAddToBag()
+                setTimeout(() => navigate('/cart'), 500)
+              }}
+              style={{
+                width: '100%',
+                padding: '14px',
+                fontSize: '11px',
+                fontWeight: '400',
+                letterSpacing: '0.25em',
+                textTransform: 'uppercase',
+                background: '#fff',
+                color: '#000',
+                border: '1px solid #fff',
+                cursor: 'pointer',
+                transition: 'all 0.3s'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255,255,255,0.9)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = '#fff'
+              }}
+            >
+              BUY NOW
+            </motion.button>
+          )}
 
           {/* Shipping Info */}
           <div style={{
-            marginTop: '24px',
-            padding: '14px',
+            marginTop: '16px',
+            padding: '10px',
             border: '1px solid rgba(255,255,255,0.1)',
             fontSize: '11px',
             letterSpacing: '0.1em'
@@ -586,17 +648,35 @@ const PieceMinimal = () => {
             </div>
           </div>
 
+          {/* Share This Piece */}
+          <div style={{ marginTop: '32px' }}>
+            <h3 style={{
+              fontSize: '11px',
+              letterSpacing: '0.2em',
+              marginBottom: '16px',
+              color: 'rgba(255,255,255,0.8)'
+            }}>
+              SHARE THIS PIECE
+            </h3>
+            <ShareButtons
+              url={`/piece/${piece.id}`}
+              title={piece.name}
+              description={piece.vibe}
+              image={images[0]}
+            />
+          </div>
+
           {/* Product Details */}
           <div style={{
             marginTop: '24px',
-            paddingTop: '24px',
+            paddingTop: '20px',
             borderTop: '1px solid rgba(255,255,255,0.1)'
           }}>
             <h3 style={{
               fontSize: '11px',
               letterSpacing: '0.2em',
-              marginBottom: '16px',
-              opacity: 0.7
+              marginBottom: '20px',
+              color: 'rgba(255,255,255,0.8)'
             }}>
               DETAILS
             </h3>
@@ -604,24 +684,33 @@ const PieceMinimal = () => {
               listStyle: 'none',
               padding: 0,
               fontSize: '12px',
-              lineHeight: '2',
-              opacity: 0.6
+              lineHeight: '2.2',
+              color: 'rgba(255,255,255,0.7)'
             }}>
-              <li>• Handcrafted in limited quantities</li>
-              <li>• African-inspired contemporary design</li>
-              <li>• Premium sustainable materials</li>
-              <li>• Perfect for Kizomba & Urban Kiz festivals</li>
+              <li style={{ marginBottom: '8px' }}>• Handcrafted in limited quantities</li>
+              <li style={{ marginBottom: '8px' }}>• African-inspired contemporary design</li>
+              <li style={{ marginBottom: '8px' }}>• Premium sustainable materials</li>
+              <li style={{ marginBottom: '8px' }}>• Perfect for Kizomba & Urban Kiz festivals</li>
               <li>• Designed by Koby Harding</li>
             </ul>
           </div>
         </div>
       </div>
 
-      {/* Recently Viewed Section */}
-      {recentlyViewedPieces.length > 0 && (
+      {/* Product Reviews Section */}
+      <div style={{
+        maxWidth: '1400px',
+        margin: '0 auto',
+        padding: isMobile ? '0 20px' : '0 24px'
+      }}>
+        <ProductReviews productId={piece.id} isMobile={isMobile} />
+      </div>
+
+      {/* Related Products Section */}
+      {relatedProducts.length > 0 && (
         <div style={{
           borderTop: '1px solid rgba(255,255,255,0.1)',
-          padding: isMobile ? '40px 20px' : '60px 40px',
+          padding: isMobile ? '24px 20px' : '32px 24px',
           maxWidth: '1400px',
           margin: '0 auto'
         }}>
@@ -630,7 +719,100 @@ const PieceMinimal = () => {
             fontWeight: '100',
             letterSpacing: '0.3em',
             marginBottom: '32px',
-            opacity: 0.7
+            color: 'rgba(255,255,255,0.8)'
+          }}>
+            YOU MAY ALSO LIKE
+          </h2>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile
+              ? 'repeat(2, 1fr)'
+              : 'repeat(auto-fill, minmax(250px, 1fr))',
+            gap: isMobile ? '16px' : '24px'
+          }}>
+            {relatedProducts.map((relatedPiece) => (
+              <motion.div
+                key={relatedPiece.id}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => navigate(`/piece/${relatedPiece.id}`)}
+                style={{
+                  cursor: 'pointer',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  transition: 'border-color 0.3s'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+              >
+                <div style={{
+                  aspectRatio: '1',
+                  overflow: 'hidden'
+                }}>
+                  <img
+                    src={relatedPiece.imageUrl}
+                    alt={relatedPiece.name}
+                    loading="lazy"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </div>
+                <div style={{
+                  padding: isMobile ? '12px' : '16px',
+                  borderTop: '1px solid rgba(255,255,255,0.1)'
+                }}>
+                  <h3 style={{
+                    fontSize: '11px',
+                    fontWeight: '300',
+                    letterSpacing: '0.15em',
+                    marginBottom: '8px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {relatedPiece.name}
+                  </h3>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <div style={{ fontSize: '12px', fontWeight: '200' }}>
+                      ${relatedPiece.price}
+                    </div>
+                    {!relatedPiece.available && (
+                      <div style={{
+                        fontSize: '9px',
+                        letterSpacing: '0.1em',
+                        color: 'rgba(255,255,255,0.5)',
+                        opacity: 0.7
+                      }}>
+                        SOLD OUT
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recently Viewed Section */}
+      {recentlyViewedPieces.length > 0 && (
+        <div style={{
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          padding: isMobile ? '24px 20px' : '32px 24px',
+          maxWidth: '1400px',
+          margin: '0 auto'
+        }}>
+          <h2 style={{
+            fontSize: '12px',
+            fontWeight: '100',
+            letterSpacing: '0.3em',
+            marginBottom: '32px',
+            color: 'rgba(255,255,255,0.8)'
           }}>
             RECENTLY VIEWED
           </h2>
@@ -661,6 +843,7 @@ const PieceMinimal = () => {
                   <img
                     src={recentPiece.imageUrl}
                     alt={recentPiece.name}
+                    loading="lazy"
                     style={{
                       width: '100%',
                       height: '100%',
@@ -692,7 +875,8 @@ const PieceMinimal = () => {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   )
 }
 

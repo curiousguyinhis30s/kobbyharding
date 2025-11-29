@@ -1,3 +1,6 @@
+/* Import global spacing system */
+@import './styles/spacing.css';
+
 /* Ensure consistent black background from initial load */
 html, body {
   background-color: #000000 !important;

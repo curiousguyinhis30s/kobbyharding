@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-interface Piece {
+export interface Piece {
   id: string
   name: string
   story: string
@@ -82,6 +82,14 @@ interface Store {
   searchHistory: string[]
   favorites: string[]
 
+  // Search and Filter State
+  searchQuery: string
+  priceRange: [number, number]
+  selectedVibes: string[]
+  selectedCategories: string[]
+  selectedSizes: string[]
+  sortBy: 'newest' | 'price-low' | 'price-high' | 'most-popular'
+
   setPieces: (pieces: Piece[]) => void
   setCurrentLocation: (location: KobyLocation) => void
   startJourney: (emotion: string) => void
@@ -107,10 +115,21 @@ interface Store {
   }
   // New functional features
   addToRecentlyViewed: (pieceId: string) => void
+  clearRecentlyViewed: () => void
   addToSearchHistory: (query: string) => void
   clearSearchHistory: () => void
   toggleFavorite: (pieceId: string) => void
   isFavorite: (pieceId: string) => boolean
+
+  // Search and Filter Functions
+  setSearchQuery: (query: string) => void
+  setPriceRange: (range: [number, number]) => void
+  setSelectedVibes: (vibes: string[]) => void
+  setSelectedCategories: (categories: string[]) => void
+  setSelectedSizes: (sizes: string[]) => void
+  setSortBy: (sort: 'newest' | 'price-low' | 'price-high' | 'most-popular') => void
+  resetFilters: () => void
+  getFilteredPieces: () => Piece[]
 }
 
 const useStore = create<Store>()(
@@ -134,6 +153,14 @@ const useStore = create<Store>()(
       recentlyViewed: [],
       searchHistory: [],
       favorites: [],
+
+      // Search and Filter State
+      searchQuery: '',
+      priceRange: [0, 600],
+      selectedVibes: [],
+      selectedCategories: [],
+      selectedSizes: [],
+      sortBy: 'newest',
       
       setPieces: (pieces) => set({ pieces }),
       
@@ -345,9 +372,11 @@ const useStore = create<Store>()(
       addToRecentlyViewed: (pieceId) => {
         const { recentlyViewed } = get()
         const filtered = recentlyViewed.filter(id => id !== pieceId)
-        const updated = [pieceId, ...filtered].slice(0, 6)
+        const updated = [pieceId, ...filtered].slice(0, 10)
         set({ recentlyViewed: updated })
       },
+
+      clearRecentlyViewed: () => set({ recentlyViewed: [] }),
 
       addToSearchHistory: (query) => {
         if (!query || query.trim().length === 0) return
@@ -369,19 +398,124 @@ const useStore = create<Store>()(
 
       isFavorite: (pieceId) => {
         return get().favorites.includes(pieceId)
+      },
+
+      // Search and Filter Functions
+      setSearchQuery: (query) => set({ searchQuery: query }),
+
+      setPriceRange: (range) => set({ priceRange: range }),
+
+      setSelectedVibes: (vibes) => set({ selectedVibes: vibes }),
+
+      setSelectedCategories: (categories) => set({ selectedCategories: categories }),
+
+      setSelectedSizes: (sizes) => set({ selectedSizes: sizes }),
+
+      setSortBy: (sort) => set({ sortBy: sort }),
+
+      resetFilters: () => set({
+        searchQuery: '',
+        priceRange: [0, 600],
+        selectedVibes: [],
+        selectedCategories: [],
+        selectedSizes: [],
+        sortBy: 'newest'
+      }),
+
+      getFilteredPieces: () => {
+        const {
+          pieces,
+          searchQuery,
+          priceRange,
+          selectedVibes,
+          selectedCategories,
+          selectedSizes,
+          sortBy
+        } = get()
+
+        let filtered = [...pieces]
+
+        // Search filter - search by name, story, vibe, fabric origin
+        if (searchQuery.trim()) {
+          const query = searchQuery.toLowerCase()
+          filtered = filtered.filter(p =>
+            p.name.toLowerCase().includes(query) ||
+            p.story.toLowerCase().includes(query) ||
+            p.vibe.toLowerCase().includes(query) ||
+            p.fabricOrigin.toLowerCase().includes(query)
+          )
+        }
+
+        // Price range filter
+        filtered = filtered.filter(p =>
+          p.price >= priceRange[0] && p.price <= priceRange[1]
+        )
+
+        // Vibe filter
+        if (selectedVibes.length > 0) {
+          filtered = filtered.filter(p =>
+            selectedVibes.includes(p.vibe)
+          )
+        }
+
+        // Category filter
+        if (selectedCategories.length > 0) {
+          filtered = filtered.filter(p =>
+            p.category && selectedCategories.includes(p.category)
+          )
+        }
+
+        // Size filter - only show pieces available in selected sizes
+        if (selectedSizes.length > 0) {
+          // This could be expanded if pieces have size availability data
+          // For now, we'll just include all pieces when sizes are selected
+          // as our mock data doesn't include detailed size availability
+        }
+
+        // Sorting
+        filtered.sort((a, b) => {
+          switch (sortBy) {
+            case 'price-low':
+              return a.price - b.price
+            case 'price-high':
+              return b.price - a.price
+            case 'most-popular':
+              return b.hearts - a.hearts
+            case 'newest':
+            default:
+              return 0
+          }
+        })
+
+        return filtered
       }
     }),
     {
       name: 'kobys-threads-storage',
       partialize: (state) => ({
-        heartedPieces: state.heartedPieces,
+        heartedPieces: Array.from(state.heartedPieces),
+        viewedPieces: Array.from(state.viewedPieces),
         cartItems: state.cartItems,
         tryOnReservations: state.tryOnReservations,
         userStory: state.userStory,
         recentlyViewed: state.recentlyViewed,
         searchHistory: state.searchHistory,
-        favorites: state.favorites
-      })
+        favorites: state.favorites,
+        searchQuery: state.searchQuery,
+        priceRange: state.priceRange,
+        selectedVibes: state.selectedVibes,
+        selectedCategories: state.selectedCategories,
+        selectedSizes: state.selectedSizes,
+        sortBy: state.sortBy
+      }),
+      merge: (persistedState: any, currentState: Store) => {
+        return {
+          ...currentState,
+          ...persistedState,
+          heartedPieces: new Set(persistedState?.heartedPieces || []),
+          viewedPieces: new Set(persistedState?.viewedPieces || [])
+        }
+      }
     }
   )
 )

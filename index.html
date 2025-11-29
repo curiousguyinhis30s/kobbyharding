@@ -4,37 +4,85 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
-    <title>KOBBY HARDING - Festival Fashion & Premium Collection</title>
-    
+    <title>Khardingclassics | African Heritage Fashion</title>
+
     <!-- SEO Meta Tags -->
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Exclusive festival fashion for Kizomba, Urban Kizomba & Tarraxo dancers. Premium collection curated by Kobby Harding. Try-on service at major Asian festivals." />
-    <meta name="keywords" content="Kobby Harding, Festival Fashion, Kizomba Fashion, Urban Kizomba, Tarraxo, Asian Dance Festivals, Premium Collection, Dance Wear" />
+    <meta name="description" content="Handcrafted African heritage fashion with modern expression. Limited edition pieces designed by Kobby Harding in Ghana, perfect for Kizomba and Urban Kiz festivals." />
+    <meta name="keywords" content="Khardingclassics, African fashion, Ghana fashion, Kobby Harding, Kizomba fashion, Urban Kiz, handcrafted clothing, African heritage, dance fashion, festival wear, sustainable fashion, limited edition fashion" />
     <meta name="author" content="Kobby Harding" />
-    <meta name="robots" content="index, follow" />
-    
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://kobysthreads.com/" />
+
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json" />
-    <link rel="apple-touch-icon" href="/logo-192.png" />
-    
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72.svg" />
+    <link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96.svg" />
+    <link rel="apple-touch-icon" sizes="128x128" href="/icons/icon-128.svg" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.svg" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512.svg" />
+
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="KHC" />
+
     <!-- Performance Optimizations -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://source.unsplash.com" />
-    
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://kobysthreads.com/" />
-    <meta property="og:title" content="KOBBY HARDING - Festival Fashion & Premium Collection" />
-    <meta property="og:description" content="Exclusive festival fashion for Kizomba dancers. Premium collection with try-on service at major Asian festivals." />
-    <meta property="og:image" content="/og-image.jpg" />
-    <meta property="og:site_name" content="Kobby Harding" />
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://kobysthreads.com/" />
-    <meta property="twitter:title" content="KOBBY HARDING - Festival Fashion & Premium Collection" />
-    <meta property="twitter:description" content="Exclusive festival fashion for Kizomba dancers. Premium collection with try-on service at major Asian festivals." />
-    <meta property="twitter:image" content="/og-image.jpg" />
+    <meta property="og:title" content="Khardingclassics | African Heritage Fashion" />
+    <meta property="og:description" content="Handcrafted African heritage fashion with modern expression. Limited edition pieces from Ghana, perfect for Kizomba and Urban Kiz festivals worldwide." />
+    <meta property="og:image" content="https://kobysthreads.com/og-image.jpg" />
+    <meta property="og:image:alt" content="Khardingclassics - African Heritage Fashion" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Khardingclassics" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@khardingclassics" />
+    <meta name="twitter:creator" content="@kobbyharding" />
+    <meta name="twitter:title" content="Khardingclassics | African Heritage Fashion" />
+    <meta name="twitter:description" content="Handcrafted African heritage fashion with modern expression. Limited edition pieces from Ghana, perfect for Kizomba and Urban Kiz festivals worldwide." />
+    <meta name="twitter:image" content="https://kobysthreads.com/og-image.jpg" />
+    <meta name="twitter:image:alt" content="Khardingclassics - African Heritage Fashion" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Khardingclassics",
+      "description": "Handcrafted African heritage fashion with modern expression. Limited edition pieces designed by Kobby Harding.",
+      "url": "https://kobysthreads.com",
+      "logo": "https://kobysthreads.com/logo.svg",
+      "image": "https://kobysthreads.com/og-image.jpg",
+      "founder": {
+        "@type": "Person",
+        "name": "Kobby Harding",
+        "jobTitle": "Fashion Designer & TED Speaker",
+        "description": "Afro dance instructor and fashion designer spreading love through African heritage fashion"
+      },
+      "sameAs": [
+        "https://instagram.com/khardingclassics",
+        "https://facebook.com/khardingclassics"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bangkok",
+        "addressCountry": "Thailand"
+      }
+    }
+    </script>
   </head>
   <body>
     <!-- Immediate theme setup to prevent flash -->
@@ -52,30 +100,5 @@
     </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
-    <!-- PWA Service Worker Registration -->
-    <script>
-      // Temporarily disabled to clear cache issues
-      // Uncomment when ready for production
-      /*
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/service-worker.js')
-            .then(registration => console.log('SW registered:', registration))
-            .catch(error => console.log('SW registration failed:', error));
-        });
-      }
-      */
-
-      // Clear any existing service workers
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(function(registrations) {
-          for(let registration of registrations) {
-            registration.unregister();
-            console.log('Service worker unregistered');
-          }
-        });
-      }
-    </script>
   </body>
 </html>
