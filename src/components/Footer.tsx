@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import { 
-  Instagram, Facebook, Twitter, MapPin, 
-  Heart, Sparkles, ArrowUpRight
+import {
+  Instagram, Facebook, Twitter, MapPin,
+  Heart, Sparkles, ArrowUpRight, Settings
 } from 'lucide-react'
 
 const Footer = () => {
@@ -318,6 +318,26 @@ const Footer = () => {
           }}>
             Made with <Heart size={12} fill={'#000000'} color={'#000000'} /> and <Sparkles size={12} color={'#000000'} />
           </div>
+
+          {/* Admin Access - Subtle link */}
+          <Link
+            to="/admin/login"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '11px',
+              color: '#999999',
+              textDecoration: 'none',
+              opacity: 0.6,
+              transition: 'opacity 0.3s'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '1' }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.6' }}
+          >
+            <Settings size={12} />
+            Admin
+          </Link>
         </div>
       </div>
     </footer>
