@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingBag, Ruler, Package, Bell } from 'lucide-react'
+import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingBag, Ruler, Package, Bell, Heart } from 'lucide-react'
 import useStore from '../stores/useStore'
 import { mockPieces } from '../data/mockData'
 import { useToast } from '../components/Toast'
@@ -17,7 +17,7 @@ import { useWaitlistStore } from '../stores/useWaitlistStore'
 const PieceMinimal = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { pieces, setPieces, addToCart, addToRecentlyViewed, recentlyViewed } = useStore()
+  const { pieces, setPieces, addToCart, addToRecentlyViewed, recentlyViewed, toggleFavorite, isFavorite } = useStore()
   const { addToast } = useToast()
   const [selectedSize, setSelectedSize] = useState('M')
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -56,7 +56,10 @@ const PieceMinimal = () => {
     : []
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [id])
+
+  useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768)
     }
@@ -306,14 +309,58 @@ const PieceMinimal = () => {
         }}>
           {/* Product Info */}
           <div style={{ marginBottom: '16px' }}>
-            <h1 style={{
-              fontSize: '18px',
-              fontWeight: '100',
-              letterSpacing: '0.2em',
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              gap: '16px',
               marginBottom: '8px'
             }}>
-              {piece.name.toUpperCase()}
-            </h1>
+              <h1 style={{
+                fontSize: '18px',
+                fontWeight: '100',
+                letterSpacing: '0.2em',
+                margin: 0
+              }}>
+                {piece.name.toUpperCase()}
+              </h1>
+
+              <button
+                onClick={() => {
+                  toggleFavorite(piece.id)
+                  addToast(
+                    isFavorite(piece.id) ? 'info' : 'success',
+                    isFavorite(piece.id) ? 'Removed from favorites' : 'Added to favorites'
+                  )
+                }}
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  borderRadius: '50%',
+                  padding: '10px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s',
+                  flexShrink: 0
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                }}
+              >
+                <Heart
+                  size={18}
+                  fill={isFavorite(piece.id) ? '#fff' : 'none'}
+                  color="#fff"
+                />
+              </button>
+            </div>
 
             <p style={{
               fontSize: '11px',

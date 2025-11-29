@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Grid3x3, Grid2x2, Search } from 'lucide-react'
+import { Grid3x3, Grid2x2, Search, Heart } from 'lucide-react'
 import useStore from '../stores/useStore'
 import { mockPieces } from '../data/mockData'
 import { useToast } from '../components/Toast'
@@ -12,7 +12,7 @@ import RecentlyViewed from '../components/RecentlyViewed'
 const CollectionMinimal = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { pieces, addToCart, setPieces } = useStore()
+  const { pieces, addToCart, setPieces, toggleFavorite, isFavorite, searchQuery: storeSearchQuery, setSearchQuery: setStoreSearchQuery, getFilteredPieces } = useStore()
   const { addToast } = useToast()
   const [category, setCategory] = useState('all')
   const [gridView, setGridView] = useState<'large' | 'small'>('small')
@@ -56,6 +56,18 @@ const CollectionMinimal = () => {
       default: return 0
     }
   })
+
+  // Sync local search with store search on mount
+  useEffect(() => {
+    if (storeSearchQuery) {
+      setSearchQuery(storeSearchQuery)
+    }
+  }, [storeSearchQuery])
+
+  // Update store when local search changes
+  useEffect(() => {
+    setStoreSearchQuery(searchQuery)
+  }, [searchQuery, setStoreSearchQuery])
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -357,7 +369,49 @@ const CollectionMinimal = () => {
                     aspectRatio: gridView === 'large' ? '3/4' : '1/1'
                   }}
                 />
-                
+
+                {/* Favorite Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    toggleFavorite(piece.id)
+                    addToast(
+                      isFavorite(piece.id) ? 'info' : 'success',
+                      isFavorite(piece.id) ? 'Removed from favorites' : 'Added to favorites'
+                    )
+                  }}
+                  style={{
+                    position: 'absolute',
+                    top: '12px',
+                    right: '12px',
+                    background: 'rgba(0, 0, 0, 0.5)',
+                    backdropFilter: 'blur(8px)',
+                    border: 'none',
+                    borderRadius: '50%',
+                    padding: '10px',
+                    cursor: 'pointer',
+                    zIndex: 10,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(0, 0, 0, 0.7)'
+                    e.currentTarget.style.transform = 'scale(1.1)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)'
+                    e.currentTarget.style.transform = 'scale(1)'
+                  }}
+                >
+                  <Heart
+                    size={16}
+                    fill={isFavorite(piece.id) ? '#fff' : 'none'}
+                    color="#fff"
+                  />
+                </button>
+
                 {/* Overlay on hover */}
                 <div style={{
                   position: 'absolute',

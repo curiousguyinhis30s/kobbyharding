@@ -7,6 +7,7 @@ import MinimalAIChat from './components/MinimalAIChat'
 import ProtectedRoute from './components/ProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import ToastContainer from './components/Toast'
+import ScrollToTop from './components/ScrollToTop'
 import { AuthProvider } from './contexts/AuthContext'
 import './App.css'
 
@@ -253,6 +254,7 @@ function App() {
     <ErrorBoundary>
       <AuthProvider>
         <Router>
+          <ScrollToTop />
           <AppContent />
         </Router>
       </AuthProvider>
