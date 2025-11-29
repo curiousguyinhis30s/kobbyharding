@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import useStore from '../stores/useStore'
@@ -16,36 +16,11 @@ const WelcomeMinimal = () => {
   const { products, initialized, initializeFromMockData } = useProductStore()
   const { isDark } = useTheme()
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
-  const storyScrollRef = useRef<HTMLDivElement>(null)
-  const [currentStoryIndex, setCurrentStoryIndex] = useState(0)
-
   useEffect(() => {
     if (!initialized) {
       initializeFromMockData()
     }
   }, [initialized, initializeFromMockData])
-
-  // Auto-scroll story cards
-  useEffect(() => {
-    if (!isMobile || !storyScrollRef.current) return
-
-    const scrollContainer = storyScrollRef.current
-    const cardWidth = 296 // 280px card + 16px gap
-    const totalCards = 3
-
-    const autoScroll = setInterval(() => {
-      setCurrentStoryIndex(prev => {
-        const nextIndex = (prev + 1) % totalCards
-        scrollContainer.scrollTo({
-          left: nextIndex * cardWidth,
-          behavior: 'smooth'
-        })
-        return nextIndex
-      })
-    }, 4000) // Scroll every 4 seconds
-
-    return () => clearInterval(autoScroll)
-  }, [isMobile])
 
   useEffect(() => {
     if (products.length > 0) {
@@ -230,102 +205,101 @@ const WelcomeMinimal = () => {
           </h2>
         </div>
 
-        {/* Mobile: Horizontal scroll cards with auto-scroll */}
+        {/* Mobile: Infinite scroll carousel */}
         {isMobile ? (
-          <div
-            ref={storyScrollRef}
-            style={{
-              display: 'flex',
-              gap: '16px',
-              overflowX: 'auto',
-              scrollSnapType: 'x mandatory',
-              WebkitOverflowScrolling: 'touch',
-              paddingLeft: '24px',
-              paddingRight: '24px',
-              paddingBottom: '16px',
-              marginBottom: '32px',
-              scrollBehavior: 'smooth'
-            }}
-            className="story-scroll-container"
-          >
+          <div style={{
+            overflow: 'hidden',
+            marginBottom: '32px',
+            paddingLeft: '24px'
+          }}>
             <style>{`
-              .story-scroll-container::-webkit-scrollbar {
-                display: none;
+              @keyframes infiniteScroll {
+                0% {
+                  transform: translateX(0);
+                }
+                100% {
+                  transform: translateX(-50%);
+                }
               }
-              .story-scroll-container {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
+              .story-carousel {
+                display: flex;
+                gap: 16px;
+                animation: infiniteScroll 20s linear infinite;
+                width: fit-content;
+              }
+              .story-carousel:hover {
+                animation-play-state: paused;
               }
             `}</style>
-            {[
-              {
-                img: '/kobby-assets/models/IMG_3481.JPG',
-                label: 'ORIGINS',
-                title: 'African Roots',
-                text: 'Born in Ghana, raised by tradition. Every thread carries history.'
-              },
-              {
-                img: '/kobby-assets/models/IMG_3591.JPG',
-                label: 'JOURNEY',
-                title: 'The Path East',
-                text: 'From Accra to Bangkok, following the rhythm of Kizomba.'
-              },
-              {
-                img: '/kobby-assets/models/IMG_3622.JPG',
-                label: 'CRAFT',
-                title: 'Dance & Design',
-                text: 'Every piece tested on the dance floor. Fashion that moves.'
-              }
-            ].map((item, i) => (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                style={{
-                  flexShrink: 0,
-                  width: '280px',
-                  scrollSnapAlign: 'start',
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-primary)'
-                }}
-              >
-                <div style={{
-                  width: '100%',
-                  height: '200px',
-                  backgroundImage: `url(${item.img})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
-                }} />
-                <div style={{ padding: '16px' }}>
-                  <div style={{
-                    fontSize: '9px',
-                    letterSpacing: '0.25em',
-                    color: 'var(--text-muted)',
-                    marginBottom: '8px'
-                  }}>
-                    {item.label}
+            <div className="story-carousel">
+              {/* Render cards twice for seamless loop */}
+              {[...Array(2)].map((_, setIndex) => (
+                [
+                  {
+                    img: '/kobby-assets/models/IMG_3481.JPG',
+                    label: 'ORIGINS',
+                    title: 'African Roots',
+                    text: 'Born in Ghana, raised by tradition. Every thread carries history.'
+                  },
+                  {
+                    img: '/kobby-assets/models/IMG_3591.JPG',
+                    label: 'JOURNEY',
+                    title: 'The Path East',
+                    text: 'From Accra to Bangkok, following the rhythm of Kizomba.'
+                  },
+                  {
+                    img: '/kobby-assets/models/IMG_3622.JPG',
+                    label: 'CRAFT',
+                    title: 'Dance & Design',
+                    text: 'Every piece tested on the dance floor. Fashion that moves.'
+                  }
+                ].map((item, i) => (
+                  <div
+                    key={`${setIndex}-${item.label}`}
+                    style={{
+                      flexShrink: 0,
+                      width: '280px',
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border-primary)'
+                    }}
+                  >
+                    <div style={{
+                      width: '100%',
+                      height: '200px',
+                      backgroundImage: `url(${item.img})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center'
+                    }} />
+                    <div style={{ padding: '16px' }}>
+                      <div style={{
+                        fontSize: '9px',
+                        letterSpacing: '0.25em',
+                        color: 'var(--text-muted)',
+                        marginBottom: '8px'
+                      }}>
+                        {item.label}
+                      </div>
+                      <h4 style={{
+                        fontSize: '14px',
+                        fontWeight: '300',
+                        letterSpacing: '0.05em',
+                        marginBottom: '8px',
+                        color: 'var(--text-primary)'
+                      }}>
+                        {item.title}
+                      </h4>
+                      <p style={{
+                        fontSize: '11px',
+                        lineHeight: '1.7',
+                        color: 'var(--text-secondary)'
+                      }}>
+                        {item.text}
+                      </p>
+                    </div>
                   </div>
-                  <h4 style={{
-                    fontSize: '14px',
-                    fontWeight: '300',
-                    letterSpacing: '0.05em',
-                    marginBottom: '8px',
-                    color: 'var(--text-primary)'
-                  }}>
-                    {item.title}
-                  </h4>
-                  <p style={{
-                    fontSize: '11px',
-                    lineHeight: '1.7',
-                    color: 'var(--text-secondary)'
-                  }}>
-                    {item.text}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+                ))
+              ))}
+            </div>
           </div>
         ) : (
           /* Desktop: Grid layout */
