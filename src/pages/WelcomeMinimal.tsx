@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import useStore from '../stores/useStore'
 import { useProductStore } from '../stores/useProductStore'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, ChevronDown } from 'lucide-react'
 import SEO from '../components/SEO'
 import { PAGE_SEO } from '../constants/seo'
 import NewsletterSignup from '../components/NewsletterSignup'
@@ -161,46 +161,33 @@ const WelcomeMinimal = () => {
           </motion.button>
         </div>
 
-      </section>
-
-      {/* Scroll Indicator - Separate section */}
-      {isMobile && (
-        <section style={{
-          padding: '24px 0',
-          background: 'var(--bg-primary)',
-          display: 'flex',
-          justifyContent: 'center'
-        }}>
+        {/* Scroll Indicator - Inside hero at bottom */}
+        {isMobile && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
+            transition={{ delay: 1, duration: 0.8 }}
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '8px'
+              position: 'absolute',
+              bottom: '24px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 2
             }}
           >
-            <span style={{
-              fontSize: '9px',
-              letterSpacing: '0.2em',
-              color: 'var(--text-muted)'
-            }}>
-              SCROLL TO EXPLORE
-            </span>
             <motion.div
               animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              style={{
-                width: '1px',
-                height: '24px',
-                background: 'linear-gradient(to bottom, var(--text-muted), transparent)'
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                ease: 'easeInOut'
               }}
-            />
+            >
+              <ChevronDown size={24} color="rgba(255,255,255,0.6)" />
+            </motion.div>
           </motion.div>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* Story - Horizontal Scroll on Mobile */}
       <section style={{
