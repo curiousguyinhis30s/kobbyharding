@@ -251,7 +251,7 @@ const Footer = () => {
               color: '#666666'
             }}>
               <MapPin size={14} />
-              Currently in: Bangkok, Thailand
+              Currently in: China
             </div>
           </div>
         </div>

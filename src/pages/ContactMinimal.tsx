@@ -599,7 +599,7 @@ const ContactMinimal = () => {
                   letterSpacing: '0.05em',
                   lineHeight: '1.6'
                 }}>
-                  Bangkok, Thailand<br />
+                  China<br />
                   <span style={{ opacity: 0.6, fontSize: '12px' }}>
                     (Traveling for festivals)
                   </span>

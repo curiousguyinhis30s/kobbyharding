@@ -239,34 +239,59 @@ const MinimalAIChat = () => {
 
   return (
     <>
-      {/* Floating button */}
+      {/* Floating button with subtle pulse */}
       <AnimatePresence>
         {!isOpen && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            animate={{
+              scale: 1,
+              opacity: 1,
+              boxShadow: [
+                '0 4px 20px rgba(0,0,0,0.4)',
+                '0 4px 30px rgba(255,255,255,0.1)',
+                '0 4px 20px rgba(0,0,0,0.4)'
+              ]
+            }}
             exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
+            transition={{
+              boxShadow: {
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut'
+              }
+            }}
             onClick={() => setIsOpen(true)}
             style={{
               position: 'fixed',
               bottom: '24px',
               right: '24px',
-              width: '52px',
-              height: '52px',
-              background: '#000',
-              border: '1px solid rgba(255,255,255,0.2)',
-              borderRadius: '0',
+              width: '48px',
+              height: '48px',
+              background: 'rgba(0,0,0,0.9)',
+              border: '1px solid rgba(255,255,255,0.25)',
+              borderRadius: '50%',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              zIndex: 1000,
-              boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
+              zIndex: 1000
             }}
           >
-            <Sparkles size={20} color="#fff" />
+            <motion.div
+              animate={{
+                rotate: [0, 10, -10, 0]
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: 'easeInOut'
+              }}
+            >
+              <Sparkles size={18} color="#fff" />
+            </motion.div>
           </motion.button>
         )}
       </AnimatePresence>

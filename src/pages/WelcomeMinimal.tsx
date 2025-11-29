@@ -56,14 +56,16 @@ const WelcomeMinimal = () => {
         justifyContent: 'center',
         overflow: 'hidden'
       }}>
-        {/* Background Image */}
+        {/* Background Image with Parallax */}
         <div style={{
           position: 'absolute',
-          inset: 0,
+          inset: '-20%',
           backgroundImage: 'url(/kobby-assets/models/IMG_3479.JPG)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          filter: isDark ? 'brightness(0.35)' : 'brightness(0.25)'
+          backgroundAttachment: isMobile ? 'scroll' : 'fixed',
+          filter: isDark ? 'brightness(0.35)' : 'brightness(0.25)',
+          transform: 'scale(1.1)'
         }} />
 
         {/* Gradient Overlay for better text readability */}
@@ -159,43 +161,46 @@ const WelcomeMinimal = () => {
           </motion.button>
         </div>
 
-        {/* Scroll indicator - positioned at bottom of section */}
-        {isMobile && (
+      </section>
+
+      {/* Scroll Indicator - Separate section */}
+      {isMobile && (
+        <section style={{
+          padding: '24px 0',
+          background: 'var(--bg-primary)',
+          display: 'flex',
+          justifyContent: 'center'
+        }}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
             style={{
-              position: 'absolute',
-              bottom: '24px',
-              left: '50%',
-              transform: 'translateX(-50%)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '6px',
-              zIndex: 2
+              gap: '8px'
             }}
           >
             <span style={{
               fontSize: '9px',
               letterSpacing: '0.2em',
-              color: 'rgba(255,255,255,0.5)'
+              color: 'var(--text-muted)'
             }}>
-              SCROLL
+              SCROLL TO EXPLORE
             </span>
             <motion.div
-              animate={{ y: [0, 6, 0] }}
+              animate={{ y: [0, 8, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
               style={{
                 width: '1px',
-                height: '20px',
-                background: 'linear-gradient(to bottom, rgba(255,255,255,0.5), transparent)'
+                height: '24px',
+                background: 'linear-gradient(to bottom, var(--text-muted), transparent)'
               }}
             />
           </motion.div>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* Story - Horizontal Scroll on Mobile */}
       <section style={{
@@ -205,21 +210,13 @@ const WelcomeMinimal = () => {
       }}>
         <div style={{ textAlign: 'center', marginBottom: isMobile ? '24px' : '40px', padding: isMobile ? '0 16px' : 0 }}>
           <h2 style={{
-            fontSize: isMobile ? '10px' : '11px',
-            letterSpacing: '0.25em',
-            color: 'var(--text-muted)',
-            marginBottom: '8px'
-          }}>
-            THE STORY OF
-          </h2>
-          <h3 style={{
-            fontSize: isMobile ? '20px' : '24px',
+            fontSize: isMobile ? '22px' : '28px',
             fontWeight: '300',
-            letterSpacing: '0.1em',
+            letterSpacing: '0.15em',
             color: 'var(--text-primary)'
           }}>
-            KH CLASSICS
-          </h3>
+            OUR STORY
+          </h2>
         </div>
 
         {/* Mobile: Horizontal scroll cards */}
@@ -389,17 +386,18 @@ const WelcomeMinimal = () => {
           </div>
         )}
 
-        {/* Quote - Compact */}
+        {/* Quote Section - With proper spacing */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           style={{
             textAlign: 'center',
-            padding: isMobile ? '24px 16px' : '32px 0',
-            margin: isMobile ? '0 16px' : 0,
+            padding: isMobile ? '40px 20px' : '56px 40px',
+            margin: isMobile ? '32px 16px' : '48px 0',
             borderTop: '1px solid var(--border-primary)',
-            borderBottom: '1px solid var(--border-primary)'
+            borderBottom: '1px solid var(--border-primary)',
+            background: 'var(--bg-secondary)'
           }}
         >
           <blockquote style={{
@@ -427,11 +425,11 @@ const WelcomeMinimal = () => {
         </motion.div>
       </section>
 
-      {/* Festival Section - Compact */}
+      {/* Festival Section - Enhanced visibility */}
       <section style={{
         position: 'relative',
-        padding: isMobile ? '48px 16px' : '64px 40px',
-        background: `linear-gradient(to bottom, var(--bg-primary), var(--bg-secondary))`
+        padding: isMobile ? '56px 16px' : '80px 40px',
+        background: '#000'
       }}>
         <div style={{
           position: 'absolute',
@@ -439,29 +437,37 @@ const WelcomeMinimal = () => {
           backgroundImage: 'url(/kobby-assets/models/IMG_3523.JPG)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          opacity: isDark ? 0.15 : 0.08
+          opacity: 0.25
+        }} />
+        {/* Dark overlay for better text visibility */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.85) 100%)'
         }} />
 
         <div style={{
           position: 'relative',
           maxWidth: '900px',
           margin: '0 auto',
-          textAlign: 'center'
+          textAlign: 'center',
+          zIndex: 1
         }}>
           <h2 style={{
             fontSize: isMobile ? '10px' : '11px',
             letterSpacing: '0.25em',
-            color: 'var(--text-muted)',
-            marginBottom: '8px'
+            color: 'rgba(255,255,255,0.7)',
+            marginBottom: '12px'
           }}>
             2025 SEASON
           </h2>
           <h3 style={{
-            fontSize: isMobile ? '24px' : '32px',
+            fontSize: isMobile ? '26px' : '36px',
             fontWeight: '300',
             letterSpacing: '0.1em',
-            marginBottom: '24px',
-            color: 'var(--text-primary)'
+            marginBottom: '32px',
+            color: '#fff',
+            textShadow: '0 2px 10px rgba(0,0,0,0.3)'
           }}>
             Festival Ready
           </h3>
@@ -469,9 +475,10 @@ const WelcomeMinimal = () => {
           <div style={{
             display: 'grid',
             gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)',
-            border: '1px solid var(--border-primary)',
-            marginBottom: '32px',
-            background: 'var(--bg-card)'
+            border: '1px solid rgba(255,255,255,0.2)',
+            marginBottom: '40px',
+            background: 'rgba(0,0,0,0.5)',
+            backdropFilter: 'blur(10px)'
           }}>
             {[
               { name: 'Bangkok Kizomba', date: 'MAR 15-17', loc: 'Thailand' },
@@ -484,31 +491,32 @@ const WelcomeMinimal = () => {
               <div
                 key={fest.name}
                 style={{
-                  padding: isMobile ? '16px 12px' : '20px',
-                  borderRight: (isMobile ? i % 2 === 0 : i % 3 !== 2) ? '1px solid var(--border-primary)' : 'none',
-                  borderBottom: (isMobile ? i < arr.length - 2 : i < 3) ? '1px solid var(--border-primary)' : 'none'
+                  padding: isMobile ? '18px 14px' : '24px',
+                  borderRight: (isMobile ? i % 2 === 0 : i % 3 !== 2) ? '1px solid rgba(255,255,255,0.15)' : 'none',
+                  borderBottom: (isMobile ? i < arr.length - 2 : i < 3) ? '1px solid rgba(255,255,255,0.15)' : 'none'
                 }}
               >
                 <div style={{
                   fontSize: isMobile ? '9px' : '10px',
                   letterSpacing: '0.15em',
-                  color: 'var(--text-muted)',
-                  marginBottom: '6px'
+                  color: 'rgba(255,255,255,0.6)',
+                  marginBottom: '8px'
                 }}>
                   {fest.name.toUpperCase()}
                 </div>
                 <div style={{
-                  fontSize: isMobile ? '11px' : '13px',
+                  fontSize: isMobile ? '13px' : '15px',
                   letterSpacing: '0.1em',
-                  marginBottom: '4px',
-                  color: 'var(--text-primary)'
+                  marginBottom: '6px',
+                  color: '#fff',
+                  fontWeight: '400'
                 }}>
                   {fest.date}
                 </div>
                 <div style={{
-                  fontSize: '9px',
+                  fontSize: '10px',
                   letterSpacing: '0.1em',
-                  color: 'var(--text-subtle)'
+                  color: 'rgba(255,255,255,0.5)'
                 }}>
                   {fest.loc}
                 </div>
@@ -517,17 +525,18 @@ const WelcomeMinimal = () => {
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.15)' }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate('/festival')}
             style={{
-              padding: '12px 32px',
-              background: 'var(--bg-hover)',
-              border: '1px solid var(--border-hover)',
-              color: 'var(--text-primary)',
+              padding: '14px 40px',
+              background: 'rgba(255,255,255,0.1)',
+              border: '1px solid rgba(255,255,255,0.4)',
+              color: '#fff',
               fontSize: '11px',
               letterSpacing: '0.15em',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
             }}
           >
             RESERVE TRY-ON
@@ -602,7 +611,7 @@ const WelcomeMinimal = () => {
           letterSpacing: '0.1em',
           color: 'var(--text-primary)'
         }}>
-          Bangkok, Thailand
+          China
         </div>
       </section>
       </div>
