@@ -95,6 +95,7 @@ const WelcomeMinimal = () => {
               letterSpacing: '0.15em',
               margin: 0,
               lineHeight: 1.2,
+              color: '#fff',
               textShadow: '0 4px 30px rgba(0,0,0,0.5)'
             }}
           >
@@ -109,6 +110,7 @@ const WelcomeMinimal = () => {
               fontWeight: '200',
               letterSpacing: '0.3em',
               margin: isMobile ? '8px 0 24px 0' : '12px 0 28px 0',
+              color: '#fff',
               textShadow: '0 2px 20px rgba(0,0,0,0.4)'
             }}
           >
