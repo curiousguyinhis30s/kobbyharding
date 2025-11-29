@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Menu, X, ShoppingBag, User, Heart, Search } from 'lucide-react'
+import { Menu, X, ShoppingBag, User, Heart, Search, Sun, Moon } from 'lucide-react'
 import useStore from '../stores/useStore'
 import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
@@ -61,7 +61,7 @@ const AnimatedLogo = ({ onClick }: { onClick: () => void }) => {
   )
 }
 
-// Minimal Theme Toggle - just a small circle
+// Minimal Theme Toggle - small sun/moon icons
 const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) => (
   <button
     onClick={onToggle}
@@ -73,23 +73,21 @@ const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => vo
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      color: 'var(--text-secondary)'
     }}
   >
     <motion.div
       initial={false}
-      animate={{
-        backgroundColor: isDark ? '#fff' : '#000',
-        scale: isDark ? 1 : 0.85
-      }}
-      transition={{ duration: 0.2 }}
-      style={{
-        width: '8px',
-        height: '8px',
-        borderRadius: '50%',
-        border: `1px solid ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`
-      }}
-    />
+      animate={{ rotate: isDark ? 0 : 180, scale: 1 }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+    >
+      {isDark ? (
+        <Sun style={{ width: '16px', height: '16px', strokeWidth: 1.5 }} />
+      ) : (
+        <Moon style={{ width: '16px', height: '16px', strokeWidth: 1.5 }} />
+      )}
+    </motion.div>
   </button>
 )
 

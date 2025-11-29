@@ -104,30 +104,30 @@ const WelcomeMinimal = () => {
             </span>
           </motion.div>
 
-          {/* Main Title - Stacked for better mobile reading */}
+          {/* Main Title - Full brand name */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.8 }}
             style={{
-              fontSize: isMobile ? '42px' : '72px',
-              fontWeight: '200',
-              letterSpacing: '0.2em',
+              fontSize: isMobile ? '28px' : '48px',
+              fontWeight: '300',
+              letterSpacing: '0.25em',
               margin: 0,
-              lineHeight: 1.1,
+              lineHeight: 1.2,
               textShadow: '0 4px 30px rgba(0,0,0,0.5)'
             }}
           >
-            KH
+            KHARDING
           </motion.h1>
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.8 }}
             style={{
-              fontSize: isMobile ? '24px' : '36px',
-              fontWeight: '300',
-              letterSpacing: '0.35em',
+              fontSize: isMobile ? '18px' : '28px',
+              fontWeight: '200',
+              letterSpacing: '0.4em',
               margin: isMobile ? '8px 0 20px 0' : '12px 0 24px 0',
               textShadow: '0 2px 20px rgba(0,0,0,0.4)'
             }}
