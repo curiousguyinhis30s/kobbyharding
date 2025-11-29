@@ -91,24 +91,24 @@ const WelcomeMinimal = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15, duration: 0.8 }}
             style={{
-              fontSize: isMobile ? '36px' : '56px',
+              fontSize: isMobile ? '28px' : '48px',
               fontWeight: '300',
-              letterSpacing: '0.2em',
+              letterSpacing: '0.15em',
               margin: 0,
-              lineHeight: 1.1,
+              lineHeight: 1.2,
               textShadow: '0 4px 30px rgba(0,0,0,0.5)'
             }}
           >
-            KHARDING
+            KOBY HARDING
           </motion.h1>
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
             style={{
-              fontSize: isMobile ? '20px' : '32px',
+              fontSize: isMobile ? '18px' : '28px',
               fontWeight: '200',
-              letterSpacing: '0.35em',
+              letterSpacing: '0.3em',
               margin: isMobile ? '8px 0 24px 0' : '12px 0 28px 0',
               textShadow: '0 2px 20px rgba(0,0,0,0.4)'
             }}
@@ -164,26 +164,26 @@ const WelcomeMinimal = () => {
         {/* Scroll Indicator - Inside hero at bottom */}
         {isMobile && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 0.8 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.8 }}
+            transition={{ duration: 0.3 }}
             style={{
               position: 'absolute',
-              bottom: '24px',
+              bottom: '32px',
               left: '50%',
               transform: 'translateX(-50%)',
               zIndex: 2
             }}
           >
             <motion.div
-              animate={{ y: [0, 8, 0] }}
+              animate={{ y: [0, 10, 0] }}
               transition={{
-                duration: 1.5,
+                duration: 1.2,
                 repeat: Infinity,
                 ease: 'easeInOut'
               }}
             >
-              <ChevronDown size={24} color="rgba(255,255,255,0.6)" />
+              <ChevronDown size={28} color="rgba(255,255,255,0.8)" />
             </motion.div>
           </motion.div>
         )}
