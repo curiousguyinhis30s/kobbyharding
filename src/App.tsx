@@ -9,6 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import ToastContainer from './components/Toast'
 import ScrollToTop from './components/ScrollToTop'
 import { AuthProvider } from './contexts/AuthContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import './App.css'
 
 // Lazy load pages for better performance
@@ -252,12 +253,14 @@ const AppContent = () => {
 function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <Router>
-          <ScrollToTop />
-          <AppContent />
-        </Router>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <Router>
+            <ScrollToTop />
+            <AppContent />
+          </Router>
+        </AuthProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   )
 }

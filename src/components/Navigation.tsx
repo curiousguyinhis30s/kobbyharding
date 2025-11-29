@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Menu, X, ShoppingBag, User, Heart, Search } from 'lucide-react'
+import { Menu, X, ShoppingBag, User, Heart, Search, Sun, Moon } from 'lucide-react'
 import useStore from '../stores/useStore'
 import { useAuth } from '../contexts/AuthContext'
+import { useTheme } from '../contexts/ThemeContext'
 
 const Navigation = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { cartItems, favorites, setSearchQuery } = useStore()
   const { user, isAuthenticated, logout } = useAuth()
+  const { theme, toggleTheme, isDark } = useTheme()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth < 360)
@@ -170,6 +172,15 @@ const Navigation = () => {
                 <Search size={18} />
               </button>
             )}
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              style={iconBtnStyle}
+            >
+              {isDark ? <Sun size={18} style={{ color: '#fbbf24' }} /> : <Moon size={18} style={{ color: '#6366f1' }} />}
+            </button>
 
             {/* Favorites */}
             <button
