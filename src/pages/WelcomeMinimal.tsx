@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import useStore from '../stores/useStore'
@@ -16,12 +16,36 @@ const WelcomeMinimal = () => {
   const { products, initialized, initializeFromMockData } = useProductStore()
   const { isDark } = useTheme()
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const storyScrollRef = useRef<HTMLDivElement>(null)
+  const [currentStoryIndex, setCurrentStoryIndex] = useState(0)
 
   useEffect(() => {
     if (!initialized) {
       initializeFromMockData()
     }
   }, [initialized, initializeFromMockData])
+
+  // Auto-scroll story cards
+  useEffect(() => {
+    if (!isMobile || !storyScrollRef.current) return
+
+    const scrollContainer = storyScrollRef.current
+    const cardWidth = 296 // 280px card + 16px gap
+    const totalCards = 3
+
+    const autoScroll = setInterval(() => {
+      setCurrentStoryIndex(prev => {
+        const nextIndex = (prev + 1) % totalCards
+        scrollContainer.scrollTo({
+          left: nextIndex * cardWidth,
+          behavior: 'smooth'
+        })
+        return nextIndex
+      })
+    }, 4000) // Scroll every 4 seconds
+
+    return () => clearInterval(autoScroll)
+  }, [isMobile])
 
   useEffect(() => {
     if (products.length > 0) {
@@ -206,19 +230,21 @@ const WelcomeMinimal = () => {
           </h2>
         </div>
 
-        {/* Mobile: Horizontal scroll cards */}
+        {/* Mobile: Horizontal scroll cards with auto-scroll */}
         {isMobile ? (
           <div
+            ref={storyScrollRef}
             style={{
               display: 'flex',
               gap: '16px',
               overflowX: 'auto',
               scrollSnapType: 'x mandatory',
               WebkitOverflowScrolling: 'touch',
-              paddingLeft: '16px',
-              paddingRight: '16px',
+              paddingLeft: '24px',
+              paddingRight: '24px',
               paddingBottom: '16px',
-              marginBottom: '32px'
+              marginBottom: '32px',
+              scrollBehavior: 'smooth'
             }}
             className="story-scroll-container"
           >
