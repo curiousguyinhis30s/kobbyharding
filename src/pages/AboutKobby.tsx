@@ -50,48 +50,105 @@ const AboutKobby = () => {
       />
       <div style={{
         minHeight: '100vh',
-        background: '#ffffff',
-        color: '#000000'
+        background: '#000',
+        color: '#fff'
       }}>
         {/* Hero Section with Kobby's Photo */}
       <section style={{
         position: 'relative',
-        minHeight: '100vh',
+        minHeight: isMobile ? 'auto' : '100vh',
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden',
-        background: 'linear-gradient(135deg, #000 0%, #1a1a1a 100%)'
+        background: '#000'
       }}>
+        {/* Background Image - Only on desktop */}
+        {!isMobile && (
+          <div style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: '50%',
+            backgroundImage: 'url(/kobby-assets/models/IMG_3479.JPG)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center top'
+          }}>
+            <div style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to right, #000 0%, transparent 30%)'
+            }} />
+          </div>
+        )}
+
         <div style={{
           maxWidth: '1400px',
           margin: '0 auto',
-          padding: isMobile ? '60px 20px' : '80px 40px',
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))',
-          gap: isMobile ? '40px' : '60px',
-          alignItems: 'center'
+          padding: isMobile ? '80px 20px 40px' : '100px 60px',
+          position: 'relative',
+          zIndex: 1
         }}>
+          {/* Mobile Image */}
+          {isMobile && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6 }}
+              style={{
+                width: '100%',
+                height: '300px',
+                marginBottom: '32px',
+                overflow: 'hidden'
+              }}
+            >
+              <img
+                src="/kobby-assets/models/IMG_3479.JPG"
+                alt="Kobby Harding"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center top'
+                }}
+              />
+            </motion.div>
+          )}
+
           {/* Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
+            style={{
+              maxWidth: isMobile ? '100%' : '500px'
+            }}
           >
+            <div style={{
+              fontSize: '10px',
+              letterSpacing: '0.3em',
+              color: 'rgba(255,255,255,0.5)',
+              marginBottom: '16px'
+            }}>
+              FOUNDER & CREATIVE DIRECTOR
+            </div>
+
             <h1 style={{
-              fontSize: 'clamp(48px, 6vw, 72px)',
-              fontWeight: '100',
-              letterSpacing: '0.2em',
-              marginBottom: '30px',
-              lineHeight: '1.1'
+              fontSize: isMobile ? '36px' : '56px',
+              fontWeight: '200',
+              letterSpacing: '0.15em',
+              marginBottom: '24px',
+              lineHeight: '1.1',
+              color: '#fff'
             }}>
               KOBBY<br />HARDING
             </h1>
 
             <p style={{
-              fontSize: '18px',
+              fontSize: isMobile ? '14px' : '16px',
               lineHeight: '1.8',
-              marginBottom: '30px',
-              color: '#666666',
+              marginBottom: '32px',
+              color: 'rgba(255,255,255,0.7)',
               fontWeight: '300'
             }}>
               Spreading love and positivity across the globe through fashion that celebrates unity, self-expression, and creativity.
@@ -100,8 +157,8 @@ const AboutKobby = () => {
             <div style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '16px',
-              marginBottom: '40px'
+              gap: '12px',
+              marginBottom: '32px'
             }}>
               {achievements.map((item, index) => {
                 const Icon = item.icon
@@ -114,24 +171,14 @@ const AboutKobby = () => {
                     style={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '16px'
+                      gap: '12px'
                     }}
                   >
-                    <div style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      background: `${'#000000'}20`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <Icon style={{ width: '20px', height: '20px', color: '#000000' }} />
-                    </div>
+                    <Icon style={{ width: '16px', height: '16px', color: 'rgba(255,255,255,0.5)' }} />
                     <span style={{
-                      fontSize: '16px',
+                      fontSize: isMobile ? '12px' : '14px',
                       letterSpacing: '0.05em',
-                      color: '#000000'
+                      color: 'rgba(255,255,255,0.8)'
                     }}>
                       {item.text}
                     </span>
@@ -144,73 +191,34 @@ const AboutKobby = () => {
               onClick={() => navigate('/collection')}
               style={{
                 padding: '14px 32px',
-                background: '#000000',
-                color: 'white',
-                border: 'none',
-                fontSize: '14px',
-                letterSpacing: '0.15em',
+                background: 'transparent',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.3)',
+                fontSize: '11px',
+                letterSpacing: '0.2em',
                 cursor: 'pointer',
                 transition: 'all 0.3s'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#fff'
+                e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
+                e.currentTarget.style.background = 'transparent'
+              }}
             >
               EXPLORE COLLECTION
             </button>
-          </motion.div>
-
-          {/* Kobby's Photo */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            style={{
-              position: 'relative',
-              height: isMobile ? '400px' : '600px',
-              borderRadius: '8px',
-              overflow: 'hidden'
-            }}
-          >
-            <img
-              src="/kobby-assets/models/IMG_3479.JPG"
-              alt="Kobby Harding"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                objectPosition: 'center top'
-              }}
-              onError={(e) => {
-                // Fallback to another photo if the first one doesn't work
-                e.currentTarget.src = '/kobby-assets/models/IMG_3665.JPG'
-              }}
-            />
-            <div style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)',
-              padding: '30px',
-              color: 'white'
-            }}>
-              <p style={{
-                fontSize: '14px',
-                letterSpacing: '0.1em',
-                opacity: 0.9
-              }}>
-                FOUNDER & CREATIVE DIRECTOR
-              </p>
-            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Story Section */}
       <section style={{
-        padding: isMobile ? '60px 20px' : '100px 40px',
-        background: '#ffffff',
-        borderTop: `1px solid ${'#e0e0e0'}`
+        padding: isMobile ? '48px 20px' : '80px 40px',
+        background: '#000',
+        borderTop: '1px solid rgba(255,255,255,0.1)'
       }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <motion.div
@@ -219,34 +227,35 @@ const AboutKobby = () => {
             viewport={{ once: true }}
           >
             <h2 style={{
-              fontSize: isMobile ? '28px' : '36px',
+              fontSize: isMobile ? '24px' : '32px',
               fontWeight: '200',
-              letterSpacing: isMobile ? '0.1em' : '0.15em',
-              marginBottom: isMobile ? '30px' : '50px',
-              textAlign: 'center'
+              letterSpacing: '0.15em',
+              marginBottom: isMobile ? '32px' : '48px',
+              textAlign: 'center',
+              color: '#fff'
             }}>
               THE JOURNEY
             </h2>
 
             <div style={{
               display: 'grid',
-              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(250px, 1fr))',
-              gap: isMobile ? '30px' : '40px',
-              marginBottom: isMobile ? '40px' : '60px'
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: isMobile ? '24px' : '32px',
+              marginBottom: isMobile ? '32px' : '48px'
             }}>
               <div>
                 <h3 style={{
-                  fontSize: '14px',
+                  fontSize: '11px',
                   letterSpacing: '0.2em',
-                  color: '#000000',
-                  marginBottom: '16px'
+                  color: 'rgba(255,255,255,0.5)',
+                  marginBottom: '12px'
                 }}>
                   THE ORIGIN
                 </h3>
                 <p style={{
-                  fontSize: '15px',
+                  fontSize: '13px',
                   lineHeight: '1.8',
-                  color: '#666666'
+                  color: 'rgba(255,255,255,0.7)'
                 }}>
                   Born after the COVID-19 lockdown, Khardingclassics evolved from the Ghanaline concept. Kobby realized he didn't want to limit creativity to one culture - he saw a future where humanity stands as one.
                 </p>
@@ -254,17 +263,17 @@ const AboutKobby = () => {
 
               <div>
                 <h3 style={{
-                  fontSize: '14px',
+                  fontSize: '11px',
                   letterSpacing: '0.2em',
-                  color: '#000000',
-                  marginBottom: '16px'
+                  color: 'rgba(255,255,255,0.5)',
+                  marginBottom: '12px'
                 }}>
                   THE VISION
                 </h3>
                 <p style={{
-                  fontSize: '15px',
+                  fontSize: '13px',
                   lineHeight: '1.8',
-                  color: '#666666'
+                  color: 'rgba(255,255,255,0.7)'
                 }}>
                   Using fashion to spread positivity and love, Khardingclassics blends African heritage with Western and Asian influences, where love and unity transcend borders.
                 </p>
@@ -272,17 +281,17 @@ const AboutKobby = () => {
 
               <div>
                 <h3 style={{
-                  fontSize: '14px',
+                  fontSize: '11px',
                   letterSpacing: '0.2em',
-                  color: '#000000',
-                  marginBottom: '16px'
+                  color: 'rgba(255,255,255,0.5)',
+                  marginBottom: '12px'
                 }}>
                   THE INSPIRATION
                 </h3>
                 <p style={{
-                  fontSize: '15px',
+                  fontSize: '13px',
                   lineHeight: '1.8',
-                  color: '#666666'
+                  color: 'rgba(255,255,255,0.7)'
                 }}>
                   Kobby's mother, who made her own clothing and home designs with limited resources, taught him that creativity isn't about wealth—it's about passion, purpose, and positive impact.
                 </p>
@@ -291,24 +300,24 @@ const AboutKobby = () => {
 
             {/* Quote */}
             <div style={{
-              padding: isMobile ? '24px' : '40px',
-              background: 'rgba(0, 0, 0, 0.05)',
-              borderLeft: `4px solid ${'#000000'}`,
-              margin: isMobile ? '40px 0' : '60px 0'
+              padding: isMobile ? '20px' : '32px',
+              background: 'rgba(255,255,255,0.03)',
+              borderLeft: '2px solid rgba(255,255,255,0.3)',
+              margin: isMobile ? '32px 0' : '48px 0'
             }}>
               <p style={{
-                fontSize: isMobile ? '16px' : '20px',
+                fontSize: isMobile ? '14px' : '16px',
                 fontStyle: 'italic',
-                lineHeight: '1.6',
-                marginBottom: '20px',
-                color: '#000000'
+                lineHeight: '1.8',
+                marginBottom: '16px',
+                color: 'rgba(255,255,255,0.9)'
               }}>
                 "Creativity isn't about wealth—it's about passion, purpose, and how what we create can positively impact others. I saw a future where humanity stands as one, where love and unity transcend borders."
               </p>
               <p style={{
-                fontSize: '14px',
-                letterSpacing: '0.1em',
-                color: '#000000'
+                fontSize: '11px',
+                letterSpacing: '0.15em',
+                color: 'rgba(255,255,255,0.5)'
               }}>
                 — KOBBY HARDING
               </p>
@@ -319,16 +328,17 @@ const AboutKobby = () => {
 
       {/* Timeline Section */}
       <section style={{
-        padding: isMobile ? '60px 20px' : '100px 40px',
-        background: '#ffffff'
+        padding: isMobile ? '48px 20px' : '80px 40px',
+        background: '#000'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <h2 style={{
-            fontSize: isMobile ? '28px' : '36px',
+            fontSize: isMobile ? '24px' : '32px',
             fontWeight: '200',
-            letterSpacing: isMobile ? '0.1em' : '0.15em',
-            marginBottom: isMobile ? '40px' : '60px',
-            textAlign: 'center'
+            letterSpacing: '0.15em',
+            marginBottom: isMobile ? '32px' : '48px',
+            textAlign: 'center',
+            color: '#fff'
           }}>
             MILESTONES
           </h2>
@@ -342,7 +352,7 @@ const AboutKobby = () => {
                 top: 0,
                 bottom: 0,
                 width: '1px',
-                background: '#e0e0e0',
+                background: 'rgba(255,255,255,0.1)',
                 transform: 'translateX(-50%)'
               }} />
             )}
@@ -353,47 +363,47 @@ const AboutKobby = () => {
               return (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                  initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
                   style={{
                     display: isMobile ? 'flex' : 'grid',
-                    gridTemplateColumns: isMobile ? 'none' : '1fr 100px 1fr',
+                    gridTemplateColumns: isMobile ? 'none' : '1fr 80px 1fr',
                     flexDirection: isMobile ? 'row' : undefined,
                     alignItems: isMobile ? 'flex-start' : 'center',
-                    gap: isMobile ? '16px' : '0',
-                    marginBottom: isMobile ? '32px' : '60px'
+                    gap: isMobile ? '12px' : '0',
+                    marginBottom: isMobile ? '24px' : '40px'
                   }}
                 >
                   {isMobile ? (
                     <>
                       {/* Mobile Layout */}
                       <div style={{
-                        width: '40px',
-                        height: '40px',
+                        width: '32px',
+                        height: '32px',
                         borderRadius: '50%',
-                        background: '#ffffff',
-                        border: `2px solid ${'#000000'}`,
+                        background: 'transparent',
+                        border: '1px solid rgba(255,255,255,0.3)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexShrink: 0
                       }}>
-                        <Icon style={{ width: '20px', height: '20px', color: '#000000' }} />
+                        <Icon style={{ width: '14px', height: '14px', color: 'rgba(255,255,255,0.6)' }} />
                       </div>
                       <div style={{ flex: 1 }}>
                         <h3 style={{
-                          fontSize: '20px',
+                          fontSize: '16px',
                           fontWeight: '300',
-                          color: '#000000',
+                          color: '#fff',
                           marginBottom: '4px'
                         }}>
                           {item.year}
                         </h3>
                         <p style={{
-                          fontSize: '14px',
-                          color: '#666666',
+                          fontSize: '12px',
+                          color: 'rgba(255,255,255,0.6)',
                           lineHeight: '1.6'
                         }}>
                           {item.event}
@@ -405,22 +415,22 @@ const AboutKobby = () => {
                       {/* Desktop Layout */}
                       <div style={{
                         textAlign: index % 2 === 0 ? 'right' : 'left',
-                        paddingRight: index % 2 === 0 ? '40px' : 0,
-                        paddingLeft: index % 2 === 1 ? '40px' : 0
+                        paddingRight: index % 2 === 0 ? '32px' : 0,
+                        paddingLeft: index % 2 === 1 ? '32px' : 0
                       }}>
                         {index % 2 === 0 && (
                           <>
                             <h3 style={{
-                              fontSize: '24px',
+                              fontSize: '20px',
                               fontWeight: '300',
-                              color: '#000000',
-                              marginBottom: '8px'
+                              color: '#fff',
+                              marginBottom: '6px'
                             }}>
                               {item.year}
                             </h3>
                             <p style={{
-                              fontSize: '15px',
-                              color: '#666666',
+                              fontSize: '13px',
+                              color: 'rgba(255,255,255,0.6)',
                               lineHeight: '1.6'
                             }}>
                               {item.event}
@@ -435,37 +445,37 @@ const AboutKobby = () => {
                         alignItems: 'center'
                       }}>
                         <div style={{
-                          width: '50px',
-                          height: '50px',
+                          width: '40px',
+                          height: '40px',
                           borderRadius: '50%',
-                          background: '#ffffff',
-                          border: `2px solid ${'#000000'}`,
+                          background: 'transparent',
+                          border: '1px solid rgba(255,255,255,0.3)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center'
                         }}>
-                          <Icon style={{ width: '24px', height: '24px', color: '#000000' }} />
+                          <Icon style={{ width: '18px', height: '18px', color: 'rgba(255,255,255,0.6)' }} />
                         </div>
                       </div>
 
                       <div style={{
                         textAlign: index % 2 === 1 ? 'left' : 'right',
-                        paddingLeft: index % 2 === 1 ? '40px' : 0,
-                        paddingRight: index % 2 === 0 ? '40px' : 0
+                        paddingLeft: index % 2 === 1 ? '32px' : 0,
+                        paddingRight: index % 2 === 0 ? '32px' : 0
                       }}>
                         {index % 2 === 1 && (
                           <>
                             <h3 style={{
-                              fontSize: '24px',
+                              fontSize: '20px',
                               fontWeight: '300',
-                              color: '#000000',
-                              marginBottom: '8px'
+                              color: '#fff',
+                              marginBottom: '6px'
                             }}>
                               {item.year}
                             </h3>
                             <p style={{
-                              fontSize: '15px',
-                              color: '#666666',
+                              fontSize: '13px',
+                              color: 'rgba(255,255,255,0.6)',
                               lineHeight: '1.6'
                             }}>
                               {item.event}
@@ -484,26 +494,27 @@ const AboutKobby = () => {
 
       {/* Global Reach */}
       <section style={{
-        padding: isMobile ? '60px 20px' : '100px 40px',
-        background: '#ffffff',
-        borderTop: `1px solid ${'#e0e0e0'}`
+        padding: isMobile ? '48px 20px' : '80px 40px',
+        background: '#000',
+        borderTop: '1px solid rgba(255,255,255,0.1)'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{
-            fontSize: isMobile ? '28px' : '36px',
+            fontSize: isMobile ? '24px' : '32px',
             fontWeight: '200',
-            letterSpacing: isMobile ? '0.1em' : '0.15em',
-            marginBottom: '20px'
+            letterSpacing: '0.15em',
+            marginBottom: '16px',
+            color: '#fff'
           }}>
             GLOBAL REACH
           </h2>
 
           <p style={{
-            fontSize: '16px',
-            color: '#666666',
-            marginBottom: '50px',
-            maxWidth: '600px',
-            margin: '0 auto 50px'
+            fontSize: '13px',
+            color: 'rgba(255,255,255,0.6)',
+            marginBottom: '32px',
+            maxWidth: '500px',
+            margin: '0 auto 32px'
           }}>
             From Ghana to the world, spreading African culture through fashion and dance across continents.
           </p>
@@ -511,34 +522,32 @@ const AboutKobby = () => {
           <div style={{
             display: 'flex',
             flexWrap: 'wrap',
-            gap: '12px',
+            gap: '10px',
             justifyContent: 'center'
           }}>
             {countries.map((country, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
+                initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
+                transition={{ delay: index * 0.03 }}
                 style={{
-                  padding: '12px 24px',
-                  background: 'rgba(0, 0, 0, 0.05)',
-                  border: `1px solid ${'#e0e0e0'}`,
-                  borderRadius: '30px',
-                  fontSize: '14px',
-                  letterSpacing: '0.05em',
+                  padding: '10px 20px',
+                  background: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  borderRadius: '0',
+                  fontSize: '11px',
+                  letterSpacing: '0.1em',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
-                }}
-                whileHover={{
-                  background: '#000000',
-                  color: 'white',
-                  borderColor: '#000000'
+                  gap: '8px',
+                  color: 'rgba(255,255,255,0.8)',
+                  cursor: 'default',
+                  transition: 'all 0.3s'
                 }}
               >
-                <MapPin style={{ width: '14px', height: '14px' }} />
+                <MapPin style={{ width: '12px', height: '12px', opacity: 0.5 }} />
                 {country}
               </motion.div>
             ))}
@@ -548,27 +557,27 @@ const AboutKobby = () => {
 
       {/* CTA Section */}
       <section style={{
-        padding: isMobile ? '60px 20px' : '80px 40px',
-        background: `linear-gradient(135deg, ${'#000000'} 0%, ${'#000000'}dd 100%)`,
+        padding: isMobile ? '48px 20px' : '64px 40px',
+        background: 'rgba(255,255,255,0.02)',
+        borderTop: '1px solid rgba(255,255,255,0.1)',
         textAlign: 'center'
       }}>
         <h2 style={{
-          fontSize: isMobile ? '24px' : '32px',
+          fontSize: isMobile ? '20px' : '28px',
           fontWeight: '200',
-          letterSpacing: isMobile ? '0.1em' : '0.15em',
-          marginBottom: '20px',
-          color: 'white'
+          letterSpacing: '0.15em',
+          marginBottom: '16px',
+          color: '#fff'
         }}>
           JOIN THE MOVEMENT
         </h2>
 
         <p style={{
-          fontSize: '16px',
-          marginBottom: '30px',
-          opacity: 0.9,
-          color: 'white',
-          maxWidth: '500px',
-          margin: '0 auto 30px'
+          fontSize: '13px',
+          marginBottom: '24px',
+          color: 'rgba(255,255,255,0.6)',
+          maxWidth: '400px',
+          margin: '0 auto 24px'
         }}>
           Experience the fusion of African heritage and contemporary fashion.
         </p>
@@ -576,22 +585,22 @@ const AboutKobby = () => {
         <button
           onClick={() => navigate('/collection')}
           style={{
-            padding: isMobile ? '12px 24px' : '14px 32px',
-            background: 'white',
-            color: '#000000',
-            border: 'none',
-            fontSize: isMobile ? '12px' : '14px',
-            letterSpacing: '0.15em',
+            padding: '12px 32px',
+            background: 'transparent',
+            color: '#fff',
+            border: '1px solid rgba(255,255,255,0.3)',
+            fontSize: '11px',
+            letterSpacing: '0.2em',
             cursor: 'pointer',
             transition: 'all 0.3s'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px)'
-            e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.2)'
+            e.currentTarget.style.borderColor = '#fff'
+            e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = 'none'
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
+            e.currentTarget.style.background = 'transparent'
           }}
         >
           SHOP NOW

@@ -83,38 +83,17 @@ const WelcomeMinimal = () => {
           padding: isMobile ? '0 24px' : '0 20px',
           maxWidth: '800px'
         }}>
-          {/* Brand Mark */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
-            style={{
-              marginBottom: isMobile ? '16px' : '24px'
-            }}
-          >
-            <span style={{
-              display: 'inline-block',
-              fontSize: isMobile ? '14px' : '12px',
-              letterSpacing: '0.4em',
-              color: 'rgba(255,255,255,0.6)',
-              borderBottom: '1px solid rgba(255,255,255,0.3)',
-              paddingBottom: '8px'
-            }}>
-              KOBY HARDING PRESENTS
-            </span>
-          </motion.div>
-
           {/* Main Title - Full brand name */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.8 }}
+            transition={{ delay: 0.15, duration: 0.8 }}
             style={{
-              fontSize: isMobile ? '28px' : '48px',
+              fontSize: isMobile ? '36px' : '56px',
               fontWeight: '300',
-              letterSpacing: '0.25em',
+              letterSpacing: '0.2em',
               margin: 0,
-              lineHeight: 1.2,
+              lineHeight: 1.1,
               textShadow: '0 4px 30px rgba(0,0,0,0.5)'
             }}
           >
@@ -123,12 +102,12 @@ const WelcomeMinimal = () => {
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
             style={{
-              fontSize: isMobile ? '18px' : '28px',
+              fontSize: isMobile ? '20px' : '32px',
               fontWeight: '200',
-              letterSpacing: '0.4em',
-              margin: isMobile ? '8px 0 20px 0' : '12px 0 24px 0',
+              letterSpacing: '0.35em',
+              margin: isMobile ? '8px 0 24px 0' : '12px 0 28px 0',
               textShadow: '0 2px 20px rgba(0,0,0,0.4)'
             }}
           >
@@ -139,12 +118,12 @@ const WelcomeMinimal = () => {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.55, duration: 0.8 }}
+            transition={{ delay: 0.45, duration: 0.8 }}
             style={{
-              fontSize: isMobile ? '13px' : '14px',
-              letterSpacing: '0.15em',
-              color: 'rgba(255,255,255,0.85)',
-              marginBottom: isMobile ? '28px' : '36px',
+              fontSize: isMobile ? '12px' : '13px',
+              letterSpacing: '0.2em',
+              color: 'rgba(255,255,255,0.8)',
+              marginBottom: isMobile ? '32px' : '40px',
               fontWeight: '300',
               textShadow: '0 2px 10px rgba(0,0,0,0.3)'
             }}
@@ -156,16 +135,16 @@ const WelcomeMinimal = () => {
           <motion.button
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
             whileHover={{ scale: 1.03, backgroundColor: 'rgba(255,255,255,0.1)' }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate('/collection')}
             style={{
-              padding: isMobile ? '16px 36px' : '16px 48px',
+              padding: isMobile ? '14px 32px' : '16px 48px',
               background: 'rgba(255,255,255,0.05)',
               border: '1px solid rgba(255,255,255,0.5)',
               color: '#fff',
-              fontSize: isMobile ? '12px' : '11px',
+              fontSize: isMobile ? '11px' : '11px',
               letterSpacing: '0.2em',
               cursor: 'pointer',
               display: 'inline-flex',
@@ -178,52 +157,53 @@ const WelcomeMinimal = () => {
             EXPLORE COLLECTION
             <ArrowRight size={16} />
           </motion.button>
-
-          {/* Scroll indicator for mobile */}
-          {isMobile && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2, duration: 0.8 }}
-              style={{
-                position: 'absolute',
-                bottom: '-60px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-            >
-              <span style={{
-                fontSize: '9px',
-                letterSpacing: '0.2em',
-                color: 'rgba(255,255,255,0.5)'
-              }}>
-                SCROLL
-              </span>
-              <motion.div
-                animate={{ y: [0, 6, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                style={{
-                  width: '1px',
-                  height: '24px',
-                  background: 'linear-gradient(to bottom, rgba(255,255,255,0.5), transparent)'
-                }}
-              />
-            </motion.div>
-          )}
         </div>
+
+        {/* Scroll indicator - positioned at bottom of section */}
+        {isMobile && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            style={{
+              position: 'absolute',
+              bottom: '24px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '6px',
+              zIndex: 2
+            }}
+          >
+            <span style={{
+              fontSize: '9px',
+              letterSpacing: '0.2em',
+              color: 'rgba(255,255,255,0.5)'
+            }}>
+              SCROLL
+            </span>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              style={{
+                width: '1px',
+                height: '20px',
+                background: 'linear-gradient(to bottom, rgba(255,255,255,0.5), transparent)'
+              }}
+            />
+          </motion.div>
+        )}
       </section>
 
-      {/* Story - Compact Grid */}
+      {/* Story - Horizontal Scroll on Mobile */}
       <section style={{
-        padding: isMobile ? '48px 16px' : '64px 40px',
-        maxWidth: '1100px',
+        padding: isMobile ? '48px 0' : '64px 40px',
+        maxWidth: isMobile ? '100%' : '1100px',
         margin: '0 auto'
       }}>
-        <div style={{ textAlign: 'center', marginBottom: isMobile ? '32px' : '40px' }}>
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? '24px' : '40px', padding: isMobile ? '0 16px' : 0 }}>
           <h2 style={{
             fontSize: isMobile ? '10px' : '11px',
             letterSpacing: '0.25em',
@@ -242,74 +222,172 @@ const WelcomeMinimal = () => {
           </h3>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
-          gap: isMobile ? '24px' : '20px',
-          marginBottom: isMobile ? '32px' : '48px'
-        }}>
-          {[
-            {
-              img: '/kobby-assets/models/IMG_3481.JPG',
-              label: 'ORIGINS',
-              title: 'African Roots',
-              text: 'Born in Ghana, raised by tradition. Every thread carries history.'
-            },
-            {
-              img: '/kobby-assets/models/IMG_3591.JPG',
-              label: 'JOURNEY',
-              title: 'The Path East',
-              text: 'From Accra to Bangkok, following the rhythm of Kizomba.'
-            },
-            {
-              img: '/kobby-assets/models/IMG_3622.JPG',
-              label: 'CRAFT',
-              title: 'Dance & Design',
-              text: 'Every piece tested on the dance floor. Fashion that moves.'
-            }
-          ].map((item, i) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-            >
-              <div style={{
-                width: '100%',
-                height: isMobile ? '200px' : '240px',
-                backgroundImage: `url(${item.img})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                marginBottom: '16px'
-              }} />
-              <div style={{
-                fontSize: '9px',
-                letterSpacing: '0.25em',
-                color: 'var(--text-muted)',
-                marginBottom: '8px'
-              }}>
-                {item.label}
-              </div>
-              <h4 style={{
-                fontSize: '16px',
-                fontWeight: '300',
-                letterSpacing: '0.05em',
-                marginBottom: '8px',
-                color: 'var(--text-primary)'
-              }}>
-                {item.title}
-              </h4>
-              <p style={{
-                fontSize: '12px',
-                lineHeight: '1.7',
-                color: 'var(--text-secondary)'
-              }}>
-                {item.text}
-              </p>
-            </motion.div>
-          ))}
-        </div>
+        {/* Mobile: Horizontal scroll cards */}
+        {isMobile ? (
+          <div
+            style={{
+              display: 'flex',
+              gap: '16px',
+              overflowX: 'auto',
+              scrollSnapType: 'x mandatory',
+              WebkitOverflowScrolling: 'touch',
+              paddingLeft: '16px',
+              paddingRight: '16px',
+              paddingBottom: '16px',
+              marginBottom: '32px'
+            }}
+            className="story-scroll-container"
+          >
+            <style>{`
+              .story-scroll-container::-webkit-scrollbar {
+                display: none;
+              }
+              .story-scroll-container {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+              }
+            `}</style>
+            {[
+              {
+                img: '/kobby-assets/models/IMG_3481.JPG',
+                label: 'ORIGINS',
+                title: 'African Roots',
+                text: 'Born in Ghana, raised by tradition. Every thread carries history.'
+              },
+              {
+                img: '/kobby-assets/models/IMG_3591.JPG',
+                label: 'JOURNEY',
+                title: 'The Path East',
+                text: 'From Accra to Bangkok, following the rhythm of Kizomba.'
+              },
+              {
+                img: '/kobby-assets/models/IMG_3622.JPG',
+                label: 'CRAFT',
+                title: 'Dance & Design',
+                text: 'Every piece tested on the dance floor. Fashion that moves.'
+              }
+            ].map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                style={{
+                  flexShrink: 0,
+                  width: '280px',
+                  scrollSnapAlign: 'start',
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border-primary)'
+                }}
+              >
+                <div style={{
+                  width: '100%',
+                  height: '200px',
+                  backgroundImage: `url(${item.img})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }} />
+                <div style={{ padding: '16px' }}>
+                  <div style={{
+                    fontSize: '9px',
+                    letterSpacing: '0.25em',
+                    color: 'var(--text-muted)',
+                    marginBottom: '8px'
+                  }}>
+                    {item.label}
+                  </div>
+                  <h4 style={{
+                    fontSize: '14px',
+                    fontWeight: '300',
+                    letterSpacing: '0.05em',
+                    marginBottom: '8px',
+                    color: 'var(--text-primary)'
+                  }}>
+                    {item.title}
+                  </h4>
+                  <p style={{
+                    fontSize: '11px',
+                    lineHeight: '1.7',
+                    color: 'var(--text-secondary)'
+                  }}>
+                    {item.text}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          /* Desktop: Grid layout */
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '20px',
+            marginBottom: '48px'
+          }}>
+            {[
+              {
+                img: '/kobby-assets/models/IMG_3481.JPG',
+                label: 'ORIGINS',
+                title: 'African Roots',
+                text: 'Born in Ghana, raised by tradition. Every thread carries history.'
+              },
+              {
+                img: '/kobby-assets/models/IMG_3591.JPG',
+                label: 'JOURNEY',
+                title: 'The Path East',
+                text: 'From Accra to Bangkok, following the rhythm of Kizomba.'
+              },
+              {
+                img: '/kobby-assets/models/IMG_3622.JPG',
+                label: 'CRAFT',
+                title: 'Dance & Design',
+                text: 'Every piece tested on the dance floor. Fashion that moves.'
+              }
+            ].map((item, i) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <div style={{
+                  width: '100%',
+                  height: '240px',
+                  backgroundImage: `url(${item.img})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  marginBottom: '16px'
+                }} />
+                <div style={{
+                  fontSize: '9px',
+                  letterSpacing: '0.25em',
+                  color: 'var(--text-muted)',
+                  marginBottom: '8px'
+                }}>
+                  {item.label}
+                </div>
+                <h4 style={{
+                  fontSize: '16px',
+                  fontWeight: '300',
+                  letterSpacing: '0.05em',
+                  marginBottom: '8px',
+                  color: 'var(--text-primary)'
+                }}>
+                  {item.title}
+                </h4>
+                <p style={{
+                  fontSize: '12px',
+                  lineHeight: '1.7',
+                  color: 'var(--text-secondary)'
+                }}>
+                  {item.text}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        )}
 
         {/* Quote - Compact */}
         <motion.div
@@ -318,7 +396,8 @@ const WelcomeMinimal = () => {
           viewport={{ once: true }}
           style={{
             textAlign: 'center',
-            padding: isMobile ? '24px 0' : '32px 0',
+            padding: isMobile ? '24px 16px' : '32px 0',
+            margin: isMobile ? '0 16px' : 0,
             borderTop: '1px solid var(--border-primary)',
             borderBottom: '1px solid var(--border-primary)'
           }}

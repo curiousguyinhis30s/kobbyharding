@@ -131,8 +131,7 @@ const ContactMinimal = () => {
       <div style={{
         minHeight: '100vh',
         background: '#000',
-        color: '#fff',
-        paddingTop: '64px'
+        color: '#fff'
       }}>
         {/* Hero Section */}
       <div style={{
