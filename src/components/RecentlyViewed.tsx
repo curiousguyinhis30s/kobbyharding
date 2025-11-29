@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { X } from 'lucide-react'
 import useStore from '../stores/useStore'
+import { useTheme } from '../contexts/ThemeContext'
 
 interface RecentlyViewedProps {
   isMobile?: boolean
@@ -16,6 +17,7 @@ const RecentlyViewed = ({
 }: RecentlyViewedProps) => {
   const navigate = useNavigate()
   const { recentlyViewed, pieces, clearRecentlyViewed } = useStore()
+  const { isDark } = useTheme()
 
   // Get recently viewed pieces (up to maxItems)
   const recentlyViewedPieces = pieces
@@ -29,7 +31,7 @@ const RecentlyViewed = ({
 
   return (
     <div style={{
-      borderTop: '1px solid rgba(255,255,255,0.1)',
+      borderTop: '1px solid var(--border-primary)',
       padding: isMobile ? '24px 20px' : '32px 24px',
       maxWidth: '1400px',
       margin: '0 auto'
@@ -44,7 +46,7 @@ const RecentlyViewed = ({
           fontSize: '12px',
           fontWeight: '100',
           letterSpacing: '0.3em',
-          color: 'rgba(255,255,255,0.8)'
+          color: 'var(--text-secondary)'
         }}>
           RECENTLY VIEWED
         </h2>
@@ -58,20 +60,20 @@ const RecentlyViewed = ({
               gap: '6px',
               padding: '6px 12px',
               background: 'transparent',
-              border: '1px solid rgba(255,255,255,0.2)',
-              color: 'rgba(255,255,255,0.6)',
+              border: '1px solid var(--border-hover)',
+              color: 'var(--text-muted)',
               fontSize: '10px',
               letterSpacing: '0.15em',
               cursor: 'pointer',
               transition: 'all 0.3s'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
-              e.currentTarget.style.color = '#fff'
+              e.currentTarget.style.borderColor = 'var(--border-primary)'
+              e.currentTarget.style.color = 'var(--text-primary)'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
-              e.currentTarget.style.color = 'rgba(255,255,255,0.6)'
+              e.currentTarget.style.borderColor = 'var(--border-hover)'
+              e.currentTarget.style.color = 'var(--text-muted)'
             }}
           >
             <X style={{ width: '12px', height: '12px' }} />
@@ -108,17 +110,19 @@ const RecentlyViewed = ({
             onClick={() => navigate(`/piece/${piece.id}`)}
             style={{
               cursor: 'pointer',
-              border: '1px solid rgba(255,255,255,0.1)',
+              border: '1px solid var(--border-primary)',
               transition: 'border-color 0.3s',
               minWidth: isMobile ? '150px' : 'auto',
-              flexShrink: 0
+              flexShrink: 0,
+              background: 'var(--bg-primary)'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'}
-            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--border-hover)'}
+            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-primary)'}
           >
             <div style={{
-              aspectRatio: '1',
-              overflow: 'hidden'
+              aspectRatio: '4/5',
+              overflow: 'hidden',
+              background: 'var(--bg-tertiary)'
             }}>
               <img
                 src={piece.imageUrl}
@@ -128,13 +132,14 @@ const RecentlyViewed = ({
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
+                  objectPosition: 'center 20%',
                   transition: 'transform 0.3s'
                 }}
               />
             </div>
             <div style={{
               padding: isMobile ? '12px' : '16px',
-              borderTop: '1px solid rgba(255,255,255,0.1)'
+              borderTop: '1px solid var(--border-primary)'
             }}>
               <h3 style={{
                 fontSize: '11px',
@@ -143,7 +148,8 @@ const RecentlyViewed = ({
                 marginBottom: '8px',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                color: 'var(--text-primary)'
               }}>
                 {piece.name}
               </h3>
@@ -152,15 +158,14 @@ const RecentlyViewed = ({
                 justifyContent: 'space-between',
                 alignItems: 'center'
               }}>
-                <div style={{ fontSize: '12px', fontWeight: '200' }}>
+                <div style={{ fontSize: '12px', fontWeight: '200', color: 'var(--text-primary)' }}>
                   ${piece.price}
                 </div>
                 {!piece.available && (
                   <div style={{
                     fontSize: '9px',
                     letterSpacing: '0.1em',
-                    color: 'rgba(255,255,255,0.5)',
-                    opacity: 0.7
+                    color: 'var(--text-muted)'
                   }}>
                     SOLD OUT
                   </div>

@@ -305,12 +305,12 @@ const MinimalAIChat = () => {
             }}>
               <div>
                 <div style={{
-                  fontSize: '11px',
-                  fontWeight: '400',
-                  letterSpacing: '0.15em',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  letterSpacing: '0.1em',
                   color: '#fff'
                 }}>
-                  KHARDING ASSISTANT
+                  AYO
                 </div>
                 <div style={{
                   fontSize: '9px',
@@ -318,7 +318,7 @@ const MinimalAIChat = () => {
                   marginTop: '2px',
                   letterSpacing: '0.05em'
                 }}>
-                  Trained on our collection & policies
+                  Your style guide
                 </div>
               </div>
               <button

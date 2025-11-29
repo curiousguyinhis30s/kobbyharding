@@ -21,6 +21,7 @@ export interface Piece {
   available: boolean
   category?: string
   image?: string
+  availableSizes?: string[]
   wornBy?: Array<{
     name: string
     location: string
@@ -467,9 +468,14 @@ const useStore = create<Store>()(
 
         // Size filter - only show pieces available in selected sizes
         if (selectedSizes.length > 0) {
-          // This could be expanded if pieces have size availability data
-          // For now, we'll just include all pieces when sizes are selected
-          // as our mock data doesn't include detailed size availability
+          filtered = filtered.filter(p => {
+            // Check if piece has any of the selected sizes available
+            if (!p.availableSizes || p.availableSizes.length === 0) {
+              // If piece doesn't have size data, include it (assume all sizes available)
+              return true
+            }
+            return selectedSizes.some(size => p.availableSizes?.includes(size))
+          })
         }
 
         // Sorting

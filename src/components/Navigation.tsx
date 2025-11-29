@@ -97,8 +97,8 @@ const Navigation = () => {
           left: 0,
           right: 0,
           zIndex: 50,
-          background: '#000',
-          borderBottom: '1px solid rgba(255,255,255,0.08)'
+          background: 'var(--bg-primary)',
+          borderBottom: '1px solid var(--border-secondary)'
         }}
       >
         <div style={{
@@ -124,12 +124,12 @@ const Navigation = () => {
             }}
           >
             <span style={{
-              fontSize: '14px',
-              fontWeight: '300',
-              letterSpacing: '0.2em',
-              color: '#fff'
+              fontSize: '18px',
+              fontWeight: '600',
+              letterSpacing: '0.15em',
+              color: 'var(--text-primary)'
             }}>
-              KHARDING
+              KH
             </span>
           </button>
 
@@ -152,14 +152,14 @@ const Navigation = () => {
                       border: 'none',
                       fontSize: '12px',
                       letterSpacing: '0.1em',
-                      color: isActive ? '#fff' : 'rgba(255,255,255,0.6)',
+                      color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
                       cursor: 'pointer',
                       transition: 'color 0.2s',
                       position: 'relative',
                       paddingBottom: '4px'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-                    onMouseLeave={e => e.currentTarget.style.color = isActive ? '#fff' : 'rgba(255,255,255,0.6)'}
+                    onMouseEnter={e => e.currentTarget.style.color = 'var(--text-primary)'}
+                    onMouseLeave={e => e.currentTarget.style.color = isActive ? 'var(--text-primary)' : 'var(--text-muted)'}
                   >
                     {item.label}
                     {isActive && (
@@ -171,7 +171,7 @@ const Navigation = () => {
                           left: 0,
                           right: 0,
                           height: '1px',
-                          background: '#fff'
+                          background: 'var(--text-primary)'
                         }}
                         transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                       />
@@ -252,14 +252,14 @@ const Navigation = () => {
                         top: '100%',
                         marginTop: '8px',
                         width: '180px',
-                        background: '#0a0a0a',
-                        border: '1px solid rgba(255,255,255,0.1)',
+                        background: 'var(--bg-secondary)',
+                        border: '1px solid var(--border-primary)',
                         padding: '8px 0'
                       }}
                     >
-                      <div style={{ padding: '8px 16px', borderBottom: '1px solid rgba(255,255,255,0.08)', marginBottom: '4px' }}>
-                        <p style={{ fontSize: '10px', color: 'rgba(255,255,255,0.5)', marginBottom: '2px' }}>SIGNED IN</p>
-                        <p style={{ fontSize: '11px', color: '#fff' }}>{user?.email}</p>
+                      <div style={{ padding: '8px 16px', borderBottom: '1px solid var(--border-secondary)', marginBottom: '4px' }}>
+                        <p style={{ fontSize: '10px', color: 'var(--text-muted)', marginBottom: '2px' }}>SIGNED IN</p>
+                        <p style={{ fontSize: '11px', color: 'var(--text-primary)' }}>{user?.email}</p>
                       </div>
                       {[
                         { label: 'My Orders', path: '/account/orders' },

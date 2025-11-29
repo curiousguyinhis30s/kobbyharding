@@ -8,12 +8,14 @@ import { useToast } from '../components/Toast'
 import { ProductCardSkeleton } from '../components/SkeletonLoader'
 import { EmptySearch } from '../components/EmptyStates'
 import RecentlyViewed from '../components/RecentlyViewed'
+import { useTheme } from '../contexts/ThemeContext'
 
 const CollectionMinimal = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { pieces, addToCart, setPieces, toggleFavorite, isFavorite, searchQuery: storeSearchQuery, setSearchQuery: setStoreSearchQuery, getFilteredPieces } = useStore()
   const { addToast } = useToast()
+  const { isDark } = useTheme()
   const [category, setCategory] = useState('all')
   const [gridView, setGridView] = useState<'large' | 'small'>('small')
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
@@ -95,24 +97,24 @@ const CollectionMinimal = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#000',
-      color: '#fff',
+      backgroundColor: 'var(--bg-primary)',
+      color: 'var(--text-primary)',
       position: 'relative'
     }}>
       {/* Subtle grid pattern */}
       <div style={{
         position: 'fixed',
         inset: 0,
-        opacity: 0.02,
+        opacity: isDark ? 0.02 : 0.03,
         pointerEvents: 'none',
-        backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(var(--border-primary) 1px, transparent 1px), linear-gradient(90deg, var(--border-primary) 1px, transparent 1px)`,
         backgroundSize: '50px 50px'
       }} />
 
       {/* Header - Integrated */}
       <div style={{
-        backgroundColor: '#000',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+        backgroundColor: 'var(--bg-primary)',
+        borderBottom: '1px solid var(--border-primary)'
       }}>
         <div style={{
           maxWidth: '1400px',
@@ -164,8 +166,8 @@ const CollectionMinimal = () => {
             alignItems: 'center',
             gap: isMobile ? '8px' : '12px',
             padding: isMobile ? '10px 12px' : '12px 16px',
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: 'var(--bg-tertiary)',
+            border: '1px solid var(--border-primary)',
             transition: 'all 0.3s'
           }}>
             <Search style={{ width: '14px', height: '14px', opacity: 0.5, flexShrink: 0 }} />
@@ -180,7 +182,7 @@ const CollectionMinimal = () => {
                 border: 'none',
                 outline: 'none',
                 fontSize: isMobile ? '12px' : '13px',
-                color: '#fff',
+                color: 'var(--text-primary)',
                 letterSpacing: '0.05em',
                 fontWeight: '300'
               }}
@@ -190,7 +192,7 @@ const CollectionMinimal = () => {
                 onClick={() => setSearchQuery('')}
                 style={{
                   padding: '4px',
-                  color: 'rgba(255, 255, 255, 0.5)',
+                  color: 'var(--text-muted)',
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
@@ -206,8 +208,8 @@ const CollectionMinimal = () => {
 
       {/* Categories */}
       <div style={{
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-        background: '#000'
+        borderBottom: '1px solid var(--border-primary)',
+        background: 'var(--bg-primary)'
       }}>
         <div style={{
           maxWidth: '1400px',
@@ -242,8 +244,8 @@ const CollectionMinimal = () => {
                     textTransform: 'uppercase',
                     background: 'none',
                     border: 'none',
-                    borderBottom: category === cat.id ? '1px solid #fff' : '1px solid transparent',
-                    color: category === cat.id ? '#fff' : 'rgba(255, 255, 255, 0.5)',
+                    borderBottom: category === cat.id ? '1px solid var(--text-primary)' : '1px solid transparent',
+                    color: category === cat.id ? 'var(--text-primary)' : 'var(--text-muted)',
                     cursor: 'pointer',
                     transition: 'all 0.3s',
                     whiteSpace: 'nowrap',
@@ -251,19 +253,19 @@ const CollectionMinimal = () => {
                   }}
                   onMouseEnter={(e) => {
                     if (category !== cat.id) {
-                      e.currentTarget.style.color = '#fff'
-                      e.currentTarget.style.borderBottom = '1px solid rgba(255, 255, 255, 0.3)'
+                      e.currentTarget.style.color = 'var(--text-primary)'
+                      e.currentTarget.style.borderBottom = '1px solid var(--border-hover)'
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (category !== cat.id) {
-                      e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)'
+                      e.currentTarget.style.color = 'var(--text-muted)'
                       e.currentTarget.style.borderBottom = '1px solid transparent'
                     }
                   }}
                 >
                   {cat.label}
-                  {cat.id === 'limited' && <span style={{ marginLeft: '6px', color: '#fff' }}>●</span>}
+                  {cat.id === 'limited' && <span style={{ marginLeft: '6px', color: 'var(--text-primary)' }}>●</span>}
                 </button>
               ))}
             </div>
@@ -273,21 +275,21 @@ const CollectionMinimal = () => {
               onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
               style={{
                 padding: '6px 10px',
-                background: 'transparent',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                color: 'rgba(255, 255, 255, 0.8)',
+                background: 'var(--bg-primary)',
+                border: '1px solid var(--border-hover)',
+                color: 'var(--text-secondary)',
                 fontSize: '11px',
                 letterSpacing: '0.1em',
                 outline: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.3s'
               }}
-              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'}
-              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)'}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'var(--border-primary)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border-hover)'}
             >
-              <option value="newest" style={{ background: '#000' }}>NEWEST</option>
-              <option value="price-low" style={{ background: '#000' }}>PRICE ↑</option>
-              <option value="price-high" style={{ background: '#000' }}>PRICE ↓</option>
+              <option value="newest" style={{ background: 'var(--bg-primary)' }}>NEWEST</option>
+              <option value="price-low" style={{ background: 'var(--bg-primary)' }}>PRICE ↑</option>
+              <option value="price-high" style={{ background: 'var(--bg-primary)' }}>PRICE ↓</option>
             </select>
           </div>
         </div>
@@ -337,12 +339,12 @@ const CollectionMinimal = () => {
                 duration: 0.4,
                 ease: 'easeOut'
               }}
-              style={{ 
+              style={{
                 position: 'relative',
-                background: '#000',
+                background: 'var(--bg-primary)',
                 overflow: 'hidden',
                 cursor: 'pointer',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '1px solid var(--border-primary)',
                 transition: 'all 0.3s ease'
               }}
               onMouseEnter={() => setHoveredItem(piece.id)}
@@ -451,14 +453,14 @@ const CollectionMinimal = () => {
               {/* Product Info */}
               <div style={{
                 padding: isMobile ? '12px' : gridView === 'large' ? '20px' : '16px',
-                borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+                borderTop: '1px solid var(--border-primary)'
               }}>
                 <h3 style={{
                   fontSize: isMobile ? '11px' : gridView === 'large' ? '13px' : '12px',
                   fontWeight: '300',
                   letterSpacing: '0.15em',
                   marginBottom: isMobile ? '4px' : '8px',
-                  opacity: 0.9,
+                  color: 'var(--text-primary)',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap'
@@ -469,7 +471,7 @@ const CollectionMinimal = () => {
                 {!isMobile && (
                   <p style={{
                     fontSize: '11px',
-                    opacity: 0.5,
+                    color: 'var(--text-muted)',
                     letterSpacing: '0.1em',
                     marginBottom: '12px'
                   }}>
@@ -485,7 +487,8 @@ const CollectionMinimal = () => {
                   <span style={{
                     fontSize: isMobile ? '12px' : gridView === 'large' ? '14px' : '13px',
                     fontWeight: '200',
-                    letterSpacing: '0.05em'
+                    letterSpacing: '0.05em',
+                    color: 'var(--text-primary)'
                   }}>
                     ${piece.price}
                   </span>
@@ -494,10 +497,9 @@ const CollectionMinimal = () => {
                     <span style={{
                       fontSize: '10px',
                       letterSpacing: '0.15em',
-                      opacity: 0.7,
-                      color: '#fff',
+                      color: 'var(--text-secondary)',
                       padding: '2px 8px',
-                      border: '1px solid rgba(255, 255, 255, 0.3)'
+                      border: '1px solid var(--border-hover)'
                     }}>
                       POPULAR
                     </span>

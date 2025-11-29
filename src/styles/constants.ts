@@ -12,8 +12,8 @@ import { BORDER_RADIUS, SPACING, FONT_SIZE, LETTER_SPACING, OPACITY } from '../c
 
 export const containerStyle: CSSProperties = {
   minHeight: '100vh',
-  background: '#000000',
-  color: '#ffffff',
+  background: 'var(--bg-primary)',
+  color: 'var(--text-primary)',
   paddingTop: '64px'
 }
 
@@ -37,22 +37,22 @@ export const centeredContainer: CSSProperties = {
 export const sectionStyle: CSSProperties = {
   marginBottom: '24px',
   padding: '20px',
-  background: 'rgba(255, 255, 255, 0.03)',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
+  background: 'var(--bg-tertiary)',
+  border: '1px solid var(--border-primary)',
   borderRadius: BORDER_RADIUS.NONE
 }
 
 export const cardStyle: CSSProperties = {
-  background: 'rgba(255, 255, 255, 0.03)',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
+  background: 'var(--bg-tertiary)',
+  border: '1px solid var(--border-primary)',
   borderRadius: BORDER_RADIUS.MD,
   padding: '16px',
   transition: 'all 0.3s ease'
 }
 
 export const glassCard: CSSProperties = {
-  background: 'rgba(255, 255, 255, 0.05)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
+  background: 'var(--bg-hover)',
+  border: '1px solid var(--border-secondary)',
   backdropFilter: 'blur(20px)',
   borderRadius: BORDER_RADIUS.MD,
   padding: '20px'
@@ -65,10 +65,10 @@ export const glassCard: CSSProperties = {
 export const inputStyle: CSSProperties = {
   width: '100%',
   padding: '10px 14px',
-  background: 'rgba(255, 255, 255, 0.05)',
-  border: '1px solid rgba(255, 255, 255, 0.08)',
+  background: 'var(--input-bg)',
+  border: '1px solid var(--border-secondary)',
   borderRadius: BORDER_RADIUS.MD,
-  color: '#ffffff',
+  color: 'var(--text-primary)',
   fontSize: FONT_SIZE.MD,
   fontFamily: 'inherit',
   transition: 'all 0.3s'
@@ -89,7 +89,7 @@ export const labelStyle: CSSProperties = {
   fontSize: FONT_SIZE.SM,
   fontWeight: '400',
   letterSpacing: LETTER_SPACING.NORMAL,
-  color: 'rgba(255, 255, 255, 0.7)',
+  color: 'var(--text-secondary)',
   textTransform: 'uppercase'
 }
 
@@ -121,22 +121,22 @@ export const buttonBaseStyle: CSSProperties = {
 
 export const primaryButtonStyle: CSSProperties = {
   ...buttonBaseStyle,
-  background: '#ffffff',
-  color: '#000000'
+  background: 'var(--accent-primary)',
+  color: 'var(--bg-primary)'
 }
 
 export const secondaryButtonStyle: CSSProperties = {
   ...buttonBaseStyle,
   background: 'transparent',
-  color: '#ffffff',
-  border: '1px solid rgba(255, 255, 255, 0.2)'
+  color: 'var(--text-primary)',
+  border: '1px solid var(--border-hover)'
 }
 
 export const outlineButtonStyle: CSSProperties = {
   ...buttonBaseStyle,
   background: 'transparent',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
-  color: 'rgba(255, 255, 255, 0.6)'
+  border: '1px solid var(--border-primary)',
+  color: 'var(--text-muted)'
 }
 
 export const disabledButtonStyle: CSSProperties = {
@@ -156,33 +156,33 @@ export const headingStyle: CSSProperties = {
   fontSize: FONT_SIZE.XL,
   fontWeight: '200',
   letterSpacing: LETTER_SPACING.WIDEST,
-  color: '#ffffff'
+  color: 'var(--text-primary)'
 }
 
 export const subheadingStyle: CSSProperties = {
   fontSize: FONT_SIZE.LG,
   fontWeight: '300',
   letterSpacing: LETTER_SPACING.WIDE,
-  color: 'rgba(255, 255, 255, 0.9)'
+  color: 'var(--text-primary)'
 }
 
 export const sectionTitleStyle: CSSProperties = {
   fontSize: FONT_SIZE.XS,
   fontWeight: '300',
   letterSpacing: LETTER_SPACING.WIDER,
-  color: 'rgba(255, 255, 255, 0.8)',
+  color: 'var(--text-secondary)',
   textTransform: 'uppercase'
 }
 
 export const bodyTextStyle: CSSProperties = {
   fontSize: FONT_SIZE.BASE,
   lineHeight: '1.6',
-  color: 'rgba(255, 255, 255, 0.7)'
+  color: 'var(--text-secondary)'
 }
 
 export const mutedTextStyle: CSSProperties = {
   fontSize: FONT_SIZE.SM,
-  color: 'rgba(255, 255, 255, 0.5)'
+  color: 'var(--text-muted)'
 }
 
 // ============================================================================
@@ -229,16 +229,16 @@ export const gridThreeColumns: CSSProperties = {
 // ============================================================================
 
 export const borderTopStyle: CSSProperties = {
-  borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+  borderTop: '1px solid var(--border-primary)'
 }
 
 export const borderBottomStyle: CSSProperties = {
-  borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+  borderBottom: '1px solid var(--border-primary)'
 }
 
 export const dividerStyle: CSSProperties = {
   height: '1px',
-  background: 'rgba(255, 255, 255, 0.1)',
+  background: 'var(--border-primary)',
   margin: `${SPACING.XL} 0`
 }
 
@@ -247,8 +247,8 @@ export const dividerStyle: CSSProperties = {
 // ============================================================================
 
 export const headerStyle: CSSProperties = {
-  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-  background: 'rgba(0, 0, 0, 0.95)',
+  borderBottom: '1px solid var(--border-primary)',
+  background: 'var(--overlay)',
   backdropFilter: 'blur(8px)'
 }
 
@@ -270,7 +270,7 @@ export const navLinkStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   gap: SPACING.SM,
-  color: 'rgba(255, 255, 255, 0.6)',
+  color: 'var(--text-muted)',
   background: 'none',
   border: 'none',
   fontSize: FONT_SIZE.BASE,
@@ -282,7 +282,7 @@ export const navLinkStyle: CSSProperties = {
 }
 
 export const navLinkActiveStyle: CSSProperties = {
-  color: '#ffffff'
+  color: 'var(--text-primary)'
 }
 
 // ============================================================================

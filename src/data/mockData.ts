@@ -17,6 +17,7 @@ export const mockPieces = [
     price: 450,
     available: true,
     category: 't-shirts',
+    availableSizes: ['S', 'M', 'L', 'XL'],
     wornBy: [
       {
         name: 'Maya',
@@ -42,7 +43,8 @@ export const mockPieces = [
     inquiries: 23,
     price: 380,
     available: true,
-    category: 'kh-specials'
+    category: 'kh-specials',
+    availableSizes: ['XS', 'S', 'M', 'L']
   },
   {
     id: 'festival-spirit',
@@ -62,6 +64,7 @@ export const mockPieces = [
     price: 420,
     available: true,
     category: 'limited',
+    availableSizes: ['M', 'L', 'XL', 'XXL'],
     wornBy: [
       {
         name: 'Carlos',
@@ -93,7 +96,8 @@ export const mockPieces = [
     inquiries: 18,
     price: 480,
     available: true,
-    category: 'denims'
+    category: 'denims',
+    availableSizes: ['S', 'M', 'L']
   },
   {
     id: 'gentle-rebel',
@@ -113,6 +117,7 @@ export const mockPieces = [
     price: 350,
     available: false,
     category: 't-shirts',
+    availableSizes: ['XS', 'S'],
     wornBy: [
       {
         name: 'Lin',
@@ -138,7 +143,8 @@ export const mockPieces = [
     inquiries: 27,
     price: 400,
     available: true,
-    category: 'kh-tailored'
+    category: 'kh-tailored',
+    availableSizes: ['M', 'L', 'XL']
   },
   {
     id: 'golden-hour',
@@ -157,7 +163,8 @@ export const mockPieces = [
     inquiries: 52,
     price: 520,
     available: true,
-    category: 'khlassic-suits'
+    category: 'khlassic-suits',
+    availableSizes: ['S', 'M', 'L', 'XL', 'XXL']
   },
   {
     id: 'night-market',
@@ -175,7 +182,8 @@ export const mockPieces = [
     inquiries: 21,
     price: 360,
     available: true,
-    category: 'khlassic-suits'
+    category: 'khlassic-suits',
+    availableSizes: ['XS', 'S', 'M', 'L', 'XL']
   }
 ]
 
