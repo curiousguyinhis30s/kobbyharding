@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { X } from 'lucide-react'
 import useStore from '../stores/useStore'
-import { useTheme } from '../contexts/ThemeContext'
 
 interface RecentlyViewedProps {
   isMobile?: boolean
@@ -17,14 +16,13 @@ const RecentlyViewed = ({
 }: RecentlyViewedProps) => {
   const navigate = useNavigate()
   const { recentlyViewed, pieces, clearRecentlyViewed } = useStore()
-  const { isDark } = useTheme()
 
-  // Get recently viewed pieces (up to maxItems)
-  const recentlyViewedPieces = pieces
-    .filter(p => recentlyViewed.includes(p.id))
+  // Get recently viewed pieces maintaining order
+  const recentlyViewedPieces = recentlyViewed
+    .map(id => pieces.find(p => p.id === id))
+    .filter(Boolean)
     .slice(0, maxItems)
 
-  // Don't render if no recently viewed items
   if (recentlyViewedPieces.length === 0) {
     return null
   }
@@ -32,7 +30,7 @@ const RecentlyViewed = ({
   return (
     <div style={{
       borderTop: '1px solid var(--border-primary)',
-      padding: isMobile ? '24px 20px' : '32px 24px',
+      padding: isMobile ? '20px 16px' : '32px 24px',
       maxWidth: '1400px',
       margin: '0 auto'
     }}>
@@ -40,13 +38,13 @@ const RecentlyViewed = ({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '32px'
+        marginBottom: isMobile ? '16px' : '24px'
       }}>
         <h2 style={{
-          fontSize: '12px',
-          fontWeight: '100',
-          letterSpacing: '0.3em',
-          color: 'var(--text-secondary)'
+          fontSize: '10px',
+          fontWeight: '400',
+          letterSpacing: '0.2em',
+          color: 'var(--text-muted)'
         }}>
           RECENTLY VIEWED
         </h2>
@@ -57,41 +55,36 @@ const RecentlyViewed = ({
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              padding: '6px 12px',
+              gap: '4px',
+              padding: '4px 8px',
               background: 'transparent',
-              border: '1px solid var(--border-hover)',
+              border: 'none',
               color: 'var(--text-muted)',
-              fontSize: '10px',
-              letterSpacing: '0.15em',
+              fontSize: '9px',
+              letterSpacing: '0.1em',
               cursor: 'pointer',
-              transition: 'all 0.3s'
+              transition: 'color 0.2s'
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--border-primary)'
-              e.currentTarget.style.color = 'var(--text-primary)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'var(--border-hover)'
-              e.currentTarget.style.color = 'var(--text-muted)'
-            }}
+            onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+            onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
           >
-            <X style={{ width: '12px', height: '12px' }} />
-            CLEAR ALL
+            <X style={{ width: '10px', height: '10px' }} />
+            CLEAR
           </button>
         )}
       </div>
 
       <div
         style={{
-          display: isMobile ? 'flex' : 'grid',
-          gridTemplateColumns: isMobile ? undefined : 'repeat(auto-fill, minmax(200px, 1fr))',
-          gap: isMobile ? '16px' : '24px',
-          overflowX: isMobile ? 'auto' : 'visible',
+          display: 'flex',
+          gap: isMobile ? '12px' : '16px',
+          overflowX: 'auto',
           WebkitOverflowScrolling: 'touch',
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
-          paddingBottom: isMobile ? '8px' : '0'
+          paddingBottom: '4px',
+          margin: '0 -4px',
+          padding: '0 4px'
         }}
         className="recently-viewed-scroll"
       >
@@ -102,76 +95,60 @@ const RecentlyViewed = ({
         `}</style>
         {recentlyViewedPieces.map((piece, index) => (
           <motion.div
-            key={piece.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            key={piece!.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ delay: index * 0.05 }}
-            whileHover={{ scale: 1.02 }}
-            onClick={() => navigate(`/piece/${piece.id}`)}
+            onClick={() => navigate(`/piece/${piece!.id}`)}
             style={{
               cursor: 'pointer',
-              border: '1px solid var(--border-primary)',
-              transition: 'border-color 0.3s',
-              minWidth: isMobile ? '150px' : 'auto',
               flexShrink: 0,
-              background: 'var(--bg-primary)'
+              width: isMobile ? '100px' : '120px'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--border-hover)'}
-            onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--border-primary)'}
           >
+            {/* Square image container */}
             <div style={{
-              aspectRatio: '4/5',
+              width: isMobile ? '100px' : '120px',
+              height: isMobile ? '100px' : '120px',
               overflow: 'hidden',
-              background: 'var(--bg-tertiary)'
+              background: 'var(--bg-tertiary)',
+              borderRadius: '2px',
+              marginBottom: '8px'
             }}>
-              <img
-                src={piece.imageUrl}
-                alt={piece.name}
+              <motion.img
+                src={piece!.imageUrl}
+                alt={piece!.name}
                 loading="lazy"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
                 style={{
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  objectPosition: 'center 20%',
-                  transition: 'transform 0.3s'
+                  objectPosition: 'center top'
                 }}
               />
             </div>
-            <div style={{
-              padding: isMobile ? '12px' : '16px',
-              borderTop: '1px solid var(--border-primary)'
+            {/* Minimal text below */}
+            <p style={{
+              fontSize: '10px',
+              fontWeight: '300',
+              letterSpacing: '0.05em',
+              color: 'var(--text-secondary)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              marginBottom: '2px'
             }}>
-              <h3 style={{
-                fontSize: '11px',
-                fontWeight: '300',
-                letterSpacing: '0.15em',
-                marginBottom: '8px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                color: 'var(--text-primary)'
-              }}>
-                {piece.name}
-              </h3>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <div style={{ fontSize: '12px', fontWeight: '200', color: 'var(--text-primary)' }}>
-                  ${piece.price}
-                </div>
-                {!piece.available && (
-                  <div style={{
-                    fontSize: '9px',
-                    letterSpacing: '0.1em',
-                    color: 'var(--text-muted)'
-                  }}>
-                    SOLD OUT
-                  </div>
-                )}
-              </div>
-            </div>
+              {piece!.name}
+            </p>
+            <p style={{
+              fontSize: '10px',
+              fontWeight: '400',
+              color: 'var(--text-primary)'
+            }}>
+              ${piece!.price}
+            </p>
           </motion.div>
         ))}
       </div>

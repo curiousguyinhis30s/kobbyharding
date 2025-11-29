@@ -1,17 +1,104 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Menu, X, ShoppingBag, User, Heart, Search, Sun, Moon } from 'lucide-react'
+import { Menu, X, ShoppingBag, User, Heart, Search } from 'lucide-react'
 import useStore from '../stores/useStore'
 import { useAuth } from '../contexts/AuthContext'
 import { useTheme } from '../contexts/ThemeContext'
+
+// Animated Logo Component with typewriter effect
+const AnimatedLogo = ({ onClick }: { onClick: () => void }) => {
+  const [showH, setShowH] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowH(true), 150)
+    return () => clearTimeout(timer)
+  }, [])
+
+  return (
+    <button
+      onClick={onClick}
+      aria-label="Go to homepage - KH Classics"
+      style={{
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '2px',
+        padding: '8px 0'
+      }}
+    >
+      <motion.span
+        initial={{ opacity: 0, rotateY: -90 }}
+        animate={{ opacity: 1, rotateY: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        style={{
+          fontSize: '20px',
+          fontWeight: '600',
+          letterSpacing: '-0.02em',
+          color: 'var(--text-primary)',
+          display: 'inline-block'
+        }}
+      >
+        K
+      </motion.span>
+      <motion.span
+        initial={{ opacity: 0, rotateY: 90 }}
+        animate={{ opacity: showH ? 1 : 0, rotateY: showH ? 0 : 90 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        style={{
+          fontSize: '20px',
+          fontWeight: '600',
+          letterSpacing: '-0.02em',
+          color: 'var(--text-primary)',
+          display: 'inline-block'
+        }}
+      >
+        H
+      </motion.span>
+    </button>
+  )
+}
+
+// Minimal Theme Toggle - just a small circle
+const ThemeToggle = ({ isDark, onToggle }: { isDark: boolean; onToggle: () => void }) => (
+  <button
+    onClick={onToggle}
+    aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+    style={{
+      background: 'none',
+      border: 'none',
+      padding: '8px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}
+  >
+    <motion.div
+      initial={false}
+      animate={{
+        backgroundColor: isDark ? '#fff' : '#000',
+        scale: isDark ? 1 : 0.85
+      }}
+      transition={{ duration: 0.2 }}
+      style={{
+        width: '8px',
+        height: '8px',
+        borderRadius: '50%',
+        border: `1px solid ${isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`
+      }}
+    />
+  </button>
+)
 
 const Navigation = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { cartItems, favorites, setSearchQuery } = useStore()
   const { user, isAuthenticated, logout } = useAuth()
-  const { theme, toggleTheme, isDark } = useTheme()
+  const { toggleTheme, isDark } = useTheme()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
   const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth < 360)
@@ -110,28 +197,8 @@ const Navigation = () => {
           alignItems: 'center',
           justifyContent: 'space-between'
         }}>
-          {/* Logo */}
-          <button
-            onClick={() => navigate('/')}
-            aria-label="Go to homepage - Kharding Classics"
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            <span style={{
-              fontSize: '18px',
-              fontWeight: '600',
-              letterSpacing: '0.15em',
-              color: 'var(--text-primary)'
-            }}>
-              KH
-            </span>
-          </button>
+          {/* Animated Logo */}
+          <AnimatedLogo onClick={() => navigate('/')} />
 
           {/* Desktop Nav */}
           {!isMobile && (
@@ -197,13 +264,7 @@ const Navigation = () => {
             )}
 
             {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-              style={iconBtnStyle}
-            >
-              {isDark ? <Sun size={18} style={{ color: '#fbbf24' }} /> : <Moon size={18} style={{ color: '#6366f1' }} />}
-            </button>
+            <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
 
             {/* Favorites */}
             <button
@@ -317,21 +378,20 @@ const Navigation = () => {
               left: 0,
               right: 0,
               zIndex: 55,
-              background: '#000',
-              borderBottom: '1px solid rgba(255,255,255,0.1)',
-              padding: '16px 24px'
+              background: 'var(--bg-primary)',
+              borderBottom: '1px solid var(--border-primary)',
+              padding: '12px 20px'
             }}
           >
             <div style={{
               display: 'flex',
               gap: '8px',
               alignItems: 'center',
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              padding: '12px',
-              borderRadius: '2px'
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border-primary)',
+              padding: '10px 12px'
             }}>
-              <Search size={16} style={{ color: 'rgba(255,255,255,0.6)', flexShrink: 0 }} />
+              <Search size={16} style={{ color: 'var(--text-muted)', flexShrink: 0 }} />
               <input
                 ref={searchInputRef}
                 type="text"
@@ -340,7 +400,6 @@ const Navigation = () => {
                 onChange={(e) => setMobileSearchQuery(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
                 onBlur={() => {
-                  // Close search if clicking outside and no query
                   if (!mobileSearchQuery.trim()) {
                     setTimeout(() => setShowMobileSearch(false), 150)
                   }
@@ -352,7 +411,7 @@ const Navigation = () => {
                   border: 'none',
                   outline: 'none',
                   fontSize: '14px',
-                  color: '#fff',
+                  color: 'var(--text-primary)',
                   letterSpacing: '0.05em'
                 }}
               />
@@ -361,14 +420,13 @@ const Navigation = () => {
                   onClick={handleMobileSearch}
                   aria-label="Submit search"
                   style={{
-                    padding: '4px 12px',
-                    background: 'rgba(255,255,255,0.1)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    color: '#fff',
-                    fontSize: '11px',
+                    padding: '4px 10px',
+                    background: 'var(--bg-tertiary)',
+                    border: '1px solid var(--border-primary)',
+                    color: 'var(--text-primary)',
+                    fontSize: '10px',
                     letterSpacing: '0.1em',
-                    cursor: 'pointer',
-                    borderRadius: '2px'
+                    cursor: 'pointer'
                   }}
                 >
                   GO
@@ -384,7 +442,7 @@ const Navigation = () => {
                   padding: '4px',
                   background: 'none',
                   border: 'none',
-                  color: 'rgba(255,255,255,0.6)',
+                  color: 'var(--text-muted)',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center'
@@ -407,7 +465,7 @@ const Navigation = () => {
               exit={{ opacity: 0 }}
               onClick={() => setIsMenuOpen(false)}
               aria-hidden="true"
-              style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 55 }}
+              style={{ position: 'fixed', inset: 0, background: isDark ? 'rgba(0,0,0,0.8)' : 'rgba(0,0,0,0.5)', zIndex: 55 }}
             />
             <motion.div
               initial={{ x: '100%' }}
@@ -424,8 +482,8 @@ const Navigation = () => {
                 bottom: 0,
                 width: `min(280px, ${screenWidth * 0.8}px)`,
                 maxWidth: '100vw',
-                background: '#000',
-                borderLeft: '1px solid rgba(255,255,255,0.1)',
+                background: 'var(--bg-primary)',
+                borderLeft: '1px solid var(--border-primary)',
                 zIndex: 60,
                 padding: isSmallMobile ? '72px 16px 16px' : '72px 24px 24px',
                 overflowY: 'auto'
@@ -444,7 +502,7 @@ const Navigation = () => {
                       textAlign: 'left',
                       fontSize: '14px',
                       letterSpacing: '0.1em',
-                      color: location.pathname === item.path ? '#fff' : 'rgba(255,255,255,0.7)',
+                      color: location.pathname === item.path ? 'var(--text-primary)' : 'var(--text-secondary)',
                       cursor: 'pointer'
                     }}
                   >
@@ -453,7 +511,7 @@ const Navigation = () => {
                 ))}
               </nav>
 
-              <div style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ marginTop: '32px', paddingTop: '24px', borderTop: '1px solid var(--border-primary)' }}>
                 {isAuthenticated ? (
                   <>
                     <button
@@ -492,10 +550,10 @@ const Navigation = () => {
 const iconBtnStyle: React.CSSProperties = {
   background: 'none',
   border: 'none',
-  padding: '12px',
-  minWidth: '44px',
-  minHeight: '44px',
-  color: 'rgba(255,255,255,0.8)',
+  padding: '10px',
+  minWidth: '40px',
+  minHeight: '40px',
+  color: 'var(--text-secondary)',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
@@ -509,7 +567,7 @@ const menuItemStyle: React.CSSProperties = {
   border: 'none',
   textAlign: 'left',
   fontSize: '12px',
-  color: 'rgba(255,255,255,0.8)',
+  color: 'var(--text-secondary)',
   cursor: 'pointer'
 }
 
@@ -520,7 +578,7 @@ const mobileMenuItemStyle: React.CSSProperties = {
   border: 'none',
   textAlign: 'left',
   fontSize: '13px',
-  color: 'rgba(255,255,255,0.6)',
+  color: 'var(--text-muted)',
   cursor: 'pointer',
   marginBottom: '16px'
 }
@@ -534,14 +592,14 @@ const Badge = ({ count }: { count: number }) => (
     aria-hidden="true"
     style={{
       position: 'absolute',
-      top: 0,
-      right: 0,
-      width: '14px',
-      height: '14px',
-      background: '#fff',
-      color: '#000',
-      fontSize: '9px',
-      fontWeight: '500',
+      top: 2,
+      right: 2,
+      width: '12px',
+      height: '12px',
+      background: 'var(--text-primary)',
+      color: 'var(--bg-primary)',
+      fontSize: '8px',
+      fontWeight: '600',
       borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',

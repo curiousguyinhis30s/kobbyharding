@@ -39,92 +39,89 @@ const NewsletterSignup = ({ inline = false, isMobile = false }: NewsletterSignup
   if (inline) {
     return (
       <div>
-        <form onSubmit={handleSubmit} style={{ position: 'relative' }}>
+        <form onSubmit={handleSubmit} style={{
+          display: 'flex',
+          gap: '6px',
+          alignItems: 'stretch'
+        }}>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
+            placeholder="email"
             required
             disabled={status === 'success'}
             style={{
-              width: '100%',
-              padding: '10px 12px',
+              flex: 1,
+              minWidth: 0,
+              padding: '8px 10px',
               background: 'transparent',
               border: status === 'error'
                 ? '1px solid rgba(239, 68, 68, 0.5)'
                 : status === 'success'
                 ? '1px solid rgba(16, 185, 129, 0.5)'
-                : '1px solid rgba(255,255,255,0.2)',
+                : '1px solid rgba(255,255,255,0.15)',
               color: '#fff',
               fontSize: '11px',
-              letterSpacing: '0.05em',
-              marginBottom: '8px',
+              letterSpacing: '0.03em',
               outline: 'none',
-              transition: 'border-color 0.3s',
+              transition: 'border-color 0.2s',
             }}
             onFocus={(e) => {
               if (status === 'idle') {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
               }
             }}
             onBlur={(e) => {
               if (status === 'idle') {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'
               }
             }}
           />
           <button
             type="submit"
             disabled={status === 'success'}
+            aria-label={status === 'success' ? 'Subscribed' : 'Subscribe'}
             style={{
-              width: '100%',
-              padding: '10px',
+              padding: '8px 12px',
               background: status === 'success'
-                ? 'rgba(16, 185, 129, 0.1)'
-                : 'rgba(255,255,255,0.1)',
+                ? 'rgba(16, 185, 129, 0.15)'
+                : 'transparent',
               border: status === 'success'
                 ? '1px solid rgba(16, 185, 129, 0.3)'
-                : '1px solid rgba(255,255,255,0.2)',
+                : '1px solid rgba(255,255,255,0.15)',
               color: '#fff',
               fontSize: '10px',
-              letterSpacing: '0.15em',
               cursor: status === 'success' ? 'default' : 'pointer',
               transition: 'all 0.2s',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
             }}
             onMouseEnter={(e) => {
               if (status !== 'success') {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.15)'
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
               }
             }}
             onMouseLeave={(e) => {
               if (status !== 'success') {
-                e.currentTarget.style.background = 'rgba(255,255,255,0.1)'
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'
               }
             }}
           >
             {status === 'success' ? (
-              <>
-                <CheckCircle style={{ width: '14px', height: '14px' }} />
-                SUBSCRIBED
-              </>
+              <CheckCircle style={{ width: '14px', height: '14px' }} />
             ) : (
-              'SUBSCRIBE'
+              <Mail style={{ width: '14px', height: '14px' }} />
             )}
           </button>
         </form>
         {message && (
           <p style={{
-            fontSize: '10px',
-            marginTop: '8px',
+            fontSize: '9px',
+            marginTop: '6px',
             color: status === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)',
-            letterSpacing: '0.05em',
+            letterSpacing: '0.03em',
           }}>
             {message}
           </p>

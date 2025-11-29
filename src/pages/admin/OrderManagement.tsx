@@ -39,7 +39,7 @@ const OrderManagement = () => {
     delivered: { bg: 'rgba(34, 197, 94, 0.1)', border: 'rgba(34, 197, 94, 0.3)', text: '#22c55e' }
   }
 
-  const statusIcons: Record<string, React.ReactNode> = {
+  const statusIcons = {
     pending: <Clock style={{ width: '14px', height: '14px' }} />,
     processing: <RefreshCw style={{ width: '14px', height: '14px' }} />,
     shipped: <Truck style={{ width: '14px', height: '14px' }} />,
