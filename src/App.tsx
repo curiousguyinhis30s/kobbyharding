@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import Navigation from './components/Navigation'
 import AdminNavigation from './components/AdminNavigation'
 import FooterMinimal from './components/FooterMinimal'
@@ -8,6 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import ToastContainer from './components/Toast'
 import ScrollToTop from './components/ScrollToTop'
+import { PageLoader } from './components/animations'
 import { AuthProvider } from './contexts/AuthContext'
 import { ThemeProvider } from './contexts/ThemeContext'
 import './App.css'
@@ -42,24 +44,24 @@ const FestivalHub = lazy(() => import('./pages/FestivalHub'))
 const ProductManagement = lazy(() => import('./pages/admin/ProductManagement.tsx'))
 const AdminWaitlist = lazy(() => import('./pages/admin/AdminWaitlist.tsx'))
 
-// Loading component for Suspense
-const PageLoader = () => (
-  <div style={{
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: '#000'
-  }}>
-    <div style={{
-      fontSize: '11px',
-      letterSpacing: '0.2em',
-      color: 'rgba(255, 255, 255, 0.4)'
-    }}>
-      LOADING...
-    </div>
-  </div>
-)
+// Page transition wrapper
+const PageTransitionWrapper = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation()
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2, ease: 'easeInOut' }}
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  )
+}
 
 const AppContent = () => {
   const location = useLocation()
@@ -130,7 +132,8 @@ const AppContent = () => {
       </div>
       {/* Add proper spacing for fixed header */}
       <main id="main-content" role="main" style={{ paddingTop: showNav || isAdminRoute ? '64px' : '0' }}>
-        <Suspense fallback={<PageLoader />}>
+        <Suspense fallback={<PageLoader text="LOADING" />}>
+          <PageTransitionWrapper>
           <Routes>
             <Route path="/" element={<Welcome />} />
             <Route path="/collection" element={<Collection />} />
@@ -241,6 +244,7 @@ const AppContent = () => {
             } />
             <Route path="*" element={<Navigate to="/collection" replace />} />
           </Routes>
+          </PageTransitionWrapper>
         </Suspense>
       </main>
       {showFooter && <FooterMinimal />}

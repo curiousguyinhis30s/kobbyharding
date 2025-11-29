@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Menu, X, ShoppingBag, User, Heart, Search, Sun, Moon } from 'lucide-react'
 import useStore from '../stores/useStore'
@@ -135,29 +135,52 @@ const Navigation = () => {
 
           {/* Desktop Nav */}
           {!isMobile && (
+            <LayoutGroup>
             <nav aria-label="Main navigation" style={{ display: 'flex', gap: '32px' }}>
-              {navItems.map(item => (
-                <button
-                  key={item.path}
-                  onClick={() => navigate(item.path)}
-                  aria-label={`Navigate to ${item.label}`}
-                  aria-current={location.pathname === item.path ? 'page' : undefined}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    fontSize: '12px',
-                    letterSpacing: '0.1em',
-                    color: location.pathname === item.path ? '#fff' : 'rgba(255,255,255,0.6)',
-                    cursor: 'pointer',
-                    transition: 'color 0.2s'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-                  onMouseLeave={e => e.currentTarget.style.color = location.pathname === item.path ? '#fff' : 'rgba(255,255,255,0.6)'}
-                >
-                  {item.label}
-                </button>
-              ))}
+              {navItems.map(item => {
+                const isActive = location.pathname === item.path
+                return (
+                  <motion.button
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    aria-label={`Navigate to ${item.label}`}
+                    aria-current={isActive ? 'page' : undefined}
+                    whileHover={{ y: -1 }}
+                    whileTap={{ scale: 0.98 }}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      fontSize: '12px',
+                      letterSpacing: '0.1em',
+                      color: isActive ? '#fff' : 'rgba(255,255,255,0.6)',
+                      cursor: 'pointer',
+                      transition: 'color 0.2s',
+                      position: 'relative',
+                      paddingBottom: '4px'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+                    onMouseLeave={e => e.currentTarget.style.color = isActive ? '#fff' : 'rgba(255,255,255,0.6)'}
+                  >
+                    {item.label}
+                    {isActive && (
+                      <motion.div
+                        layoutId="nav-underline"
+                        style={{
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: '1px',
+                          background: '#fff'
+                        }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                      />
+                    )}
+                  </motion.button>
+                )
+              })}
             </nav>
+            </LayoutGroup>
           )}
 
           {/* Actions */}
@@ -503,7 +526,11 @@ const mobileMenuItemStyle: React.CSSProperties = {
 }
 
 const Badge = ({ count }: { count: number }) => (
-  <span
+  <motion.span
+    key={count}
+    initial={{ scale: 0.5, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    transition={{ type: 'spring', stiffness: 500, damping: 25 }}
     aria-hidden="true"
     style={{
       position: 'absolute',
@@ -522,7 +549,7 @@ const Badge = ({ count }: { count: number }) => (
     }}
   >
     {count}
-  </span>
+  </motion.span>
 )
 
 export default Navigation
