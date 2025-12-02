@@ -422,10 +422,10 @@ const WelcomeMinimal = () => {
         </motion.div>
       </section>
 
-      {/* Festival Section - Enhanced visibility */}
+      {/* Festival Try-On Section - Reflects new FestivalHub flow */}
       <section style={{
         position: 'relative',
-        padding: isMobile ? '56px 16px' : '80px 40px',
+        padding: isMobile ? '64px 16px' : '100px 40px',
         background: '#000'
       }}>
         <div style={{
@@ -450,91 +450,179 @@ const WelcomeMinimal = () => {
           textAlign: 'center',
           zIndex: 1
         }}>
-          <h2 style={{
-            fontSize: isMobile ? '10px' : '11px',
-            letterSpacing: '0.25em',
-            color: 'rgba(255,255,255,0.7)',
-            marginBottom: '12px'
-          }}>
-            2025 SEASON
-          </h2>
-          <h3 style={{
-            fontSize: isMobile ? '26px' : '36px',
-            fontWeight: '300',
-            letterSpacing: '0.1em',
-            marginBottom: '32px',
-            color: '#fff',
-            textShadow: '0 2px 10px rgba(0,0,0,0.3)'
-          }}>
-            Festival Ready
-          </h3>
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 14px',
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              marginBottom: isMobile ? '16px' : '20px',
+              fontSize: '10px',
+              letterSpacing: '0.2em',
+              color: 'rgba(255,255,255,0.8)'
+            }}
+          >
+            A NEW WAY TO SHOP
+          </motion.div>
 
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(3, 1fr)',
-            border: '1px solid rgba(255,255,255,0.2)',
-            marginBottom: '40px',
-            background: 'rgba(0,0,0,0.5)',
-            backdropFilter: 'blur(10px)'
-          }}>
+          {/* Main Headline */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            style={{
+              fontSize: isMobile ? '28px' : '42px',
+              fontWeight: '200',
+              letterSpacing: '-0.01em',
+              marginBottom: isMobile ? '12px' : '16px',
+              color: '#fff',
+              lineHeight: 1.2
+            }}
+          >
+            Try Before You Buy
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            style={{
+              fontSize: isMobile ? '14px' : '16px',
+              color: 'rgba(255,255,255,0.6)',
+              maxWidth: '500px',
+              margin: `0 auto ${isMobile ? '32px' : '48px'}`,
+              lineHeight: 1.7
+            }}
+          >
+            Reserve pieces online. Try them on at Kizomba festivals. Only pay for what you love.
+          </motion.p>
+
+          {/* How It Works - 3 Steps */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+              gap: isMobile ? '16px' : '24px',
+              marginBottom: isMobile ? '32px' : '48px'
+            }}
+          >
             {[
-              { name: 'Bangkok Kizomba', date: 'MAR 15-17', loc: 'Thailand' },
-              { name: 'Singapore Urban', date: 'APR 5-7', loc: 'Singapore' },
-              { name: 'Bali Tarraxo', date: 'MAY 10-12', loc: 'Indonesia' },
-              { name: 'Tokyo Kizomba', date: 'JUN 21-23', loc: 'Japan' },
-              { name: 'Seoul Urban', date: 'JUL 12-14', loc: 'Korea' },
-              { name: 'Hong Kong Kiz', date: 'AUG 9-11', loc: 'Hong Kong' }
-            ].map((fest, i, arr) => (
-              <div
-                key={fest.name}
+              { step: '01', title: 'Reserve Online', desc: 'Select up to 3 pieces. No payment required.' },
+              { step: '02', title: 'Get Your QR Code', desc: 'Instant pass for festival try-on.' },
+              { step: '03', title: 'Try & Buy', desc: 'Experience in person. Pay only for what fits.' }
+            ].map((item, i) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 + i * 0.1 }}
                 style={{
-                  padding: isMobile ? '18px 14px' : '24px',
-                  borderRight: (isMobile ? i % 2 === 0 : i % 3 !== 2) ? '1px solid rgba(255,255,255,0.15)' : 'none',
-                  borderBottom: (isMobile ? i < arr.length - 2 : i < 3) ? '1px solid rgba(255,255,255,0.15)' : 'none'
+                  padding: isMobile ? '20px' : '28px',
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  textAlign: 'left'
                 }}
               >
                 <div style={{
-                  fontSize: isMobile ? '9px' : '10px',
+                  fontSize: '11px',
                   letterSpacing: '0.15em',
-                  color: 'rgba(255,255,255,0.6)',
-                  marginBottom: '8px'
+                  color: 'rgba(255,255,255,0.4)',
+                  marginBottom: '10px'
                 }}>
-                  {fest.name.toUpperCase()}
+                  STEP {item.step}
                 </div>
-                <div style={{
-                  fontSize: isMobile ? '13px' : '15px',
-                  letterSpacing: '0.1em',
-                  marginBottom: '6px',
-                  color: '#fff',
-                  fontWeight: '400'
+                <h4 style={{
+                  fontSize: isMobile ? '15px' : '17px',
+                  fontWeight: '400',
+                  marginBottom: '8px',
+                  color: '#fff'
                 }}>
-                  {fest.date}
-                </div>
-                <div style={{
-                  fontSize: '10px',
-                  letterSpacing: '0.1em',
-                  color: 'rgba(255,255,255,0.5)'
+                  {item.title}
+                </h4>
+                <p style={{
+                  fontSize: '13px',
+                  color: 'rgba(255,255,255,0.5)',
+                  lineHeight: 1.6
                 }}>
-                  {fest.loc}
-                </div>
-              </div>
+                  {item.desc}
+                </p>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
+          {/* Festival Locations - Compact Row */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            style={{
+              padding: isMobile ? '16px' : '20px 24px',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              marginBottom: isMobile ? '24px' : '32px'
+            }}
+          >
+            <div style={{
+              fontSize: '10px',
+              letterSpacing: '0.2em',
+              color: 'rgba(255,255,255,0.5)',
+              marginBottom: '12px'
+            }}>
+              2025 FESTIVALS
+            </div>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              gap: isMobile ? '8px 16px' : '8px 28px'
+            }}>
+              {['Bangkok', 'Singapore', 'Bali', 'Tokyo', 'Seoul', 'Hong Kong'].map((city) => (
+                <span
+                  key={city}
+                  style={{
+                    fontSize: isMobile ? '12px' : '13px',
+                    color: 'rgba(255,255,255,0.7)',
+                    letterSpacing: '0.05em'
+                  }}
+                >
+                  {city}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* CTA Button */}
           <motion.button
-            whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.15)' }}
+            whileHover={{ scale: 1.02, backgroundColor: '#fff' }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate('/festival')}
-            aria-label="Reserve festival try-on appointment"
+            aria-label="Start reserving pieces for festival try-on"
             style={{
-              padding: '14px 40px',
-              background: 'rgba(255,255,255,0.1)',
-              border: '1px solid rgba(255,255,255,0.4)',
-              color: '#fff',
-              fontSize: '11px',
+              padding: isMobile ? '14px 32px' : '16px 40px',
+              background: 'rgba(255,255,255,0.95)',
+              border: 'none',
+              color: '#000',
+              fontSize: '12px',
+              fontWeight: '500',
               letterSpacing: '0.15em',
               cursor: 'pointer',
-              transition: 'all 0.3s ease'
+              transition: 'all 0.3s ease',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px'
             }}
             onFocus={(e) => {
               e.currentTarget.style.outline = '2px solid #fff'
@@ -544,8 +632,25 @@ const WelcomeMinimal = () => {
               e.currentTarget.style.outline = 'none'
             }}
           >
-            RESERVE TRY-ON
+            START RESERVING
+            <ArrowRight size={16} />
           </motion.button>
+
+          {/* Zero Risk Note */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.6 }}
+            style={{
+              fontSize: '11px',
+              color: 'rgba(255,255,255,0.4)',
+              marginTop: '16px',
+              letterSpacing: '0.1em'
+            }}
+          >
+            No commitment · No upfront payment · Cancel anytime
+          </motion.p>
         </div>
       </section>
 
