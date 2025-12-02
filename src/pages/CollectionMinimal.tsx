@@ -140,16 +140,31 @@ const CollectionMinimal = () => {
               <div style={{ display: 'flex', gap: '16px' }}>
                 <button
                   onClick={() => setGridView(gridView === 'large' ? 'small' : 'large')}
+                  aria-label={gridView === 'large' ? 'Switch to smaller grid' : 'Switch to larger grid'}
                   style={{
                     padding: '8px',
-                    color: 'rgba(255, 255, 255, 0.6)',
+                    color: 'var(--text-secondary)',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    transition: 'opacity 0.3s'
+                    transition: 'all 0.3s',
+                    borderRadius: '4px'
                   }}
-                  onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                  onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.color = 'var(--text-primary)'
+                    e.currentTarget.style.background = 'var(--bg-hover)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.color = 'var(--text-secondary)'
+                    e.currentTarget.style.background = 'none'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.outline = '2px solid var(--accent-primary)'
+                    e.currentTarget.style.outlineOffset = '2px'
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.outline = 'none'
+                  }}
                 >
                   {gridView === 'large' ?
                     <Grid3x3 style={{ width: '16px', height: '16px' }} /> :
@@ -190,13 +205,22 @@ const CollectionMinimal = () => {
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
+                aria-label="Clear search"
                 style={{
                   padding: '4px',
                   color: 'var(--text-muted)',
                   background: 'none',
                   border: 'none',
                   cursor: 'pointer',
-                  fontSize: '16px'
+                  fontSize: '16px',
+                  borderRadius: '4px'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = '2px solid var(--accent-primary)'
+                  e.currentTarget.style.outlineOffset = '2px'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
                 }}
               >
                 ×
@@ -236,6 +260,8 @@ const CollectionMinimal = () => {
                 <button
                   key={cat.id}
                   onClick={() => setCategory(cat.id)}
+                  aria-pressed={category === cat.id}
+                  aria-label={`Filter by ${cat.label}`}
                   style={{
                     padding: '4px 0',
                     fontSize: '11px',
@@ -262,6 +288,13 @@ const CollectionMinimal = () => {
                       e.currentTarget.style.color = 'var(--text-muted)'
                       e.currentTarget.style.borderBottom = '1px solid transparent'
                     }
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.outline = '2px solid var(--accent-primary)'
+                    e.currentTarget.style.outlineOffset = '4px'
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.outline = 'none'
                   }}
                 >
                   {cat.label}
@@ -382,6 +415,8 @@ const CollectionMinimal = () => {
                       isFavorite(piece.id) ? 'Removed from favorites' : 'Added to favorites'
                     )
                   }}
+                  aria-label={isFavorite(piece.id) ? `Remove ${piece.name} from favorites` : `Add ${piece.name} to favorites`}
+                  aria-pressed={isFavorite(piece.id)}
                   style={{
                     position: 'absolute',
                     top: '12px',
@@ -405,6 +440,13 @@ const CollectionMinimal = () => {
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = 'rgba(0, 0, 0, 0.5)'
                     e.currentTarget.style.transform = 'scale(1)'
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.outline = '2px solid #fff'
+                    e.currentTarget.style.outlineOffset = '2px'
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.outline = 'none'
                   }}
                 >
                   <Heart

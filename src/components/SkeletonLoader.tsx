@@ -18,13 +18,14 @@ export const SkeletonBox = ({
   return (
     <motion.div
       className={className}
+      role="status"
+      aria-label="Loading..."
       style={{
         width,
         height,
         borderRadius,
-        background: 'linear-gradient(90deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 100%)',
+        background: 'linear-gradient(90deg, var(--bg-tertiary) 0%, var(--bg-hover) 50%, var(--bg-tertiary) 100%)',
         backgroundSize: '200% 100%',
-        animation: 'shimmer 1.5s infinite',
         ...style
       }}
       animate={{
@@ -41,12 +42,17 @@ export const SkeletonBox = ({
 
 export const ProductCardSkeleton = () => {
   return (
-    <div style={{
-      width: '100%',
-      padding: '0',
-      background: 'rgba(255, 255, 255, 0.02)',
-      border: '1px solid rgba(255, 255, 255, 0.05)'
-    }}>
+    <div
+      style={{
+        width: '100%',
+        padding: '0',
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--border-primary)'
+      }}
+      role="status"
+      aria-busy="true"
+      aria-label="Loading product"
+    >
       {/* Image skeleton */}
       <SkeletonBox height="200px" borderRadius="0" />
 
@@ -67,16 +73,21 @@ export const ProductCardSkeleton = () => {
 
 export const ProductDetailSkeleton = () => {
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: '#000',
-      padding: '80px 20px 40px'
-    }}>
+    <div
+      style={{
+        minHeight: '100vh',
+        background: 'var(--bg-primary)',
+        padding: '80px 20px 40px'
+      }}
+      role="status"
+      aria-busy="true"
+      aria-label="Loading product details"
+    >
       <div style={{
         maxWidth: '1400px',
         margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         gap: '60px'
       }}>
         {/* Image side */}
@@ -98,14 +109,19 @@ export const ProductDetailSkeleton = () => {
 
 export const CartItemSkeleton = () => {
   return (
-    <div style={{
-      display: 'flex',
-      gap: '20px',
-      padding: '20px',
-      background: 'rgba(255, 255, 255, 0.02)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      marginBottom: '16px'
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        gap: '20px',
+        padding: '20px',
+        background: 'var(--bg-secondary)',
+        border: '1px solid var(--border-primary)',
+        marginBottom: '16px'
+      }}
+      role="status"
+      aria-busy="true"
+      aria-label="Loading cart item"
+    >
       {/* Image */}
       <SkeletonBox width="120px" height="160px" borderRadius="0" />
 
@@ -120,25 +136,6 @@ export const CartItemSkeleton = () => {
       <SkeletonBox height="24px" width="80px" />
     </div>
   )
-}
-
-// Add shimmer animation to global styles if not already present
-const shimmerStyle = `
-  @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
-  }
-`
-
-// Inject style if not already present
-if (typeof document !== 'undefined') {
-  const styleId = 'skeleton-shimmer-style'
-  if (!document.getElementById(styleId)) {
-    const style = document.createElement('style')
-    style.id = styleId
-    style.textContent = shimmerStyle
-    document.head.appendChild(style)
-  }
 }
 
 export default SkeletonBox

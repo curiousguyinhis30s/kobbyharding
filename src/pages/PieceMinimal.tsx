@@ -233,6 +233,7 @@ const PieceMinimal = () => {
               {/* Image Navigation */}
               <button
                 onClick={prevImage}
+                aria-label="Previous image"
                 style={{
                   position: 'absolute',
                   left: '20px',
@@ -247,12 +248,20 @@ const PieceMinimal = () => {
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.9)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.7)'}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = '2px solid #fff'
+                  e.currentTarget.style.outlineOffset = '2px'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
+                }}
               >
                 <ChevronLeft style={{ width: '16px', height: '16px' }} />
               </button>
-              
+
               <button
                 onClick={nextImage}
+                aria-label="Next image"
                 style={{
                   position: 'absolute',
                   right: '20px',
@@ -267,23 +276,37 @@ const PieceMinimal = () => {
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.9)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.7)'}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = '2px solid #fff'
+                  e.currentTarget.style.outlineOffset = '2px'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
+                }}
               >
                 <ChevronRight style={{ width: '16px', height: '16px' }} />
               </button>
               
               {/* Image Dots */}
-              <div style={{
-                position: 'absolute',
-                bottom: '-20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                display: 'flex',
-                gap: '8px'
-              }}>
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '-20px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  display: 'flex',
+                  gap: '8px'
+                }}
+                role="tablist"
+                aria-label="Product images"
+              >
                 {images.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentImageIndex(index)}
+                    aria-label={`View image ${index + 1} of ${images.length}`}
+                    aria-selected={index === currentImageIndex}
+                    role="tab"
                     style={{
                       width: '8px',
                       height: '8px',
@@ -292,6 +315,13 @@ const PieceMinimal = () => {
                       background: index === currentImageIndex ? '#fff' : 'transparent',
                       cursor: 'pointer',
                       transition: 'all 0.3s'
+                    }}
+                    onFocus={(e) => {
+                      e.currentTarget.style.outline = '2px solid #fff'
+                      e.currentTarget.style.outlineOffset = '2px'
+                    }}
+                    onBlur={(e) => {
+                      e.currentTarget.style.outline = 'none'
                     }}
                   />
                 ))}
@@ -333,6 +363,8 @@ const PieceMinimal = () => {
                     isFavorite(piece.id) ? 'Removed from favorites' : 'Added to favorites'
                   )
                 }}
+                aria-label={isFavorite(piece.id) ? `Remove ${piece.name} from favorites` : `Add ${piece.name} to favorites`}
+                aria-pressed={isFavorite(piece.id)}
                 style={{
                   background: 'rgba(255,255,255,0.05)',
                   border: '1px solid rgba(255,255,255,0.2)',
@@ -352,6 +384,13 @@ const PieceMinimal = () => {
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = '2px solid #fff'
+                  e.currentTarget.style.outlineOffset = '2px'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
                 }}
               >
                 <Heart
@@ -432,15 +471,21 @@ const PieceMinimal = () => {
               </button>
             </div>
             
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
-              gap: '8px'
-            }}>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: isMobile ? 'repeat(3, 1fr)' : 'repeat(6, 1fr)',
+                gap: '8px'
+              }}
+              role="radiogroup"
+              aria-label="Select size"
+            >
               {sizes.map(size => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
+                  aria-pressed={selectedSize === size}
+                  aria-label={`Size ${size}`}
                   style={{
                     padding: '12px 8px',
                     fontSize: '11px',
@@ -463,6 +508,13 @@ const PieceMinimal = () => {
                       e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
                       e.currentTarget.style.background = 'transparent'
                     }
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.outline = '2px solid #fff'
+                    e.currentTarget.style.outlineOffset = '2px'
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.outline = 'none'
                   }}
                 >
                   {size}
@@ -499,68 +551,98 @@ const PieceMinimal = () => {
               QUANTITY
             </label>
             
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              width: 'fit-content'
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                width: 'fit-content'
+              }}
+              role="group"
+              aria-label="Quantity selector"
+            >
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                aria-label="Decrease quantity"
+                disabled={quantity <= 1}
                 style={{
                   padding: '12px 20px',
                   background: 'transparent',
                   border: '1px solid rgba(255,255,255,0.2)',
-                  color: 'rgba(255,255,255,0.6)',
+                  color: quantity <= 1 ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.6)',
                   fontSize: '16px',
-                  cursor: 'pointer',
+                  cursor: quantity <= 1 ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s',
                   minWidth: '44px',
                   minHeight: '44px'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+                  if (quantity > 1) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+                  }
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent'
                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = '2px solid #fff'
+                  e.currentTarget.style.outlineOffset = '2px'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
                 }}
               >
                 −
               </button>
 
-              <div style={{
-                padding: '12px 24px',
-                background: 'transparent',
-                border: '1px solid rgba(255,255,255,0.2)',
-                fontSize: '14px',
-                minWidth: '80px',
-                textAlign: 'center'
-              }}>
+              <div
+                style={{
+                  padding: '12px 24px',
+                  background: 'transparent',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  fontSize: '14px',
+                  minWidth: '80px',
+                  textAlign: 'center'
+                }}
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {quantity}
               </div>
 
               <button
                 onClick={() => setQuantity(Math.min(10, quantity + 1))}
+                aria-label="Increase quantity"
+                disabled={quantity >= 10}
                 style={{
                   padding: '12px 20px',
                   background: 'transparent',
                   border: '1px solid rgba(255,255,255,0.2)',
-                  color: 'rgba(255,255,255,0.6)',
+                  color: quantity >= 10 ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.6)',
                   fontSize: '16px',
-                  cursor: 'pointer',
+                  cursor: quantity >= 10 ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s',
                   minWidth: '44px',
                   minHeight: '44px'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+                  if (quantity < 10) {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)'
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.5)'
+                  }
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.background = 'transparent'
                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.outline = '2px solid #fff'
+                  e.currentTarget.style.outlineOffset = '2px'
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.outline = 'none'
                 }}
               >
                 +

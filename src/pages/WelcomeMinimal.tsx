@@ -142,6 +142,7 @@ const WelcomeMinimal = () => {
             whileHover={{ scale: 1.03, backgroundColor: 'rgba(255,255,255,0.1)' }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate('/collection')}
+            aria-label="Explore our collection"
             style={{
               padding: isMobile ? '14px 32px' : '16px 48px',
               background: 'rgba(255,255,255,0.05)',
@@ -155,6 +156,13 @@ const WelcomeMinimal = () => {
               gap: '12px',
               backdropFilter: 'blur(10px)',
               transition: 'all 0.3s ease'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.outline = '2px solid #fff'
+              e.currentTarget.style.outlineOffset = '4px'
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.outline = 'none'
             }}
           >
             EXPLORE COLLECTION
@@ -517,6 +525,7 @@ const WelcomeMinimal = () => {
             whileHover={{ scale: 1.02, backgroundColor: 'rgba(255,255,255,0.15)' }}
             whileTap={{ scale: 0.98 }}
             onClick={() => navigate('/festival')}
+            aria-label="Reserve festival try-on appointment"
             style={{
               padding: '14px 40px',
               background: 'rgba(255,255,255,0.1)',
@@ -526,6 +535,13 @@ const WelcomeMinimal = () => {
               letterSpacing: '0.15em',
               cursor: 'pointer',
               transition: 'all 0.3s ease'
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.outline = '2px solid #fff'
+              e.currentTarget.style.outlineOffset = '4px'
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.outline = 'none'
             }}
           >
             RESERVE TRY-ON

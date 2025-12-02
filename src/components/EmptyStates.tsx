@@ -51,13 +51,13 @@ export const EmptyState = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
+          background: 'var(--bg-tertiary)',
+          border: '1px solid var(--border-primary)',
           borderRadius: '50%',
           marginBottom: '32px'
         }}
       >
-        <Icon style={{ width: '48px', height: '48px', color: 'rgba(255, 255, 255, 0.4)' }} />
+        <Icon style={{ width: '48px', height: '48px', color: 'var(--text-secondary)' }} />
       </motion.div>
 
       {/* Title */}
@@ -65,7 +65,7 @@ export const EmptyState = ({
         fontSize: '24px',
         fontWeight: '300',
         letterSpacing: '0.1em',
-        color: '#ffffff',
+        color: 'var(--text-primary)',
         marginBottom: '12px'
       }}>
         {title}
@@ -75,7 +75,7 @@ export const EmptyState = ({
       <p style={{
         fontSize: '14px',
         lineHeight: '1.6',
-        color: 'rgba(255, 255, 255, 0.5)',
+        color: 'var(--text-secondary)',
         maxWidth: '400px',
         marginBottom: '32px',
         letterSpacing: '0.02em'
@@ -91,8 +91,8 @@ export const EmptyState = ({
           onClick={onAction}
           style={{
             padding: '14px 40px',
-            background: '#ffffff',
-            color: '#000000',
+            background: 'var(--text-primary)',
+            color: 'var(--bg-primary)',
             border: 'none',
             fontSize: '13px',
             fontWeight: '300',
@@ -102,10 +102,17 @@ export const EmptyState = ({
             transition: 'all 0.3s'
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)'
+            e.currentTarget.style.opacity = '0.9'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#ffffff'
+            e.currentTarget.style.opacity = '1'
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.outline = '2px solid var(--accent-primary)'
+            e.currentTarget.style.outlineOffset = '2px'
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.outline = 'none'
           }}
         >
           {actionLabel}
