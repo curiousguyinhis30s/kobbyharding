@@ -123,11 +123,12 @@ const ProductManagement = () => {
   }
 
   const handleToggleAvailability = (id: string) => {
-    toggleAvailability(id)
     const product = products.find((p) => p.id === id)
+    const newStatus = !product?.available
+    toggleAvailability(id)
     addToast(
       'success',
-      `Product ${product?.available ? 'marked as unavailable' : 'marked as available'}`
+      `Product marked as ${newStatus ? 'available' : 'unavailable'}`
     )
   }
 

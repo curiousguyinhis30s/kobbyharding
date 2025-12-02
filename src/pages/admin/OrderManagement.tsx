@@ -69,11 +69,13 @@ const OrderManagement = () => {
     setLocationInput('')
     setMessageInput('')
 
-    // Update selected order
-    const updated = orders.find(o => o.id === orderId)
-    if (updated) {
-      setSelectedOrder({ ...updated, status: newStatus })
-    }
+    // Update selected order after store updates
+    setTimeout(() => {
+      const updated = useOrderStore.getState().getOrder(orderId)
+      if (updated) {
+        setSelectedOrder(updated)
+      }
+    }, 0)
   }
 
   const handleAddTracking = (orderId: string) => {
@@ -91,6 +93,14 @@ const OrderManagement = () => {
     addToast('success', 'Tracking update added')
     setLocationInput('')
     setMessageInput('')
+
+    // Refresh selected order to show new tracking update
+    setTimeout(() => {
+      const updated = useOrderStore.getState().getOrder(orderId)
+      if (updated) {
+        setSelectedOrder(updated)
+      }
+    }, 0)
   }
 
   const formatDate = (date: Date | string) => {
