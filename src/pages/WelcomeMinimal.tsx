@@ -198,6 +198,73 @@ const WelcomeMinimal = () => {
         )}
       </section>
 
+      {/* Trusted By Section - Infinite Scroll Marquee */}
+      <section style={{
+        padding: isMobile ? '32px 0' : '48px 0',
+        borderBottom: '1px solid var(--border-primary)',
+        overflow: 'hidden'
+      }}>
+        <div style={{
+          textAlign: 'center',
+          marginBottom: isMobile ? '20px' : '28px'
+        }}>
+          <p style={{
+            fontSize: '10px',
+            letterSpacing: '0.25em',
+            color: 'var(--text-muted)'
+          }}>
+            TRUSTED BY DANCERS AT
+          </p>
+        </div>
+
+        {/* Infinite scroll marquee */}
+        <div style={{ overflow: 'hidden' }}>
+          <style>{`
+            @keyframes marqueeScroll {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+            .marquee-track {
+              display: flex;
+              gap: ${isMobile ? '32px' : '48px'};
+              animation: marqueeScroll 25s linear infinite;
+              width: fit-content;
+            }
+            .marquee-track:hover {
+              animation-play-state: paused;
+            }
+          `}</style>
+          <div className="marquee-track">
+            {/* Duplicate items for seamless loop */}
+            {[...Array(2)].map((_, setIndex) => (
+              [
+                'Bangkok Kizomba Festival',
+                'Singapore Urban Kiz',
+                'Bali Tarraxo Fest',
+                'Tokyo Kizomba Congress',
+                'Seoul Dance Festival',
+                'Hong Kong Kiz Marathon',
+                'Jakarta Afro Dance',
+                'Taipei Urban Movement'
+              ].map((festival) => (
+                <span
+                  key={`${setIndex}-${festival}`}
+                  style={{
+                    fontSize: isMobile ? '12px' : '14px',
+                    letterSpacing: '0.1em',
+                    color: 'var(--text-secondary)',
+                    whiteSpace: 'nowrap',
+                    fontWeight: '300'
+                  }}
+                >
+                  {festival}
+                </span>
+              ))
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Story - Horizontal Scroll on Mobile */}
       <section style={{
         padding: isMobile ? '48px 0' : '64px 40px',

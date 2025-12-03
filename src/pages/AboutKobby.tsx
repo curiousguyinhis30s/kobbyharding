@@ -189,6 +189,7 @@ const AboutKobby = () => {
 
             <button
               onClick={() => navigate('/collection')}
+              aria-label="Explore the Kharding Classics collection"
               style={{
                 padding: '14px 32px',
                 background: 'transparent',
@@ -206,6 +207,13 @@ const AboutKobby = () => {
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
                 e.currentTarget.style.background = 'transparent'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.outline = '2px solid #fff'
+                e.currentTarget.style.outlineOffset = '4px'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.outline = 'none'
               }}
             >
               EXPLORE COLLECTION
@@ -584,6 +592,7 @@ const AboutKobby = () => {
 
         <button
           onClick={() => navigate('/collection')}
+          aria-label="Shop the Kharding Classics collection"
           style={{
             padding: '12px 32px',
             background: 'transparent',
@@ -601,6 +610,13 @@ const AboutKobby = () => {
           onMouseLeave={(e) => {
             e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'
             e.currentTarget.style.background = 'transparent'
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.outline = '2px solid #fff'
+            e.currentTarget.style.outlineOffset = '4px'
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.outline = 'none'
           }}
         >
           SHOP NOW

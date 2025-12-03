@@ -657,7 +657,8 @@ const ContactMinimal = () => {
             </ul>
 
             <button
-              onClick={() => navigate('/pickup')}
+              onClick={() => navigate('/festival')}
+              aria-label="View all festival appearances"
               style={{
                 width: '100%',
                 marginTop: '24px',
@@ -677,6 +678,13 @@ const ContactMinimal = () => {
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
                 e.currentTarget.style.color = 'rgba(255,255,255,0.8)'
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.outline = '2px solid #fff'
+                e.currentTarget.style.outlineOffset = '4px'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.outline = 'none'
               }}
             >
               VIEW ALL FESTIVALS

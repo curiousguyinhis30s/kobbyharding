@@ -258,6 +258,31 @@ const updateStructuredData = ({
       '@type': 'Person',
       name: SEO_CONFIG.author,
     }
+    structuredData.sameAs = [
+      'https://www.instagram.com/Khardingclassics'
+    ]
+    structuredData.contactPoint = {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      email: 'contact@khardingclassics.com'
+    }
+  }
+
+  // Add breadcrumb for article/about pages
+  if (type === 'article') {
+    structuredData['@type'] = 'Article'
+    structuredData.author = {
+      '@type': 'Person',
+      name: SEO_CONFIG.author
+    }
+    structuredData.publisher = {
+      '@type': 'Organization',
+      name: SEO_CONFIG.siteName,
+      logo: {
+        '@type': 'ImageObject',
+        url: image
+      }
+    }
   }
 
   // Inject new structured data

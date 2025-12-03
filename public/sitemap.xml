@@ -7,31 +7,31 @@
     <loc>https://khardingclassics.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
   </url>
   <url>
     <loc>https://khardingclassics.com/collection</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
   </url>
   <url>
     <loc>https://khardingclassics.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
   </url>
   <url>
     <loc>https://khardingclassics.com/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
   </url>
   <url>
     <loc>https://khardingclassics.com/festival</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
   </url>
 
   <!-- Product Pages -->
@@ -39,7 +39,7 @@
     <loc>https://khardingclassics.com/piece/sunset-warrior</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
     <image:image>
       <image:loc>https://khardingclassics.com/kobby-assets/models/IMG_3479.JPG</image:loc>
       <image:title>Sunset Warrior - Kharding Classics</image:title>
@@ -49,7 +49,7 @@
     <loc>https://khardingclassics.com/piece/midnight-bloom</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
     <image:image>
       <image:loc>https://khardingclassics.com/kobby-assets/models/IMG_3495.JPG</image:loc>
       <image:title>Midnight Bloom - Kharding Classics</image:title>
@@ -59,7 +59,7 @@
     <loc>https://khardingclassics.com/piece/festival-spirit</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
     <image:image>
       <image:loc>https://khardingclassics.com/kobby-assets/models/IMG_3515.JPG</image:loc>
       <image:title>Festival Spirit - Kharding Classics</image:title>
@@ -69,7 +69,7 @@
     <loc>https://khardingclassics.com/piece/urban-roots</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
     <image:image>
       <image:loc>https://khardingclassics.com/kobby-assets/models/IMG_3543.JPG</image:loc>
       <image:title>Urban Roots - Kharding Classics</image:title>
@@ -79,7 +79,7 @@
     <loc>https://khardingclassics.com/piece/gentle-rebel</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
     <image:image>
       <image:loc>https://khardingclassics.com/kobby-assets/shirts/IMG_1584.JPG</image:loc>
       <image:title>Gentle Rebel - Kharding Classics</image:title>
@@ -89,7 +89,7 @@
     <loc>https://khardingclassics.com/piece/ocean-dreams</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
     <image:image>
       <image:loc>https://khardingclassics.com/kobby-assets/shirts/IMG_1585.JPG</image:loc>
       <image:title>Ocean Dreams - Kharding Classics</image:title>
@@ -99,7 +99,7 @@
     <loc>https://khardingclassics.com/piece/golden-hour</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
     <image:image>
       <image:loc>https://khardingclassics.com/kobby-assets/models/IMG_3622.JPG</image:loc>
       <image:title>Golden Hour - Kharding Classics</image:title>
@@ -109,7 +109,7 @@
     <loc>https://khardingclassics.com/piece/night-market</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
-    <lastmod>2025-12-02</lastmod>
+    <lastmod>2025-12-03</lastmod>
     <image:image>
       <image:loc>https://khardingclassics.com/kobby-assets/models/IMG_3644.JPG</image:loc>
       <image:title>Night Market - Kharding Classics</image:title>
